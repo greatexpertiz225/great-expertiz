@@ -1683,14 +1683,152 @@ document.body.removeChild(hiddenForm);
     window.print();
   });
 
-  document.getElementById('newOrderBtn').addEventListener('click', () => {
-    document.getElementById('orderForm').reset();
-    document.getElementById('orderForm').style.display = 'block';
-    document.getElementById('receiptBox').classList.remove('show');
-    pendingPayload = null;
-    pendingCode = null;
-    document.getElementById('orderForm').scrollIntoView({behavior:'smooth', block:'start'});
-  });
+  document.getElementById('recapConfirmBtn').addEventListener('click', async () => {
+  try {
+    if (!pendingPayload || !pendingCode) {
+      alert('Erreur : aucune donnée de commande trouvée. Merci de remplir à nouveau le formulaire.');
+      return;
+    }
+
+    const payload = {
+      action: 'createOrder',
+      code: pendingCode,
+
+      nom: pendingPayload.nom,
+      telephone: pendingPayload.telephone,
+      contact: pendingPayload.contact,
+      entreprise: pendingPayload.nom,
+
+      prestation: pendingPayload.prestation,
+      detail: pendingPayload.detail,
+      enlevement: pendingPayload.enlevement,
+      livraison: pendingPayload.livraison,
+
+      cbm: pendingPayload.cbm,
+      volumeEstime: pendingPayload.cbm,
+
+      prix: pendingPayload.prix,
+      montantEstime: pendingPayload.prix,
+
+      frequence: pendingPayload.frequence,
+      notes: pendingPayload.notes,
+      paiement: pendingPayload.paiement,
+
+      telephoneDestinataire: pendingPayload.telephoneDestinataire
+    };
+
+    /* Envoi direct au serveur GREAT EXPERTIZ */
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbxtGeK19TOmBd5mQDOH1xsDai20hcoqThQNpsJzPjBM4za8ZaA5ii9PFBnCsd0LT4SwCQ/exec',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain;charset=utf-8'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || 'La commande n’a pas été enregistrée.');
+    }
+
+    /* Code confirmé par le serveur */
+    if (result.code) {
+      pendingCode = result.code;
+    }
+
+    /* QR CODE */
+    const qrText = 'GREAT EXPERTIZ\nCommande: ' + pendingCode
+      + '\nClient: ' + (pendingPayload.nom || '')
+      + '\nTel: ' + (pendingPayload.telephone || '')
+      + '\nPrestation: ' + (pendingPayload.prestation || '')
+      + '\nVolume: ' + (pendingPayload.cbm || '') + ' CBM'
+      + '\nPrix: ' + (pendingPayload.prix || '')
+      + '\nEnlèvement: ' + (pendingPayload.enlevement || '')
+      + '\nLivraison: ' + (pendingPayload.livraison || '');
+
+    const qrTextSafe = String(qrText)
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\x00-\x7F]/g, '')
+      .slice(0, 300);
+
+    const qrEl = document.getElementById('receiptQr');
+    qrEl.innerHTML = '';
+
+    function renderQr() {
+      try {
+        new QRCode(qrEl, {
+          text: qrTextSafe,
+          width: 160,
+          height: 160,
+          colorDark: '#0E3A54',
+          colorLight: '#FFFFFF',
+          correctLevel: QRCode.CorrectLevel.L
+        });
+      } catch (qrErr) {
+        qrEl.innerHTML =
+          '<p style="font-size:0.7rem;color:var(--grey);">QR indisponible</p>';
+      }
+    }
+
+    if (window.QRCode) {
+      renderQr();
+    } else {
+      const qrScript = document.createElement('script');
+      qrScript.src =
+        'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      qrScript.onload = renderQr;
+      document.head.appendChild(qrScript);
+    }
+
+    /* Passage au reçu uniquement après confirmation du serveur */
+    document.getElementById('recapBox').classList.remove('show');
+
+    document.getElementById('receiptCode').textContent = pendingCode;
+
+    fillList(
+      document.getElementById('receiptList'),
+      pendingPayload,
+      pendingCode
+    );
+
+    const loaderEl = document.getElementById('brandLoader');
+    const loaderFillEl = document.getElementById('loaderFill');
+
+    loaderFillEl.style.animation = 'none';
+    void loaderFillEl.offsetWidth;
+    loaderFillEl.style.animation = '';
+
+    loaderEl.classList.add('show');
+    loaderEl.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+    });
+
+    setTimeout(function () {
+      loaderEl.classList.remove('show');
+
+      document.getElementById('receiptBox').classList.add('show');
+
+      document.getElementById('receiptBox').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }, 1650);
+
+  } catch (err) {
+    console.error('GREAT EXPERTIZ - création commande :', err);
+
+    alert(
+      'La commande n’a pas pu être enregistrée.\n\n' +
+      'Détail : ' + err.message
+    );
+  }
+});
 </script>
 </script>
 
