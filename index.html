@@ -1665,6 +1665,47 @@
     document.getElementById('orderForm').scrollIntoView({behavior:'smooth', block:'start'});
   });
 </script>
+</script>
 
+<script>
+/* =========================================================
+   GREAT EXPERTIZ — CONNEXION GOOGLE APPS SCRIPT
+   ========================================================= */
+
+const GE_API_URL = "https://script.google.com/macros/s/AKfycbxtGeK19TOmBd5mQDOH1xsDai20hcoqThQNpsJzPjBM4za8ZaA5ii9PFBnCsd0LT4SwCQ/exec";
+
+async function geApi(action, data = {}) {
+  try {
+    const response = await fetch(GE_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify({
+        action: action,
+        ...data
+      })
+    });
+
+    const result = await response.json();
+
+    if (!result.success) {
+      throw new Error(result.message || "Erreur serveur GREAT EXPERTIZ");
+    }
+
+    return result;
+
+  } catch (error) {
+    console.error("GREAT EXPERTIZ API:", error);
+    throw error;
+  }
+}
+
+/* Test de connexion au démarrage */
+console.log("GREAT EXPERTIZ : connexion API configurée");
+</script>
+
+</body>
+</html>
 </body>
 </html>
