@@ -1552,34 +1552,61 @@
       alert('Erreur : aucune donnée de commande trouvée. Merci de remplir à nouveau le formulaire.');
       return;
     }
-    const payload = Object.assign({ code: pendingCode }, pendingPayload);
+    const payload = {
+  action: 'createOrder',
+  code: pendingCode,
 
-    // Envoi via un formulaire caché + iframe : évite les blocages CORS/redirection de fetch avec Apps Script
-    let iframe = document.getElementById('hiddenSubmitFrame');
-    if(!iframe){
-      iframe = document.createElement('iframe');
-      iframe.name = 'hiddenSubmitFrame';
-      iframe.id = 'hiddenSubmitFrame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
+  nom: pendingPayload.nom,
+  telephone: pendingPayload.telephone,
+  contact: pendingPayload.contact,
+  entreprise: pendingPayload.nom,
 
-    const hiddenForm = document.createElement('form');
-    hiddenForm.method = 'POST';
-    hiddenForm.action = SCRIPT_URL;
-    hiddenForm.target = 'hiddenSubmitFrame';
+  prestation: pendingPayload.prestation,
+  detail: pendingPayload.detail,
+  enlevement: pendingPayload.enlevement,
+  livraison: pendingPayload.livraison,
 
-    Object.keys(payload).forEach(key => {
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = key;
-      input.value = payload[key];
-      hiddenForm.appendChild(input);
-    });
+  cbm: pendingPayload.cbm,
+  volumeEstime: pendingPayload.cbm,
+  prix: pendingPayload.prix,
+  montantEstime: pendingPayload.prix,
 
-    document.body.appendChild(hiddenForm);
-    hiddenForm.submit();
-    document.body.removeChild(hiddenForm);
+  frequence: pendingPayload.frequence,
+  notes: pendingPayload.notes,
+  paiement: pendingPayload.paiement,
+
+  telephoneDestinataire: pendingPayload.telephoneDestinataire
+};
+
+let iframe = document.getElementById('hiddenSubmitFrame');
+
+if(!iframe){
+  iframe = document.createElement('iframe');
+  iframe.name = 'hiddenSubmitFrame';
+  iframe.id = 'hiddenSubmitFrame';
+  iframe.style.display = 'none';
+  document.body.appendChild(iframe);
+}
+
+const hiddenForm = document.createElement('form');
+
+hiddenForm.method = 'POST';
+hiddenForm.action = 'https://script.google.com/macros/s/AKfycbxtGeK19TOmBd5mQDOH1xsDai20hcoqThQNpsJzPjBM4za8ZaA5ii9PFBnCsd0LT4SwCQ/exec';
+hiddenForm.target = 'hiddenSubmitFrame';
+
+Object.keys(payload).forEach(function(key){
+  const input = document.createElement('input');
+
+  input.type = 'hidden';
+  input.name = key;
+  input.value = payload[key] == null ? '' : payload[key];
+
+  hiddenForm.appendChild(input);
+});
+
+document.body.appendChild(hiddenForm);
+hiddenForm.submit();
+document.body.removeChild(hiddenForm);
 
     document.getElementById('receiptCode').textContent = pendingCode;
     fillList(document.getElementById('receiptList'), pendingPayload, null);
