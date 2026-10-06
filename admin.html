@@ -168,6 +168,9 @@
     .sidebar.open{left:0;}
     .menu-toggle{display:block;}
   }
+.contact-btn{border:1px solid var(--blue);color:var(--blue-dark);background:#fff;padding:7px 14px;font-size:.8rem;font-weight:700;text-decoration:none;border-radius:4px}
+.status-saved-note.show{display:inline}
+.order-row-details .order-grid div{word-break:break-word}
 </style>
 </head>
 <body>
@@ -204,7 +207,7 @@
         <button type="button" class="menu-toggle" id="menuToggle">☰</button>
         <h2 id="viewTitle">Tableau de bord</h2>
       </div>
-      <button type="button" class="refresh-btn" id="refreshBtn">Actualiser</button>
+      <div><button type="button" class="refresh-btn" id="refreshBtn">Actualiser</button> <button type="button" class="refresh-btn" id="logoutBtn">Déconnexion</button></div>
     </div>
 
     <main>
@@ -271,11 +274,13 @@
 <script>
   var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXXPk1FWWBIzFlbc_a0X2IBKnGMENXAcLWbdrQXCBRebo7sKddXEwtlv4Tm7QmJovtVA/exec';
   var KEY_STORAGE = 'ge_admin_key';
-  var currentAuth = null;
-  var allOrders = [];
-  var currentTab = 'encours';
-  var currentFilter = 'Toutes';
-  var searchQuery = '';
+  var currentAuth = null, allOrders = [], currentTab = 'encours', currentFilter = 'Toutes', searchQuery = '';
+  var openCodes = {};
+
+  function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function fmtPhone(v){ var s=String(v||''), d=s.replace(/\D/g,''); return d.length===9 ? '0'+d : s; }
+  function waLink(v){ var d=String(v||'').replace(/\D/g,''); if(d.length===9) d='0'+d; if(d.length===10) d='225'+d; return d.length>=11 ? 'https://wa.me/'+d : ''; }
+  function fmtDay(v){ if(!v) return '—'; var m=String(v).match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? m[3]+'/'+m[2]+'/'+m[1] : esc(v); }
 
   function jsonpRequest(params, callback){
     var cbName = 'geCb_' + Date.now() + '_' + Math.floor(Math.random()*10000);
@@ -283,40 +288,23 @@
     var qs = Object.keys(params).map(function(k){ return k + '=' + encodeURIComponent(params[k]); }).join('&');
     var script = document.createElement('script');
     script.src = SCRIPT_URL + '?' + qs + '&callback=' + cbName;
-    script.onerror = function(){ if(window[cbName]){ delete window[cbName]; callback(undefined); } };
+    script.onerror = function(){ if(window[cbName]){ delete window[cbName]; callback(undefined); } script.remove(); };
+    script.onload = function(){ script.remove(); };
     document.body.appendChild(script);
-    setTimeout(function(){ if(window[cbName]){ delete window[cbName]; callback(undefined); } }, 9000);
+    setTimeout(function(){ if(window[cbName]){ delete window[cbName]; callback(undefined); } }, 12000);
   }
-
-  function submitAction(fields){
-    var iframe = document.getElementById('adminHiddenFrame');
-    if(!iframe){
-      iframe = document.createElement('iframe');
-      iframe.name = 'adminHiddenFrame';
-      iframe.id = 'adminHiddenFrame';
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
-    }
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = SCRIPT_URL;
-    form.target = 'adminHiddenFrame';
-    Object.keys(fields).forEach(function(k){
-      var input = document.createElement('input');
-      input.type = 'hidden'; input.name = k; input.value = fields[k];
-      form.appendChild(input);
-    });
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-  }
+  function getKey(){ return sessionStorage.getItem(KEY_STORAGE); }
 
   function checkKey(){
     var key = document.getElementById('gateKey').value.trim();
     if(!key) return;
+    var btn = document.getElementById('gateBtn'); btn.textContent = 'Vérification…'; btn.disabled = true;
     jsonpRequest({ action:'list', key:key }, function(data){
+      btn.textContent = 'Accéder à la plateforme'; btn.disabled = false;
       if(!data || !data.auth || !data.auth.valid){
+        document.getElementById('gateError').textContent = data ? 'Clé incorrecte ou compte désactivé.' : 'Connexion impossible. Vérifiez le réseau puis réessayez.';
         document.getElementById('gateError').classList.add('show');
+        sessionStorage.removeItem(KEY_STORAGE);
         return;
       }
       sessionStorage.setItem(KEY_STORAGE, key);
@@ -325,7 +313,6 @@
       showApp();
     });
   }
-
   document.getElementById('gateBtn').addEventListener('click', checkKey);
   document.getElementById('gateKey').addEventListener('keydown', function(e){ if(e.key==='Enter') checkKey(); });
 
@@ -337,266 +324,182 @@
       document.getElementById('adminNavLabel').style.display = 'block';
       document.getElementById('membresNavBtn').style.display = 'flex';
     }
-    renderDashboard();
-    renderOrders();
+    renderAll();
+    setInterval(function(){ if(!document.hidden) refreshData(); }, 60000);
   }
+  function logout(){ sessionStorage.removeItem(KEY_STORAGE); location.reload(); }
+  document.getElementById('logoutBtn').addEventListener('click', logout);
 
   function refreshData(cb){
-    var key = sessionStorage.getItem(KEY_STORAGE);
-    jsonpRequest({ action:'list', key:key }, function(data){
+    jsonpRequest({ action:'list', key:getKey() }, function(data){
       if(!data || !data.auth || !data.auth.valid) return;
       currentAuth = data.auth;
       allOrders = data.orders.slice().reverse();
-      renderDashboard();
-      renderOrders();
+      renderAll();
       if(cb) cb();
     });
   }
-
   document.getElementById('refreshBtn').addEventListener('click', function(){ refreshData(); });
+
+  function isDone(o){ return o.statut === 'Livrée' || o.statut === 'Annulée'; }
+  function statusClass(s){ return s==='Livrée'?'statut-livree':s==='En cours'?'statut-encours':s==='Annulée'?'statut-annulee':''; }
+  function renderAll(){
+    renderDashboard(); renderOrders();
+    var news = allOrders.filter(function(o){ return o.statut === 'Reçue'; }).length;
+    document.title = (news ? '(' + news + ') ' : '') + 'GREAT EXPERTIZ — Plateforme de gestion';
+  }
 
   function renderDashboard(){
     var total = allOrders.length;
-    var encours = allOrders.filter(function(o){ return o.statut !== 'Livrée' && o.statut !== 'Annulée'; }).length;
+    var encours = allOrders.filter(function(o){ return !isDone(o); }).length;
     var livrees = allOrders.filter(function(o){ return o.statut === 'Livrée'; }).length;
-    var volume = allOrders.reduce(function(sum,o){ return sum + (parseFloat(o.cbm)||0); }, 0);
-
+    var volume = allOrders.reduce(function(s,o){ return s + (parseFloat(o.cbm)||0); }, 0);
     document.getElementById('statTotal').textContent = total;
     document.getElementById('statEncours').textContent = encours;
     document.getElementById('statLivrees').textContent = livrees;
     document.getElementById('statVolume').textContent = volume.toFixed(1);
-
-    var recentEl = document.getElementById('dashboardRecent');
-    if(allOrders.length === 0){
-      recentEl.innerHTML = '<div class="empty-state">Aucune commande pour l\'instant.</div>';
-      return;
-    }
-    var recent = allOrders.slice(0, 5);
-    recentEl.innerHTML = '<div class="order-list"></div>';
-    var list = recentEl.querySelector('.order-list');
-    recent.forEach(function(o){
-      var dateStr = o.date ? new Date(o.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '';
-      var card = document.createElement('div');
-      card.className = 'order-card ' + statusClass(o.statut);
-      card.innerHTML = '<div class="order-top"><div><div class="order-code">' + o.code + '</div><div class="order-date">' + dateStr + ' — ' + (o.nom||'') + '</div></div><div class="order-badge">' + (o.statut||'Reçue') + '</div></div>';
-      list.appendChild(card);
-    });
+    var el = document.getElementById('dashboardRecent');
+    if(!allOrders.length){ el.innerHTML = '<div class="empty-state">Aucune commande pour l\'instant.</div>'; return; }
+    el.innerHTML = '';
+    var list = document.createElement('div'); list.className = 'order-list';
+    allOrders.slice(0,5).forEach(function(o){ list.appendChild(buildRow(o)); });
+    el.appendChild(list);
   }
 
-  function statusClass(statut){
-    if(statut === 'Livrée') return 'statut-livree';
-    if(statut === 'En cours') return 'statut-encours';
-    if(statut === 'Annulée') return 'statut-annulee';
-    return '';
+  function buildRow(o){
+    var dateStr = o.date ? new Date(o.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+    var done = isDone(o), delivered = o.statut === 'Livrée';
+    var row = document.createElement('div');
+    row.className = 'order-row ' + (done ? 'is-done' : 'is-pending') + (openCodes[o.code] ? ' open' : '');
+    var tel = fmtPhone(o.telephone), wa = waLink(o.telephone);
+    row.innerHTML =
+      '<button type="button" class="order-row-head">' +
+        '<span class="order-row-dot ' + statusClass(o.statut) + '"></span>' +
+        '<div class="order-row-main">' +
+          '<div class="order-row-top"><span class="order-code">' + esc(o.code) + '</span><span class="order-badge">' + esc(o.statut||'Reçue') + '</span></div>' +
+          '<div class="order-row-sub">' + esc(o.nom||'—') + ' → ' + esc(o.contact||'—') + ' · ' + esc(dateStr) + '</div>' +
+        '</div><span class="order-row-chevron">▾</span>' +
+      '</button>' +
+      '<div class="order-row-details">' +
+        '<div class="order-grid">' +
+          '<div><span>Prestation</span>' + esc(o.prestation||'—') + '</div>' +
+          '<div><span>Date souhaitée</span>' + fmtDay(o.dateSouhaitee) + '</div>' +
+          '<div><span>Fréquence</span>' + esc(o.frequence||'—') + '</div>' +
+          '<div><span>Expéditeur</span>' + esc(o.nom||'—') + '</div>' +
+          '<div><span>Tél. expéditeur</span>' + esc(tel||'—') + '</div>' +
+          '<div><span>Destinataire</span>' + esc(o.contact||'—') + '</div>' +
+          '<div><span>Tél. destinataire</span>' + esc(fmtPhone(o.telephoneDestinataire)||'—') + '</div>' +
+          '<div><span>Volume</span>' + esc(o.cbm||'—') + ' CBM</div>' +
+          '<div><span>Prix</span>' + esc(o.prix||'—') + '</div>' +
+          '<div><span>Paiement</span>' + esc(o.paiement||'—') + '</div>' +
+          '<div><span>Enlèvement</span>' + esc(o.enlevement||'—') + '</div>' +
+          '<div><span>Livraison</span>' + esc(o.livraison||'—') + '</div>' +
+          '<div><span>Détail</span>' + esc(o.detail||'—') + '</div>' +
+          '<div><span>Notes</span>' + esc(o.notes||'—') + '</div>' +
+        '</div>' +
+        '<div class="order-actions">' +
+          (tel ? '<a class="contact-btn" href="tel:' + esc(tel.replace(/\s/g,'')) + '">📞 Appeler</a>' : '') +
+          (wa ? '<a class="contact-btn" target="_blank" rel="noopener" href="' + wa + '">💬 WhatsApp</a>' : '') +
+        '</div>' +
+        '<div class="order-actions" style="margin-top:8px">' +
+          '<select class="status-select">' + ['Reçue','Confirmée','En cours','Livrée','Annulée'].map(function(s){ return '<option value="'+s+'"'+(s===o.statut?' selected':'')+'>'+s+'</option>'; }).join('') + '</select>' +
+          '<button type="button" class="status-save">Mettre à jour</button>' +
+          (delivered ? '' : '<button type="button" class="status-validate">✓ Livrée</button>') +
+          '<span class="status-saved-note"></span>' +
+        '</div>' +
+      '</div>';
+    var select = row.querySelector('.status-select'), note = row.querySelector('.status-saved-note');
+    row.querySelector('.order-row-head').addEventListener('click', function(){ row.classList.toggle('open'); if(row.classList.contains('open')) openCodes[o.code]=1; else delete openCodes[o.code]; });
+    row.querySelector('.status-save').addEventListener('click', function(){ doUpdateStatus(o, select.value, note); });
+    var v = row.querySelector('.status-validate');
+    if(v) v.addEventListener('click', function(){ doUpdateStatus(o, 'Livrée', note); });
+    return row;
+  }
+
+  function doUpdateStatus(o, status, note){
+    note.style.color = 'var(--grey)'; note.textContent = 'Enregistrement…'; note.classList.add('show');
+    jsonpRequest({ action:'updateStatus', key:getKey(), code:o.code, status:status }, function(r){
+      if(r && r.ok){ o.statut = status; renderAll(); }
+      else { note.style.color = 'var(--status-danger)'; note.textContent = 'Échec : ' + (r && r.error ? r.error : 'pas de réponse'); }
+    });
   }
 
   function renderOrders(){
     var container = document.getElementById('listContainer');
-    var tabOrders = currentTab === 'encours'
-      ? allOrders.filter(function(o){ return o.statut !== 'Livrée' && o.statut !== 'Annulée'; })
-      : allOrders;
-    var filtered = currentFilter === 'Toutes' ? tabOrders : tabOrders.filter(function(o){ return o.statut === currentFilter; });
-
+    var list0 = currentTab === 'encours' ? allOrders.filter(function(o){ return !isDone(o); }) : allOrders;
+    var filtered = currentFilter === 'Toutes' ? list0 : list0.filter(function(o){ return o.statut === currentFilter; });
     if(searchQuery){
       var q = searchQuery.toLowerCase();
-      filtered = filtered.filter(function(o){
-        return [o.code, o.nom, o.contact, o.telephone, o.telephoneDestinataire].some(function(f){
-          return f && String(f).toLowerCase().indexOf(q) !== -1;
-        });
-      });
+      filtered = filtered.filter(function(o){ return [o.code,o.nom,o.contact,o.telephone,o.telephoneDestinataire,o.enlevement,o.livraison].some(function(f){ return f && String(f).toLowerCase().indexOf(q) !== -1; }); });
     }
-
-    if(filtered.length === 0){
-      container.innerHTML = '<div class="empty-state">' + (searchQuery ? 'Aucune commande ne correspond à "' + searchQuery + '".' : (currentTab==='encours' ? 'Aucune commande en cours.' : 'Aucune commande dans cette catégorie.')) + '</div>';
+    if(!filtered.length){
+      container.innerHTML = '<div class="empty-state">' + (searchQuery ? 'Aucune commande ne correspond à « ' + esc(searchQuery) + ' ».' : 'Aucune commande dans cette catégorie.') + '</div>';
       return;
     }
-
-    // Boîte de réception : non traitées (Reçue/Confirmée/En cours) en haut, Livrées/Annulées en bas
-    var pending = filtered.filter(function(o){ return o.statut !== 'Livrée' && o.statut !== 'Annulée'; });
-    var done = filtered.filter(function(o){ return o.statut === 'Livrée' || o.statut === 'Annulée'; });
-    var ordered = pending.concat(done);
-
+    var ordered = filtered.filter(function(o){ return !isDone(o); }).concat(filtered.filter(isDone));
     container.innerHTML = '';
-    var list = document.createElement('div');
-    list.className = 'order-list';
-
-    ordered.forEach(function(o){
-      var dateStr = o.date ? new Date(o.date).toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
-      var isDelivered = o.statut === 'Livrée';
-      var isDone = isDelivered || o.statut === 'Annulée';
-
-      var row = document.createElement('div');
-      row.className = 'order-row ' + (isDone ? 'is-done' : 'is-pending');
-
-      row.innerHTML =
-        '<button type="button" class="order-row-head">' +
-          '<span class="order-row-dot ' + statusClass(o.statut) + '"></span>' +
-          '<div class="order-row-main">' +
-            '<div class="order-row-top"><span class="order-code">' + o.code + '</span><span class="order-badge">' + (o.statut||'Reçue') + '</span></div>' +
-            '<div class="order-row-sub">' + (o.nom||'—') + ' → ' + (o.contact||'—') + ' · ' + dateStr + '</div>' +
-          '</div>' +
-          '<span class="order-row-chevron">▾</span>' +
-        '</button>' +
-        '<div class="order-row-details">' +
-          '<div class="order-grid">' +
-            '<div><span>Prestation</span>' + (o.prestation||'—') + '</div>' +
-            '<div><span>Expéditeur</span>' + (o.nom||'—') + '</div>' +
-            '<div><span>Tél. expéditeur</span>' + (o.telephone||'—') + '</div>' +
-            '<div><span>Destinataire</span>' + (o.contact||'—') + '</div>' +
-            '<div><span>Tél. destinataire</span>' + (o.telephoneDestinataire||'—') + '</div>' +
-            '<div><span>Volume</span>' + (o.cbm||'—') + ' CBM</div>' +
-            '<div><span>Prix</span>' + (o.prix||'—') + '</div>' +
-            '<div><span>Paiement</span>' + (o.paiement||'—') + '</div>' +
-            '<div><span>Enlèvement</span>' + (o.enlevement||'—') + '</div>' +
-            '<div><span>Livraison</span>' + (o.livraison||'—') + '</div>' +
-            '<div><span>Détail</span>' + (o.detail||'—') + '</div>' +
-            '<div><span>Notes</span>' + (o.notes||'—') + '</div>' +
-          '</div>' +
-          '<div class="order-actions">' +
-            '<select class="status-select">' +
-              ['Reçue','Confirmée','En cours','Livrée','Annulée'].map(function(s){ return '<option value="'+s+'"'+(s===o.statut?' selected':'')+'>'+s+'</option>'; }).join('') +
-            '</select>' +
-            '<button type="button" class="status-save">Mettre à jour</button>' +
-            (isDelivered ? '' : '<button type="button" class="status-validate">✓ Valider (livrée)</button>') +
-            '<span class="status-saved-note">Enregistré ✓</span>' +
-          '</div>' +
-        '</div>';
-
-      var head = row.querySelector('.order-row-head');
-      var select = row.querySelector('.status-select');
-      var saveBtn = row.querySelector('.status-save');
-      var validateBtn = row.querySelector('.status-validate');
-      var savedNote = row.querySelector('.status-saved-note');
-
-      head.addEventListener('click', function(){ row.classList.toggle('open'); });
-      saveBtn.addEventListener('click', function(e){ e.stopPropagation(); doUpdateStatus(o.code, select.value, savedNote); });
-      select.addEventListener('click', function(e){ e.stopPropagation(); });
-      if(validateBtn){
-        validateBtn.addEventListener('click', function(e){
-          e.stopPropagation();
-          doUpdateStatus(o.code, 'Livrée', savedNote);
-          o.statut = 'Livrée';
-          renderOrders();
-          renderDashboard();
-        });
-      }
-      list.appendChild(row);
-    });
+    var list = document.createElement('div'); list.className = 'order-list';
+    ordered.forEach(function(o){ list.appendChild(buildRow(o)); });
     container.appendChild(list);
   }
 
-  function doUpdateStatus(code, newStatus, noteEl){
-    var key = sessionStorage.getItem(KEY_STORAGE);
-    submitAction({ action:'updateStatus', key:key, code:code, status:newStatus });
-    var order = allOrders.find(function(o){ return o.code === code; });
-    if(order) order.statut = newStatus;
-    noteEl.classList.add('show');
-    setTimeout(function(){ noteEl.classList.remove('show'); }, 2000);
-  }
+  document.querySelectorAll('.tab-btn').forEach(function(t){ t.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(x){ x.classList.remove('active'); }); t.classList.add('active'); currentTab = t.dataset.tab; renderOrders(); }); });
+  document.querySelectorAll('.filter-chip').forEach(function(c){ c.addEventListener('click', function(){
+    document.querySelectorAll('.filter-chip').forEach(function(x){ x.classList.remove('active'); }); c.classList.add('active'); currentFilter = c.dataset.filter; renderOrders(); }); });
+  document.getElementById('orderSearch').addEventListener('input', function(){ searchQuery = this.value.trim(); renderOrders(); });
 
-  document.querySelectorAll('.tab-btn').forEach(function(tab){
-    tab.addEventListener('click', function(){
-      document.querySelectorAll('.tab-btn').forEach(function(t){ t.classList.remove('active'); });
-      tab.classList.add('active');
-      currentTab = tab.dataset.tab;
-      renderOrders();
-    });
-  });
-  document.querySelectorAll('.filter-chip').forEach(function(chip){
-    chip.addEventListener('click', function(){
-      document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
-      chip.classList.add('active');
-      currentFilter = chip.dataset.filter;
-      renderOrders();
-    });
-  });
-
-  document.getElementById('orderSearch').addEventListener('input', function(){
-    searchQuery = this.value.trim();
-    renderOrders();
-  });
-
-  var viewTitles = {
-    dashboard:'Tableau de bord', transport:'Transport & Déménagement',
-    location:'Location de véhicules', chauffeurs:'Placement de chauffeurs', membres:'Membres & accès'
-  };
-  document.querySelectorAll('.nav-item').forEach(function(item){
-    item.addEventListener('click', function(){
-      document.querySelectorAll('.nav-item').forEach(function(i){ i.classList.remove('active'); });
-      item.classList.add('active');
-      var v = item.dataset.view;
-      document.querySelectorAll('.view').forEach(function(sec){ sec.classList.remove('active'); });
-      document.getElementById('view-' + v).classList.add('active');
-      document.getElementById('viewTitle').textContent = viewTitles[v] || '';
-      document.getElementById('sidebar').classList.remove('open');
-      if(v === 'membres') loadMembers();
-    });
-  });
-
-  document.getElementById('menuToggle').addEventListener('click', function(){
-    document.getElementById('sidebar').classList.toggle('open');
-  });
+  var viewTitles = { dashboard:'Tableau de bord', transport:'Transport & Déménagement', location:'Location de véhicules', chauffeurs:'Placement de chauffeurs', membres:'Membres & accès' };
+  document.querySelectorAll('.nav-item').forEach(function(item){ item.addEventListener('click', function(){
+    document.querySelectorAll('.nav-item').forEach(function(i){ i.classList.remove('active'); }); item.classList.add('active');
+    var v = item.dataset.view;
+    document.querySelectorAll('.view').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('view-' + v).classList.add('active');
+    document.getElementById('viewTitle').textContent = viewTitles[v] || '';
+    document.getElementById('sidebar').classList.remove('open');
+    if(v === 'membres') loadMembers();
+  }); });
+  document.getElementById('menuToggle').addEventListener('click', function(){ document.getElementById('sidebar').classList.toggle('open'); });
 
   function loadMembers(){
-    var key = sessionStorage.getItem(KEY_STORAGE);
     var container = document.getElementById('membersContainer');
     container.innerHTML = '<div class="loading">Chargement…</div>';
-    jsonpRequest({ action:'listMembers', key:key }, function(members){
-      if(!members){ container.innerHTML = '<div class="empty-state">Impossible de charger les membres.</div>'; return; }
-      if(members.length === 0){ container.innerHTML = '<div class="empty-state">Aucun membre ajouté pour l\'instant.</div>'; return; }
-      var table = document.createElement('table');
-      table.className = 'members-table';
+    jsonpRequest({ action:'listMembers', key:getKey() }, function(members){
+      if(!members || members.error){ container.innerHTML = '<div class="empty-state">Impossible de charger les membres.</div>'; return; }
+      if(!members.length){ container.innerHTML = '<div class="empty-state">Aucun membre ajouté pour l\'instant.</div>'; return; }
+      var table = document.createElement('table'); table.className = 'members-table';
       table.innerHTML = '<thead><tr><th>Nom</th><th>Clé</th><th>Statut</th><th></th></tr></thead>';
       var tbody = document.createElement('tbody');
       members.forEach(function(m){
-        var tr = document.createElement('tr');
-        var isActive = m.statut === 'Actif';
-        tr.innerHTML = '<td>' + m.nom + '</td><td class="member-key-cell">' + m.cle + '</td><td>' + m.statut + '</td><td><button type="button" class="member-toggle ' + (isActive?'is-active':'is-inactive') + '">' + (isActive?'Désactiver':'Réactiver') + '</button></td>';
-        var btn = tr.querySelector('.member-toggle');
-        btn.addEventListener('click', function(){
-          submitAction({ action:'toggleMember', key:key, targetKey:m.cle, newStatus: isActive ? 'Inactif' : 'Actif' });
-          setTimeout(loadMembers, 600);
+        var tr = document.createElement('tr'), active = m.statut === 'Actif';
+        tr.innerHTML = '<td>' + esc(m.nom) + '</td><td class="member-key-cell">' + esc(m.cle) + '</td><td>' + esc(m.statut) + '</td><td><button type="button" class="member-toggle ' + (active?'is-active':'is-inactive') + '">' + (active?'Désactiver':'Réactiver') + '</button></td>';
+        tr.querySelector('.member-toggle').addEventListener('click', function(){
+          jsonpRequest({ action:'toggleMember', key:getKey(), targetKey:m.cle, newStatus: active?'Inactif':'Actif' }, function(r){ if(r && r.ok) loadMembers(); else alert('Action impossible.'); });
         });
         tbody.appendChild(tr);
       });
-      table.appendChild(tbody);
-      container.innerHTML = '';
-      container.appendChild(table);
+      table.appendChild(tbody); container.innerHTML = ''; container.appendChild(table);
     });
   }
 
   document.getElementById('addMemberBtn').addEventListener('click', function(){
     var name = document.getElementById('newMemberName').value.trim();
     if(!name){ alert('Entrez le nom de la personne.'); return; }
-    var key = sessionStorage.getItem(KEY_STORAGE);
-    submitActionWithKeyReturn(name, key);
+    jsonpRequest({ action:'addMember', key:getKey(), name:name }, function(r){
+      if(!r || !r.ok){ alert('Impossible de créer la clé' + (r && r.error ? ' : ' + r.error : '.')); return; }
+      document.getElementById('newKeyName').textContent = r.name;
+      document.getElementById('newKeyValue').textContent = r.key;
+      document.getElementById('newKeyBanner').classList.add('show');
+      document.getElementById('newMemberName').value = '';
+      loadMembers();
+    });
   });
 
-  function submitActionWithKeyReturn(name, key){
-    // Astuce : on republie la demande, puis on relit la liste des membres pour retrouver la nouvelle clé générée
-    submitAction({ action:'addMember', key:key, name:name });
-    document.getElementById('newKeyBanner').classList.remove('show');
-    setTimeout(function(){
-      jsonpRequest({ action:'listMembers', key:key }, function(members){
-        if(!members) return;
-        var created = members.filter(function(m){ return m.nom === name; }).pop();
-        if(created){
-          document.getElementById('newKeyName').textContent = created.nom;
-          document.getElementById('newKeyValue').textContent = created.cle;
-          document.getElementById('newKeyBanner').classList.add('show');
-        }
-        document.getElementById('newMemberName').value = '';
-        loadMembers();
-      });
-    }, 1200);
-  }
-
-  var savedKey = sessionStorage.getItem(KEY_STORAGE);
-  if(savedKey){
-    document.getElementById('gateKey').value = savedKey;
-    checkKey();
-  }
+  if(getKey()){ document.getElementById('gateKey').value = getKey(); checkKey(); }
 </script>
+
+
+
 
 </body>
 </html>
