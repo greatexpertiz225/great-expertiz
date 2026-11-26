@@ -1,0 +1,3 @@
+
+/* GREAT EXPERTIZ — configuration du backend */
+window.GE_SCRIPT_URL = 'COLLER_ICI_URL_DU_DEPLOIEMENT_APPS_SCRIPT_TEST';
