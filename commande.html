@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Commande | GREAT EXPERTIZ</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+
+<style>
+:root{--blue:#27a9e1;--blue-d:#0b6a99;--green:#9db81e;--navy:#0f3a57;--line:#dbe8f1}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;color:#18283a;font:15px/1.5 Arial,sans-serif;overflow:hidden;background:#e5edf3}
+#map{position:fixed;inset:0;z-index:0;background:#e5edf3}
+#topbar{position:fixed;z-index:500;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+#topbar>*{pointer-events:auto}
+.brand{background:#fff;border-radius:12px;padding:8px 16px 5px;font-size:20px;text-decoration:none;box-shadow:0 4px 18px #0f3a5726;border-bottom:3px solid var(--blue)}
+.brand .g{color:var(--green);font-weight:bold}.brand .b{color:var(--blue)}
+.back{background:#fff;color:var(--navy);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:bold;text-decoration:none;box-shadow:0 4px 18px #0f3a5726}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 36px #0f3a5733}
+#panel{position:fixed;z-index:600;left:12px;top:78px;bottom:12px;width:440px;display:flex;flex-direction:column;overflow:hidden}
+#panel.min{bottom:auto}#panel.min .formbody{display:none}
+.cardhead{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex:none}
+.cardhead h2{margin:0;color:var(--navy);font-size:20px}
+.cardhead h2 span{color:var(--green)}
+.formbody{padding:18px;overflow-y:auto;flex:1}
+#mapinfo{position:fixed;z-index:500;top:78px;right:12px;width:330px;padding:12px;display:grid;gap:8px}
+.maptools{display:flex;flex-wrap:wrap;gap:6px}
+.maptools button{padding:9px 11px;font-size:13px}
+#distanceLabel{color:var(--navy)}
+button{cursor:pointer;border:0;border-radius:9px;padding:11px 13px;font-weight:bold}
+button:disabled{opacity:.6;cursor:not-allowed}
+.primary{background:var(--green);color:var(--navy)}
+.secondary{background:#e6f5fc;color:var(--blue-d)}
+.secondary.armed{background:var(--blue);color:#fff}
+h3{font-size:14px;text-transform:uppercase;color:var(--blue-d);margin:8px 0 13px;border-bottom:2px solid var(--blue);padding-bottom:4px}
+.field{margin-bottom:12px;position:relative}
+label{display:block;font-size:12px;font-weight:bold;color:#42566c;margin-bottom:5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #c5d6e3;border-radius:8px;background:white;font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+textarea{min-height:70px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vehicle{display:flex;flex-wrap:wrap;gap:7px}
+.vehicle button{background:#edf3f8;border:1px solid #d2dee8;font-size:12px}
+.vehicle button.active{background:#dff3fc;border-color:var(--blue);color:var(--blue-d)}
+.summary{background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.line{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:13px}
+.total{border-top:1px solid var(--line);margin-top:6px;padding-top:10px;font-size:17px;font-weight:bold}
+.hint{font-size:12px;color:#64748b}
+.notice{background:#f4f9de;border:1px solid #d3e18a;padding:10px;border-radius:8px;font-size:12px;margin:10px 0}
+.coordrow{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;background:#f3f9fd;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+.coordrow b{color:var(--navy)}
+.coordrow a{color:var(--blue-d);white-space:nowrap}
+.sugg{position:absolute;left:0;right:0;top:100%;z-index:50;background:#fff;border:1px solid var(--blue);border-radius:8px;margin-top:2px;box-shadow:0 8px 24px #0f3a5733;max-height:220px;overflow-y:auto}
+.sugg div{padding:9px 11px;cursor:pointer;font-size:14px}
+.sugg div:hover,.sugg div.on{background:#e6f5fc;color:var(--blue-d)}
+#qrBox,#receipt{display:none;text-align:center;border:1px dashed #a8bac9;padding:13px;border-radius:10px;margin:12px 0}
+#qrBox img,#receipt img{width:140px;height:140px}
+#status{padding:12px;border-radius:8px;margin:10px 0;display:none}
+.ok{background:#eef6d3;color:#435200}
+.err{background:#fff0ee;color:#9a2e21}
+.submit{width:100%;font-size:16px;padding:14px}
+@media(max-width:820px){
+#map{inset:0 0 auto 0;height:46vh}
+#panel{left:0;right:0;top:46vh;bottom:0;width:auto;border-radius:18px 18px 0 0}
+#mapinfo{top:auto;bottom:calc(54vh + 8px);left:8px;right:8px;width:auto;padding:6px 8px;gap:4px}
+#mapinfo .coordrow,#routeLabel{display:none}
+.maptools button{padding:6px 8px;font-size:12px}
+.brand{font-size:17px}.back{display:none}.grid2{grid-template-columns:1fr}
+.leaflet-bottom{bottom:84px}}
+.pin{width:20px;height:20px;border-radius:50%;border:4px solid #fff;box-shadow:0 2px 8px #0000004d}
+.pin.a{background:#e53935}.pin.b{background:#168447}
+.itemlist{display:grid;gap:6px;margin:4px 0 10px}
+.itemrow{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f3f9fd;border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:13px}
+.itemrow button{background:#fff0ee;color:#9a2e21;padding:5px 9px;font-size:12px}
+body.embed .back{display:none}
+body.route-stage #topbar,body.route-stage #panel,body.route-stage #mapinfo{display:none!important}
+body.route-stage #map{display:block!important;inset:0!important;height:100dvh!important}
+.route-summary{display:grid;gap:5px;background:#f3f9fd;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:8px 0}
+.route-summary .rsline{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--navy)}
+.route-summary .rsline strong{font-weight:800}
+@media(max-width:820px){#routeStage .routeStageCard{top:66px!important;bottom:auto!important}}
+.qr{display:inline-block;padding:8px;background:#fff}
+.vehinfo{display:flex;gap:12px;align-items:center;background:#f3f9fd;border:1px solid var(--line);border-radius:10px;padding:8px;margin-top:8px}
+.vehinfo img{width:96px;height:64px;object-fit:cover;border-radius:8px;flex:none}.vehinfo b{color:var(--navy);display:block}.vehinfo span{font-size:12px;color:#5b6e80}
+.sug{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12px;color:#5b6e80;align-items:center}.sug button{padding:5px 10px;font-size:12px}
+#receipt{display:none;text-align:center;border:1px solid var(--line);border-radius:14px;padding:16px;margin:4px 0}
+.rhead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.rbrand{font-size:20px;color:var(--blue);border-bottom:3px solid var(--blue);padding-bottom:2px}.rbrand b{color:var(--green-d)}
+.rok{background:#eaf5c8;color:#435200;border-radius:999px;padding:6px 14px;font-weight:700}
+.rcode{font-size:26px;font-weight:800;letter-spacing:1px;color:var(--navy);margin:0 0 12px}
+.rdl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;text-align:left;font-size:14px;background:#f7fafc;border:1px solid var(--line);border-radius:10px;padding:12px;margin:0 0 12px}
+.rdl dt{color:#5b6e80}.rdl dd{margin:0;font-weight:600;color:var(--navy)}
+.ractions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+@media print{body{overflow:visible;background:#fff}#map,#topbar,#mapinfo,#panel>.cardhead,.ractions{display:none!important}#panel{position:static;width:auto;box-shadow:none;border:0}#panel .formbody{overflow:visible}#receipt{border:0}}
+.vehinfo{display:block;padding:0;overflow:hidden}.vehinfo img{width:100%;height:160px;object-fit:cover;border-radius:0;display:block}.vehinfo>div{padding:10px 12px}
+.blk{border-radius:12px}.blk.flash{animation:fl 1.6s ease}@keyframes fl{0%,65%{background:#dff3fc;box-shadow:0 0 0 6px #dff3fc}100%{background:transparent;box-shadow:0 0 0 6px transparent}}
+#gpsMsg{background:#fff7e0;border:1px solid #f1dc9a;color:#6b5600;border-radius:8px;padding:6px 9px;font-size:12px}#gpsMsg:empty{display:none}
+.famgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.fam{display:flex;flex-direction:column;align-items:center;gap:3px;padding:14px 8px;background:#fff;border:2px solid var(--line);border-radius:14px;color:var(--navy);cursor:pointer;min-height:96px}
+.fam .ficon{font-size:30px;line-height:1}.fam b{font-size:14px;text-align:center}.fam small{color:#6a7f91;font-size:12px}.fam.on{border-color:var(--blue);background:#eef9fe}
+.famlist,.catres{border:1px solid var(--line);border-radius:12px;background:#fff;margin:8px 0;max-height:62vh;overflow:auto}.famlist[hidden],.catres[hidden]{display:none}
+.famtitle{position:sticky;top:0;background:#fff;padding:10px 12px;font-weight:800;color:var(--navy);border-bottom:1px solid var(--line);z-index:1}
+.sub{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#8aa0b2;margin:12px 12px 2px}
+.crow,.itemrow{display:flex;gap:10px;align-items:center;padding:9px 12px;border-top:1px solid #eef3f7}
+.ico{font-size:24px;width:30px;text-align:center;flex:none}.cn{flex:1;min-width:0}.cn b{display:block;font-size:14px;color:var(--navy);font-weight:700}.cn small{display:block;color:#6a7f91;font-size:12px}.lotdesc{color:#42566c!important}
+.qty{display:flex;align-items:center;gap:6px;flex:none}.qb{width:40px;height:40px;padding:0;font-size:20px;background:#eaf2f9;color:var(--navy);border-radius:10px}.qb:disabled{opacity:.35}.qv{min-width:26px;text-align:center;font-weight:800;font-size:16px}
+.itemrow{border:1px solid var(--line);border-radius:12px;background:#fff}.rm{background:none;color:#a33;font-size:18px;padding:6px 8px}
+.listtitle{margin:14px 0 6px;color:var(--navy)}.mixhint{margin:8px 12px 0;color:#0b6a99}
+.sect{border:1px solid var(--line);border-radius:10px;margin:8px 0;background:#fff;padding:0 12px 10px}.sect>summary{cursor:pointer;padding:12px 0;font-weight:700;color:var(--navy);margin:0 -12px;padding-left:12px}.sect.nested{border-style:dashed}
+.dims3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.oVol{margin-top:6px;font-size:13px;color:#42566c}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:10px 0;font-size:13px;font-weight:400}.chk input{width:auto;margin-top:3px}
+.packlist{display:grid;gap:8px}.pk{display:flex;gap:10px;align-items:center;border:2px solid var(--line);border-radius:12px;padding:14px;font-weight:400;cursor:pointer;min-height:52px}.pk input{width:22px;height:22px;flex:none}.pk b{color:var(--navy);font-size:15px}.pk:has(input:checked){border-color:var(--blue);background:#eef9fe}
+.step{display:none}.step.on{display:block}
+.progress{flex:none;padding:8px 16px 6px;border-bottom:1px solid var(--line);background:#fafcfe}.pbar{height:6px;border-radius:99px;background:#e3edf4;overflow:hidden}.pbar i{display:block;height:100%;width:14%;background:var(--blue);border-radius:99px;transition:width .25s}.plabel{font-size:12.5px;font-weight:700;color:var(--navy);margin-top:4px}
+.stepnav{flex:none;border-top:1px solid var(--line);background:#fff;padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))}.navbtns{display:flex;gap:10px}.navbtns button{flex:1;min-height:48px;font-size:16px}.stepmsg{color:#b3261e;font-size:13px;font-weight:700;margin:0 2px 6px}.stepmsg:empty{display:none}
+#panel.done .stepnav,#panel.done .progress{display:none}#panel.min .stepnav,#panel.min .progress{display:none}
+.cartbar{position:sticky;top:-18px;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:8px;background:#eef9fe;border:1px solid var(--blue);border-radius:12px;padding:8px 10px;margin:6px 0 10px;font-weight:700;color:var(--navy);font-size:14px}.cartbar button{padding:8px 10px;font-size:13px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 10px;border-bottom:1px solid var(--line);-webkit-overflow-scrolling:touch}.chip{flex:none;padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--navy);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+#goodsItems .famlist{margin-top:0;border-top:0;border-radius:0 0 12px 12px}#famBack{margin:4px 0 8px}
+#descBtn{display:block;width:100%;margin:10px 0 8px;background:#168447!important;border-color:#168447!important;color:#fff!important;font-weight:700;min-height:46px}#descBtn:active{filter:brightness(.94)}
+.rblk{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}.rbh{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #eef3f7;color:var(--navy)}.rmod{padding:6px 12px;font-size:13px;background:#eaf2f9;color:var(--navy)}.rrow{padding:4px 12px;font-size:13.5px}.rrow:last-child{padding-bottom:10px}
+.rtag{font-size:11px;letter-spacing:2px;font-weight:700;color:#5b6e80;margin:2px 0 6px}
+@media(max-width:820px){#panel.full{top:0;border-radius:0}body.late #mapinfo{display:none}}
+@media print{.step:not(#step7){display:none!important}.stepnav,.progress,.cartbar{display:none!important}#step7{display:block!important}}
+/* ===== v. agrandie : plus d'espace de saisie, moins de défilement ===== */
+#panel{width:clamp(440px,46vw,640px);top:70px;bottom:10px}
+.formbody{padding:20px 24px}
+.field{margin-bottom:13px}
+input,select,textarea{padding:12px;font-size:16px}
+label{font-size:13px}
+.famgrid{grid-template-columns:repeat(4,1fr)}
+.famlist,.catres{max-height:none;overflow:visible}
+#panel.min .progress,#panel.min #prevBtn,#panel.min #nextBtn,#panel.min .stepmsg{display:none!important}
+#panel.min .stepnav{display:block!important}#panel.min #routeBtn{display:block!important;width:100%}
+.grid2.keep2{grid-template-columns:1fr 1fr!important}
+@media(max-width:820px){
+ #map{height:32vh;height:32dvh}
+ #panel{top:32vh;top:32dvh;border-radius:16px 16px 0 0}
+ #panel.full{top:0;border-radius:0}
+ #panel>.cardhead{display:none}
+ #panel.min{top:auto;bottom:0;border-radius:16px 16px 0 0}
+ body.mapmin #map{height:calc(100vh - 78px);height:calc(100dvh - 78px)}
+ #mapinfo{bottom:calc(68vh + 6px);bottom:calc(68dvh + 6px)}
+ .leaflet-bottom{bottom:calc(68vh + 4px)}
+ .formbody{padding:10px 12px}
+ .field{margin-bottom:8px}
+ input,select,textarea{padding:10px}
+ label{font-size:12px;margin-bottom:3px;margin-top:2px}
+ .step>h3:first-child{display:none}
+ .step .hint{font-size:11.5px}
+ .progress{padding:5px 12px 4px}.pbar{height:4px}.plabel{font-size:12px;margin-top:3px}
+ .stepnav{padding:6px 10px calc(6px + env(safe-area-inset-bottom,0px))}.navbtns button{min-height:46px}
+ .famgrid{grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0}
+ .fam{min-height:76px;padding:8px 4px;border-width:1.5px}.fam .ficon{font-size:24px}.fam b{font-size:12.5px}.fam small{display:none}
+ .crow,.itemrow{padding:6px 10px}.ico{font-size:20px;width:26px}.cn b{font-size:13.5px}
+ .cartbar{top:-10px;margin:2px 0 8px;padding:6px 10px}
+ .sub{margin:8px 10px 2px}
+}
+@media(max-width:820px){
+ #panel.mview{top:auto;bottom:0;border-radius:16px 16px 0 0}
+ #panel.mview .formbody,#panel.mview .progress{display:none}
+ #panel.mview .stepnav{display:block}
+ body.mapmin #mapinfo{display:grid;top:auto;bottom:96px}
+ body.mapmin #routeLabel{display:block}
+ body.mapmin #mapinfo .coordrow{display:none}
+}
+/* ===== Interface simple (inspirée des commandes en ligne mobiles) ===== */
+.gps2{width:100%;margin:0 0 10px;min-height:48px}
+details.more{border:1px dashed var(--line);border-radius:12px;padding:0 12px 6px;margin:6px 0}details.more>summary{cursor:pointer;padding:12px 0;font-weight:700;color:var(--blue-d,#0b6a99)}
+.navbtns #prevBtn{flex:0 0 auto;min-width:58px}.navbtns #nextBtn{flex:1}
+@media(min-width:821px){#gpsBtn2{display:none}}
+@media(max-width:820px){
+ #panel{top:0;border-radius:0}
+ #mapinfo{display:none}body.mapmin #mapinfo{display:grid}
+  .step>h3:first-child{display:block;font-size:24px;line-height:1.2;margin:6px 0 16px;color:var(--navy)}
+ .step .hint:not([id]){display:none}
+ .formbody{padding:14px 16px}
+ .field{margin-bottom:14px}
+ .field label,label{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:5px}
+ input,select,textarea{min-height:52px;font-size:17px;border-radius:12px;padding:12px}
+ textarea{min-height:88px}
+ .navbtns button{min-height:54px;font-size:17px;border-radius:14px}
+ .gps2{min-height:52px;font-size:16px}
+ .progress{padding:8px 16px 6px}.plabel{font-size:13px}
+ .crow,.itemrow{padding:10px 12px}.qb{width:44px;height:44px}
+ .fam{min-height:92px}.fam b{font-size:13.5px}.fam .ficon{font-size:28px}
+}
+/* ===== Habillage simple type application ===== */
+.vh,#vehSug{display:none!important}
+.choices{display:flex;flex-wrap:wrap;gap:8px}.choice{padding:12px 16px;border-radius:999px;border:2px solid var(--line);background:#fff;color:var(--navy);font-size:15px;font-weight:700;cursor:pointer;min-height:48px}.choice.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.vcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.vcard{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:2px;padding:0 0 10px;border:2px solid var(--line);border-radius:18px;background:#fff;color:var(--navy);text-align:left;cursor:pointer;overflow:hidden}
+.vcard .vpic{height:92px;background:#eef6fb;display:flex;align-items:center;justify-content:center;font-size:38px}.vcard .vpic img{width:100%;height:100%;object-fit:cover;display:block}
+.vcard b{padding:6px 10px 0;font-size:14px}.vcard small{padding:0 10px;color:#6a7f91;font-size:12px}.vcard small.rec{color:#1b8a5e;font-weight:700}
+.vcard.on{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,157,224,.25)}.vcard.on::after{content:"✔";position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800}
+input,select,textarea{background:#f4f8fb;border:1.5px solid transparent;border-radius:14px}input:focus,select:focus,textarea:focus{background:#fff;border-color:var(--blue);outline:none}
+.fam{border-radius:20px;box-shadow:0 2px 8px rgba(24,40,58,.07);border-color:transparent}.fam.on{border-color:var(--blue)}
+.navbtns button{border-radius:999px}#panel{box-shadow:0 10px 40px rgba(24,40,58,.18)}
+.blk{background:#f9fcfe;border:1px solid var(--line);border-radius:18px;padding:12px}
+/* ===== Panneau coulissant : carte visible, agrandiseur à quatre flèches ===== */
+.expbtn{position:absolute;top:8px;right:10px;z-index:8;width:42px;height:42px;padding:0;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--navy);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 6px rgba(24,40,58,.12)}
+.expbtn[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.progress{padding-right:62px}.cardhead{padding-right:62px}
+#panel.wide{width:clamp(560px,62vw,880px)}
+@media(max-width:820px){
+ #map{height:40vh;height:40dvh}
+ #panel{top:40vh;top:40dvh;border-radius:18px 18px 0 0}
+ #panel.full{top:0;border-radius:0}
+ #mapinfo{display:grid;bottom:calc(60vh + 6px);bottom:calc(60dvh + 6px)}
+ body.sheetfull #mapinfo,body.late #mapinfo{display:none}
+ body.mapmin #mapinfo{display:grid;bottom:96px}
+ .leaflet-bottom{bottom:calc(60vh + 4px);bottom:calc(60dvh + 4px)}
+ .step>h3:first-child{font-size:20px;margin:2px 0 10px}
+ .navbtns #routeBtn{flex:1}
+}
+.descbox textarea{min-height:84px}.descbox .secondary{margin-top:8px;width:100%;background:#16834b!important;color:#fff!important;border-color:#16834b!important;font-weight:800}
+.dres{margin:8px 0}.dres .ok{color:#1b8a5e;font-weight:700}.dres .ask{font-weight:700;color:var(--navy)}.dres .warn{color:#9a6700;font-weight:700}
+.dsum{font-weight:700;background:#eef9fe;border-radius:10px;padding:8px 10px;margin-top:8px}.dsum:empty{display:none}.chips2{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+
+/* ===== GREAT EXPERTIZ — affichage plein écran par étape ===== */
+/* Dès qu'un champ est activé, le formulaire devient l'écran de travail. */
+#panel.full{
+  position:fixed!important;
+  inset:0!important;
+  width:100vw!important;
+  max-width:none!important;
+  height:100vh!important;
+  height:100dvh!important;
+  bottom:auto!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  border-radius:0!important;
+  z-index:900!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+body.sheetfull{
+  overflow:hidden!important;
+  height:100%;
+}
+body.sheetfull #map,
+body.sheetfull #mapinfo,
+body.sheetfull #topbar{
+  display:none!important;
+}
+#panel.full .cardhead{
+  display:flex!important;
+  flex:none!important;
+  min-height:62px;
+  padding:12px 66px 12px 16px!important;
+}
+#panel.full .progress{
+  display:block!important;
+  flex:none!important;
+  padding:8px 66px 8px 16px!important;
+}
+#panel.full .formbody{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  height:auto!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior:contain;
+  padding:16px clamp(14px,3vw,32px)!important;
+}
+#panel.full .stepnav{
+  display:block!important;
+  flex:none!important;
+  position:relative!important;
+  z-index:5;
+  padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px))!important;
+}
+#panel.full .stepnav .navbtns{
+  display:flex!important;
+}
+#panel.full .stepnav button{
+  min-height:50px;
+}
+#panel.full .expbtn{
+  position:absolute!important;
+  top:10px!important;
+  right:12px!important;
+  z-index:20!important;
+}
+#panel.full .step>h3:first-child{
+  display:block!important;
+}
+#panel.full .famlist,
+#panel.full .catres{
+  max-height:52vh;
+  max-height:52dvh;
+  overflow:auto;
+}
+body.sheetfull .leaflet-control-container{display:none!important}
+
+/* Mode carte : le formulaire se replie, la carte reprend la place principale. */
+@media(max-width:820px){
+  #panel.full{
+    width:100vw!important;
+    height:100vh!important;
+    height:100dvh!important;
+    border-radius:0!important;
+  }
+  #panel.full .cardhead{display:flex!important}
+  #panel.full .formbody{padding:12px 14px!important}
+  #panel.mview{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    top:auto!important;
+    bottom:0!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:124px!important;
+    border-radius:16px 16px 0 0!important;
+    overflow:hidden!important;
+    z-index:700!important;
+  }
+  #panel.mview .cardhead,
+  #panel.mview .formbody,
+  #panel.mview .progress{display:none!important}
+  #panel.mview .stepnav{
+    display:block!important;
+    padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px))!important;
+  }
+  body.mapmin #map{
+    display:block!important;
+    visibility:visible!important;
+    height:100vh!important;
+    height:100dvh!important;
+    inset:0!important;
+  }
+  body.mapmin #topbar{display:none!important}
+  body.mapmin #mapinfo{
+    display:grid!important;
+    left:8px!important;
+    right:8px!important;
+    top:auto!important;
+    bottom:132px!important;
+    width:auto!important;
+    max-height:42vh;
+    overflow:auto;
+  }
+  body.mapmin #mapinfo .coordrow{display:flex!important}
+  body.mapmin #routeLabel{display:block!important}
+  body.mapmin .leaflet-bottom{bottom:132px!important}
+}
+@media(min-width:821px){
+  #panel.full{width:100vw!important}
+  body.mapmin #map{display:block!important;visibility:visible!important;height:100vh!important;inset:0!important}
+  body.mapmin #mapinfo{display:grid;z-index:650}
+}
+
+
+
+/* ===== GREAT EXPERTIZ — 1 section = 1 page de travail ===== */
+/* Écran d'accueil : carte visible derrière, panneau compact avec les deux lieux. */
+#panel:not(.full):not(.mview){
+  width:min(460px,calc(100vw - 24px))!important;
+  max-height:min(560px,calc(100dvh - 94px))!important;
+  height:auto!important;
+  bottom:auto!important;
+  overflow:hidden!important;
+}
+#panel:not(.full):not(.mview) .cardhead{padding:10px 58px 8px 14px!important}
+#panel:not(.full):not(.mview) .cardhead h2{font-size:17px}
+#panel:not(.full):not(.mview) .progress{padding:5px 58px 7px 14px!important}
+#panel:not(.full):not(.mview) .formbody{padding:10px 14px 12px!important;overflow:visible!important;flex:none!important}
+#panel:not(.full):not(.mview) #step1>h3{font-size:12px;margin:0 0 8px;padding-bottom:4px}
+#panel:not(.full):not(.mview) #gpsBtn2,
+#panel:not(.full):not(.mview) #routeStatus,
+#panel:not(.full):not(.mview) #step1 .hint{display:none!important}
+#panel:not(.full):not(.mview) #step1 .field{margin-bottom:8px}
+#panel:not(.full):not(.mview) #step1 input,
+#panel:not(.full):not(.mview) #step1 select{min-height:44px;padding:9px 11px}
+#panel:not(.full):not(.mview) .stepnav{padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px))!important}
+#panel:not(.full):not(.mview) #prevBtn{display:none!important}
+#panel:not(.full):not(.mview) #routeBtn{display:inline-flex!important}
+
+/* Écran de travail : une seule étape est affichée, sans scroll général de page. */
+#panel.full .formbody{
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:0!important;
+}
+#panel.full #orderForm{display:flex!important;flex:1 1 auto!important;min-height:0!important;flex-direction:column!important}
+#panel.full .step.on{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding:0 2px 10px!important;
+}
+#panel.full .step:not(.on){display:none!important}
+#panel.full .step>h3:first-child{font-size:clamp(18px,2.2vh,24px)!important;margin:0 0 12px!important}
+#panel.full .step .field{margin-bottom:10px}
+#panel.full .step label{font-size:13px;margin-bottom:5px}
+#panel.full .step input,
+#panel.full .step select{min-height:46px}
+#panel.full .stepnav{flex:none!important}
+#panel.full .stepnav .navbtns{gap:10px}
+#panel.full .stepnav button{min-height:52px;font-size:15px}
+#panel.full .expbtn{position:fixed!important;top:10px!important;right:12px!important}
+/* Les grandes listes (catalogue marchandises, familles et véhicules) gardent leur propre zone. */
+#panel.full #step3 .famgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#panel.full #step3 .fam{min-height:76px;padding:8px 5px}
+#panel.full #step3 .fam .ficon{font-size:23px}
+#panel.full #step3 .fam b{font-size:12px}
+#panel.full #step3 .famlist,
+#panel.full #step3 .catres{max-height:34dvh!important;overflow:auto!important}
+#panel.full #step5 .vcards{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+#panel.full #step5 .vcard{gap:1px;padding:0 0 6px;border-radius:12px}
+#panel.full #step5 .vcard .vpic{height:48px;font-size:22px}
+#panel.full #step5 .vcard b{padding:4px 5px 0;font-size:11px;line-height:1.15}
+#panel.full #step5 .vcard small{padding:0 5px;font-size:9px;line-height:1.1}
+#panel.full #step6,#panel.full #step7,#panel.full #step8{padding-bottom:12px!important}
+#panel.full #step6 #recap{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#panel.full #step6 .rblk{padding:8px!important;margin:0!important;border-radius:12px}
+#panel.full #step6 .rrow{font-size:11px;line-height:1.25;margin-top:4px}
+#panel.full #step6 .rbh{font-size:12px;gap:5px}
+#panel.full #step6 .rmod{font-size:10px;padding:4px 7px}
+@media(max-width:820px){
+  #panel:not(.full):not(.mview){
+    left:10px!important;right:10px!important;top:auto!important;bottom:12px!important;
+    width:auto!important;max-height:42dvh!important;height:auto!important;
+    border-radius:18px!important;
+  }
+  #panel:not(.full):not(.mview) .cardhead{padding:8px 58px 5px 12px!important}
+  #panel:not(.full):not(.mview) .cardhead h2{font-size:16px}
+  #panel:not(.full):not(.mview) .progress{padding:3px 58px 5px 12px!important}
+  #panel:not(.full):not(.mview) .formbody{padding:8px 12px 9px!important}
+  #panel:not(.full):not(.mview) #step1 .blk{padding:8px 9px!important;border-radius:12px}
+  #panel:not(.full):not(.mview) #step1 label{font-size:11px;margin-bottom:3px}
+  #panel:not(.full):not(.mview) #step1 .field{margin-bottom:6px}
+  #panel:not(.full):not(.mview) #step1 input,
+  #panel:not(.full):not(.mview) #step1 select{min-height:42px;font-size:14px}
+  #panel.full{inset:0!important;width:100vw!important;height:100dvh!important;max-height:none!important;border-radius:0!important}
+  #panel.full .cardhead{min-height:56px;padding:8px 62px 8px 14px!important}
+  #panel.full .progress{padding:5px 62px 6px 14px!important}
+  #panel.full .formbody{padding:10px 13px!important}
+  #panel.full .step.on{padding-bottom:8px!important}
+  #panel.full #step3 .famgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #panel.full #step5 .vcards{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  #panel.full #step5 .vcard .vpic{height:42px;font-size:20px}
+  #panel.full #step5 .vcard b{font-size:10px}
+  #panel.full #step5 .vcard small{font-size:9px}
+  #panel.full #step6 #recap{grid-template-columns:1fr 1fr;gap:6px}
+  #panel.full .stepnav{padding:7px 10px calc(7px + env(safe-area-inset-bottom,0px))!important}
+}
+
+
+/* Reçu : références du trajet visibles immédiatement en haut */
+/* Reçu compact : le trajet reste lisible sans masquer le coût ni le QR */
+#receiptRoute{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;text-align:left;background:#f3f8fb;border:1px solid #d6e3ec;border-radius:10px;padding:8px 10px;margin:7px 0 8px}
+#receiptRoute .rrtitle{grid-column:1/-1;font-weight:800;color:#0b6a99;font-size:11px;letter-spacing:.035em;margin:0 0 2px}
+#receiptRoute .rrpoint{min-width:0;margin:0;font-size:11px;line-height:1.2;color:#18283a;overflow-wrap:anywhere}
+#receiptRoute .rrpoint b{display:block;color:#5b6e80;font-size:9px;text-transform:uppercase;margin-bottom:2px}
+#receiptRoute .rrmeta{font-size:9px;color:#526779;margin-top:3px;overflow-wrap:anywhere}
+#receiptRoute>a{grid-column:1/-1;display:inline-block;margin-top:1px;color:#075985;font-size:10px;font-weight:800;text-decoration:underline}
+#receipt{padding:10px!important;margin:3px 0!important}
+#receipt .rtag{font-size:9px;margin:2px 0}
+#receipt h3{font-size:15px!important;margin:5px 0 2px!important}
+#receipt .rhead img{height:32px!important}
+#receipt .rok{font-size:10px;padding:4px 8px}
+#receipt .rcode{font-size:19px;margin:0 0 6px;line-height:1.15}
+#receipt .rdl{grid-template-columns:82px minmax(0,1fr);gap:3px 7px;padding:7px;margin:0 0 6px;font-size:10px;line-height:1.2}
+#receipt .rdl dt,#receipt .rdl dd{overflow-wrap:anywhere}
+#receipt .rdl dt:nth-of-type(9),#receipt .rdl dd:nth-of-type(9){font-size:12px;font-weight:900;color:#075985;background:#eaf5fb;padding:5px;border-radius:5px}
+#finalQr{padding:4px!important;margin:3px auto!important;line-height:0}
+#finalQr canvas,#finalQr img{width:104px!important;height:104px!important;max-width:100%}
+#receipt>.hint{font-size:9px;line-height:1.2;margin:3px auto;max-width:330px}
+@media(min-width:700px){#receipt{max-width:760px;margin:8px auto!important;padding:14px!important}#receiptRoute{padding:10px 14px}#receipt .rdl{grid-template-columns:130px 1fr;font-size:12px}#finalQr canvas,#finalQr img{width:116px!important;height:116px!important}}
+@media(max-width:380px){#receiptRoute{gap:4px 7px;padding:7px}#receipt .rdl{grid-template-columns:72px minmax(0,1fr);font-size:9px}#receipt .rcode{font-size:17px}}
+
+/* ===== Correctifs ciblés : vérification, CBM libre, démarrage et reçu ===== */
+#geSplash{position:fixed;inset:0;z-index:5000;background:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .45s ease,visibility .45s ease}
+#geSplash img{width:min(190px,42vw);max-height:110px;object-fit:contain}
+.splashName{font-size:clamp(25px,6vw,38px);font-weight:900;letter-spacing:1px;color:var(--blue-d);overflow:hidden;white-space:nowrap}
+.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 2.8s steps(14,end) .2s forwards}
+.splashTag{font-size:11px;letter-spacing:2px;font-weight:700;color:#607487}
+@keyframes splashWrite{to{clip-path:inset(0 0 0 0)}}
+#geSplash.show{display:flex;opacity:1;visibility:visible;pointer-events:auto}
+#geSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+#finalQr canvas,#finalQr img{width:140px!important;height:140px!important;max-width:100%}
+#itemList .customCbm{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:11px;color:#52677a}
+#itemList .customCbm input{width:112px;min-height:34px;padding:5px 7px;font-size:13px}
+#itemList .customCbm span{white-space:nowrap}
+#panel.full #step6 #recap{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;align-content:start}
+#panel.full #step8{min-height:100%;}
+#panel.full #step8 #receipt{width:100%;max-width:900px;margin:0 auto!important;box-sizing:border-box;}
+#panel.full #step6 .rblk{padding:5px!important;margin:0!important;min-width:0}
+#panel.full #step6 .rbh{padding:5px 7px;font-size:11px}
+#panel.full #step6 .rrow{padding:2px 7px;font-size:10px;line-height:1.2;overflow-wrap:anywhere}
+#panel.full #step6 .rblk:nth-child(3) .rrow{font-size:9.5px}
+#panel.full #step6 #recap{max-height:100%;overflow:auto}
+@media(min-width:1100px){#panel.full #step6 #recap{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media(max-width:820px){
+ #panel.full #step6 #recap{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+ #panel.full #step6 .rbh{font-size:10px;padding:4px 6px}
+ #panel.full #step6 .rrow{font-size:9px;padding:2px 6px}
+ #panel.full #step6 .rmod{font-size:9px;padding:3px 5px}
+ #geSplash img{width:min(150px,42vw)}
+}
+
+
+/* ===== V9 : démarrage immersif et carte GPS sur toute la page ===== */
+html,body{min-height:100%;background:#e5edf3}
+#map{position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important;background:#dce8ef!important;z-index:0}
+/* Le formulaire reste une carte blanche flottante ; la carte GPS continue derrière. */
+@media(max-width:820px){
+  #panel{position:fixed!important;left:10px!important;right:10px!important;top:78px!important;bottom:10px!important;width:auto!important;max-width:none!important;height:auto!important;border-radius:18px!important;z-index:600!important;box-shadow:0 12px 38px rgba(15,58,87,.24)!important}
+  #panel.full{left:0!important;right:0!important;top:0!important;bottom:0!important;border-radius:0!important}
+  #map{inset:0!important;height:100vh!important;height:100dvh!important}
+  #mapinfo{display:none!important}
+  body.mapmin #mapinfo{display:grid!important;top:auto!important;bottom:96px!important;left:10px!important;right:10px!important;width:auto!important}
+  .leaflet-bottom{bottom:8px!important}
+}
+@media(min-width:821px){
+  #panel{top:78px!important;bottom:12px!important;left:12px!important}
+  #map{inset:0!important;height:100vh!important;height:100dvh!important}
+}
+#geSplash{display:flex;opacity:1;visibility:visible}
+#geSplash.hide{display:flex;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s ease}
+#geSplash.show{display:flex;opacity:1;visibility:visible}
+
+
+
+/* Page Organisons votre livraison : champs essentiels réunis et compacts sur un seul écran */
+#step2 h3{margin:2px 0 9px;padding-bottom:5px}
+#step2 .field{margin-bottom:8px}
+#step2 input{min-height:40px;padding:8px 10px}
+#step2 .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#step2 .choices button{min-height:42px;padding:7px 8px;font-size:12px;line-height:1.2}
+#step2 details.more{margin-top:6px}
+#step2 .more>summary{padding:7px 0;font-size:12px}
+@media(max-height:760px){#step2 .field{margin-bottom:5px}#step2 input{min-height:36px;padding:6px 9px}#step2 .choices button{min-height:36px}#step2 h3{margin-bottom:6px}}
+@media(max-width:520px){#step2 .choices{grid-template-columns:repeat(2,minmax(0,1fr))}#step2 .grid2{grid-template-columns:1fr 1fr}}
+
+/* Page dédiée de précision des marchandises */
+#step3.precision-view> :not(#precisionPage){display:none!important}
+#precisionPage{display:none}
+#step3.precision-view #precisionPage{display:flex!important}
+.precision-card{border:1px solid #d9e4eb;border-radius:10px;padding:9px;margin:7px 0;background:#fff}
+.precision-card h4{margin:0 0 6px;font-size:15px}.precision-card .hint{margin:5px 0}
+.precision-options{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.precision-options button{border:1px solid #b8cbd7;border-radius:8px;background:#f4f8fa;padding:7px 9px;color:#173247;font-size:12px}
+.precision-options button.selected{background:#168447;color:#fff;border-color:#168447}
+.precision-volume{display:flex;align-items:center;gap:8px;margin-top:8px}.precision-volume input{max-width:130px}
+#precisionValidate{background:#168447!important;color:#fff!important;width:100%;min-height:38px;font-weight:700}
+#step6 .estimate-top .line.total strong{font-size:24px;color:#075985;line-height:1.1}
+#step6 .estimate-top{padding:9px 12px;margin:5px 0}
+#precisionPage{height:100%;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:3px}
+#precisionPage>h3{flex:none;margin:0 0 3px;font-size:14px;padding-bottom:3px}
+#precisionPage>p{flex:none;margin:0 0 3px;font-size:10px;line-height:1.2}
+#precisionItems{flex:1;min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:4px;align-content:stretch}
+#precisionItems .precision-card{min-width:0;min-height:0;margin:0;padding:4px 5px;overflow:hidden;border-radius:7px}
+#precisionItems .precision-card h4{font-size:10px;line-height:1.15;margin:0 0 3px}
+#precisionItems .precision-card .hint,#precisionItems .precision-card .ok{font-size:9px;line-height:1.1;margin:2px 0}
+#precisionItems .precision-options{gap:3px;margin:3px 0;max-height:54px;overflow:hidden}
+#precisionItems .precision-options button{font-size:9px;line-height:1.05;padding:4px 5px;border-radius:5px}
+.precision-evaluate{font-size:9px;padding:4px 5px;background:#e7f3f8;color:#075985;border:1px solid #9fc7d9}
+#precisionPage .line.total{font-size:11px;margin:3px 0;padding:3px 0;flex:none}
+#precisionPage #precisionBack,#precisionPage #precisionValidate{flex:none;min-height:32px;padding:6px 8px;font-size:11px}
+#precisionPage #precisionMessage{flex:none;font-size:9px;line-height:1.1;margin:0}
+body.precision-open #panel .formbody{overflow:hidden!important}
+#step3.precision-view{height:100%;overflow:hidden!important}
+#panel.full #step3.precision-view{height:100%!important}
+#panel.full #step3.precision-view.step.on{display:flex!important;flex-direction:column!important;overflow:hidden!important}
+#panel.full #step3.precision-view #precisionPage{height:100%!important}
+@media(max-width:420px){#precisionItems{gap:3px}#precisionItems .precision-card{padding:3px}#precisionItems .precision-options button{font-size:8px;padding:3px 4px}}
+
+
+/* Parcours itinéraire en trois écrans : carte seule, détails du trajet, puis commande */
+#routeStage{position:fixed;z-index:1200;inset:0;display:none;pointer-events:none}
+#routeStage.active{display:block}
+#routeStage .routeStageCard{position:absolute;left:50%;top:76px;bottom:auto;transform:translateX(-50%);width:min(560px,calc(100% - 24px));background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 38px #0f3a5740;padding:14px;pointer-events:auto}
+#routeStage .routeStageCard h2{margin:0 0 6px;color:var(--navy);font-size:18px}
+#routeStage .routeStageCard p{margin:4px 0;color:#42566c}
+#routeStage .routeStageActions{display:flex;gap:9px;margin-top:12px}
+#routeStage .routeStageActions button{flex:1;min-height:48px}
+#routeStage.details .routeStageCard{bottom:auto;top:76px;max-height:none;overflow:visible}
+#routeStage.details .routeStageCard h2{font-size:20px}
+#routeStage .routeStats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+#routeStage .routeStat{background:#eef7fb;border-radius:10px;padding:12px}
+#routeStage .routeStat b{display:block;color:var(--blue-d);font-size:12px}
+#routeStage .routeStat strong{display:block;color:var(--navy);font-size:19px;margin-top:3px}
+body.route-stage #topbar,body.route-stage #mapinfo,body.route-stage #panel{display:none!important}
+/* En mode trajet, la carte reste la couche visible ; le panneau d'informations est transparent. */
+body.route-stage #map{display:block!important;visibility:visible!important;opacity:1!important;z-index:1!important;position:fixed!important;inset:0!important;width:100vw!important;height:100vh!important;height:100dvh!important}
+body.route-stage #routeStage{z-index:1200!important;background:transparent!important;pointer-events:none!important}
+body.route-stage #routeStage .routeStageCard{z-index:1201!important;pointer-events:auto!important}
+@media(max-width:600px){#routeStage .routeStageCard{top:64px;bottom:auto;width:calc(100% - 20px);padding:11px}#routeStage .routeStageActions button{min-height:42px}}
+
+
+/* V16 — commandes discrètes sur la carte, repères A/B et précisions lisibles */
+#routeMapTools{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:1300;display:none;flex-direction:column;gap:6px;pointer-events:auto}
+body.route-stage #routeMapTools{display:flex}
+#routeMapTools button{width:42px;height:42px;min-height:42px;padding:0;border-radius:11px;background:#fff;color:#173247;border:1px solid #cbd9e3;box-shadow:0 2px 10px #102f4530;font-size:21px;line-height:1}
+#routeMapTools button.pointpick{font-size:12px;font-weight:800}
+#routeMapTools button.active{background:#e6f5fc;border-color:#27a9e1;color:#075985}
+.route-marker-label{font:800 12px Arial,sans-serif;color:#fff;background:#173247;border:2px solid #fff;border-radius:999px;width:27px;height:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 7px #0005}
+.route-marker-label.a{background:#e53935}.route-marker-label.b{background:#168447}
+#routeStage .routeStageCard{max-width:min(520px,calc(100% - 72px))}
+body.route-stage #routeStage .routeStageCard{box-shadow:0 5px 22px #102f4530}
+@media(max-width:600px){#routeMapTools{right:8px;top:52%}#routeMapTools button{width:38px;height:38px;min-height:38px}#routeStage .routeStageCard{max-width:calc(100% - 64px);left:8px;transform:none;top:12px!important;width:calc(100% - 64px)!important;padding:8px 9px}#routeStage .routeStageCard h2{font-size:15px}#routeStage .route-summary{padding:6px 8px;margin:4px 0;gap:3px}#routeStage .route-summary .rsline{font-size:11px}#routeStage .routeStageActions{margin-top:6px}#routeStage .routeStageActions button{min-height:34px;font-size:11px;padding:6px}}
+/* La page de précision doit rester lisible : aucune option masquée dans une carte tronquée. */
+#precisionItems{grid-auto-rows:minmax(105px,auto)!important;overflow-y:auto!important;align-content:start!important}
+#precisionItems .precision-card{padding:8px!important;overflow:visible!important}
+#precisionItems .precision-card h4{font-size:13px!important;line-height:1.25!important;margin-bottom:5px!important}
+#precisionItems .precision-card .hint,#precisionItems .precision-card .ok{font-size:11px!important;line-height:1.25!important}
+#precisionItems .precision-options{max-height:none!important;overflow:visible!important;gap:5px!important}
+#precisionItems .precision-options button{font-size:11px!important;line-height:1.2!important;padding:7px 8px!important;border-radius:7px!important}
+#precisionPage #precisionValidate{font-size:13px!important;min-height:40px!important}
+#step2 .recipient-grid,#step2 .date-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#step2 .recipient-grid .field,#step2 .date-grid .field{min-width:0;margin-bottom:5px}
+#step2 .recipient-block{border:1px solid var(--line);border-radius:10px;padding:8px;margin:7px 0;background:#f8fbfd}
+#step2 .recipient-block>strong{display:block;font-size:12px;color:var(--navy);margin-bottom:5px}
+#step2 .recipient-grid input,#step2 .date-grid input{min-width:0;width:100%;font-size:13px}
+@media(max-width:520px){#step2 .recipient-grid,#step2 .date-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}#step2 .recipient-grid input,#step2 .date-grid input{font-size:12px;padding:7px 8px}}
+
+
+/* V18 : date compacte et sélection explicite des options */
+#step2 .date-compact{display:grid;grid-template-columns:minmax(0,1fr) minmax(145px,42%);align-items:center;gap:8px;border:1px solid var(--line);border-radius:9px;padding:7px 9px;margin:6px 0;background:#fff}
+#step2 .date-compact label{font-size:12px;font-weight:700;color:var(--navy);margin:0;line-height:1.2}
+#step2 .date-compact input{width:100%;min-width:0;min-height:34px;padding:5px 7px;font-size:12px;margin:0}
+@media(max-width:420px){#step2 .date-compact{grid-template-columns:1fr minmax(132px,48%);gap:5px;padding:6px 7px}#step2 .date-compact label{font-size:11px}#step2 .date-compact input{font-size:11px}}
+#step2 .choice.on{background:#168fe0!important;border-color:#168fe0!important;color:#fff!important}
+#step5 .vcard.on{background:#eef7ff;border-color:#168fe0!important;box-shadow:0 0 0 3px rgba(22,143,224,.2)!important}
+#step5 .vcard.on::after{background:#168fe0!important}
+#precisionItems .precision-select{width:100%;min-height:38px;border:1px solid #b8cbd7;border-radius:8px;background:#fff;color:#173247;padding:8px;font-size:13px;margin:5px 0}
+
+/* V19 targeted adjustments */
+#routeMapTools button.pointpick.zoomed{background:#dff3ff!important;border-color:#168fe0!important;color:#075985!important;box-shadow:0 0 0 2px #168fe044}
+#precisionPage #precisionBack{display:none!important}
+#precisionItems .precision-card.is-resolved{display:none!important}
+#step4 .recipient-block{padding:8px 10px;margin:5px 0 7px}
+#step4 #handlingTitle,#step4>h3{font-size:14px;margin:0 0 5px}
+#step4 .recipient-block>.hint,#step4>p.hint{font-size:10px;line-height:1.25;margin:0 0 6px!important}
+#step4 .grid2.keep2{gap:8px;align-items:start}
+#step4 .grid2.keep2 .field{display:grid;grid-template-rows:minmax(28px,auto) 36px;gap:3px;margin:0;min-width:0}
+#step4 .grid2.keep2 .field label{display:flex;align-items:center;min-height:28px;margin:0;font-size:11px;line-height:1.15}
+#step4 .grid2.keep2 select{height:36px;min-height:36px;margin:0;padding:5px 8px;font-size:12px}
+#step4 #handlingPreview{font-size:10px;line-height:1.2;margin:5px 0 7px}
+#step4 .packlist{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+#step4 .pk{min-height:40px;padding:6px 7px;gap:5px;border:1px solid var(--line);border-radius:8px}
+#step4 .pk input{width:16px;height:16px;margin:0;flex:none;accent-color:#168fe0}
+#step4 .pk b{font-size:10px;line-height:1.15;font-weight:700}
+#step4 .pk:has(input:checked){border-color:#168fe0;background:#eaf6ff}
+@media(max-width:520px){#step4 .packlist{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}#step4 .pk{padding:5px 4px;gap:4px}#step4 .pk b{font-size:9px}#step4 .grid2.keep2{gap:6px}}
+
+
+/* Emballages multi-sélection avec prix unitaires et quantités */
+#step4 .packgroup{display:grid;grid-template-columns:1fr;gap:6px}
+#step4 .packitem{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+#step4 .packitem.selected{border-color:#168fe0;background:#eef9fe}
+#step4 .packitem label{display:flex;align-items:flex-start;gap:8px;margin:0;font-size:12px;line-height:1.25;color:var(--navy)}
+#step4 .packitem label input{width:18px;min-height:18px;height:18px;margin:1px 0 0;flex:none;accent-color:#168fe0}
+#step4 .packitem small{display:block;color:#64748b;font-size:10px;margin-top:2px}
+#step4 .packqty{display:flex;align-items:center;gap:5px}
+#step4 .packqty input{width:58px;min-height:34px;height:34px;padding:4px;text-align:center;font-size:12px}
+#step4 .packqty span{font-size:10px;color:#526779;white-space:nowrap}
+#step4 .protection-choice{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:9px;padding:8px;margin:5px 0;font-size:12px}
+#step4 .protection-choice input{width:18px;min-height:18px;height:18px;margin:1px 0;flex:none;accent-color:#168fe0}
+#step4 .protection-choice strong{display:block;color:var(--navy)}
+#step4 .protection-choice small{display:block;color:#64748b;font-size:10px}
+#step4 .protection-choice.standard{border-color:#168447;background:#f1f9ed}
+#step4 .protection-choice.standard strong{color:#168447}
+.receipt-alert{display:flex;flex-direction:column;align-items:center;gap:2px;margin:7px auto 3px;padding:6px 9px;max-width:430px;border:1px solid #dc2626;border-radius:8px;color:#dc2626;font-size:11px;line-height:1.2;animation:receiptPulse 1.7s ease-in-out 3}
+.receipt-alert strong{font-size:12px}.receipt-alert span{font-weight:700}
+@keyframes receiptPulse{0%,100%{background:#fff}50%{background:#fee2e2;box-shadow:0 0 0 3px #fecaca}}
+#helpFloat{position:fixed;z-index:2500;right:14px;bottom:22px;display:none;align-items:center;gap:7px;padding:11px 15px;border-radius:999px;background:#168a52;color:#fff;box-shadow:0 5px 18px #0003;touch-action:none;user-select:none;cursor:grab;font-size:13px}
+#helpFloat.show{display:flex}#helpFloat:active{cursor:grabbing}#helpFloat .grip{font-size:15px;opacity:.8}
+@media(max-width:520px){#step4 .packitem{padding:7px 8px}#step4 .packitem label{font-size:11px}#step4 .packqty input{width:48px}#helpFloat{right:10px;bottom:14px;padding:10px 12px}}
+
+
+/* V21 — parcours de protection structuré et menu transport compact */
+.service-select-wrap select{width:100%;min-height:54px;font-weight:650}
+.protection-flow{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:18px;background:#fff}
+.protection-question{font-size:17px;font-weight:750;color:var(--navy);margin:8px 0 12px}
+.protection-panel{display:grid;gap:10px}
+.protection-action,.protection-category{display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:100%;padding:14px;border:1.5px solid var(--line);border-radius:14px;background:#f9fcfe;color:var(--navy);text-align:left;cursor:pointer}
+.protection-action:active,.protection-category:active{border-color:var(--blue);background:#eef8fd}
+.protection-action strong,.protection-category strong{font-size:15px}
+.protection-action small,.protection-category small{font-size:12px;color:#607487;line-height:1.4}
+.protection-categories{display:grid;gap:9px}
+.textback{justify-self:start;border:0;background:transparent;color:var(--blue-d,#0b6a99);font-weight:700;padding:6px 0;cursor:pointer}
+.protection-items{display:grid;gap:8px}
+.protection-item{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:11px 10px;border:1px solid var(--line);border-radius:12px;background:#fbfdff}
+.protection-item strong{display:block;font-size:13px;color:var(--navy)}
+.protection-item small{display:block;font-size:11px;color:#65798a;margin-top:3px}
+.qty-stepper{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.qty-stepper button{width:34px;height:34px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--navy);font-size:20px;font-weight:700;cursor:pointer}
+.qty-stepper output{min-width:18px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+.protection-total{margin-top:12px}
+.protection-done{margin-top:10px;padding:12px;border-radius:12px;background:#eff8f4;color:#176b4b;font-weight:650;font-size:13px}
+.packaging-section{margin-top:12px;border:1px solid var(--line);border-radius:16px;padding:10px 12px}
+.packaging-section>summary{font-weight:750;color:var(--navy);cursor:pointer;padding:5px 0}
+.packaging-section .price-disclaimer{color:#9b4c18}
+.receipt-alert{order:-1;align-items:flex-start;text-align:left;width:100%;max-width:none;margin:0 auto 12px;padding:12px 14px;border:2px solid #dc2626;border-radius:10px;background:#fff5f5;color:#b91c1c;font-size:13px;line-height:1.35;animation:receiptPulse 1.7s ease-in-out 3}
+.receipt-alert strong{font-size:15px}.receipt-alert span{font-size:13px;font-weight:750}
+@media(max-width:820px){.protection-flow{padding:12px}.protection-action,.protection-category{padding:13px}.protection-item{padding:9px 8px}.qty-stepper button{width:38px;height:38px}}
+
+/* V25 — finition professionnelle : styles additionnels, aucun comportement modifié */
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.card{border-color:#e1ebf2;box-shadow:0 14px 40px #0f3a5724,0 1px 2px #0f3a5712}
+h3{font-size:15px;text-transform:none;letter-spacing:0;color:var(--navy);border-bottom:0;position:relative;padding:0 0 0 12px;margin:6px 0 12px}
+h3::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:4px;background:var(--blue)}
+input,select,textarea{border-color:#cfdde8;border-radius:10px;transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--blue);box-shadow:0 0 0 3px #27a9e133}
+button{transition:background .15s,border-color .15s,filter .15s}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.primary{box-shadow:0 2px 0 #7f9617}.primary:hover{filter:brightness(1.05)}
+.summary{background:#f8fbfd;border-radius:12px}
+#step4 .recipient-block{padding:14px 16px;margin:0 0 14px;border:1px solid var(--line);border-radius:16px;background:#fff}
+#step4 .recipient-block>.hint,#step4>p.hint{font-size:12px;line-height:1.4}
+#step4 #handlingPreview{font-size:12px;font-weight:700;color:var(--navy)}
+.packaging-section{border-radius:16px;background:#fff}
+.packaging-section>summary{font-size:15px;padding:6px 2px}
+
+/* Protection : parcours en 3 étapes, matériels classés par famille */
+.protection-flow [hidden]{display:none!important}
+.protection-flow{margin-top:0;padding:0;border-radius:16px;overflow:hidden}
+.pf-head{padding:14px 16px 12px;border-bottom:1px solid var(--line);background:#f8fbfd}
+.pf-head h3{margin:0 0 4px}.pf-head .hint{margin:0 0 0 12px;font-size:12px}
+.pf-steps{display:flex;gap:6px;list-style:none;margin:14px 0 0;padding:0;counter-reset:pf}
+.pf-steps li{flex:1;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:#7a8da0;min-width:0}
+.pf-steps li::before{counter-increment:pf;content:counter(pf);flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#e8eff5;color:#5d7387;font-size:12px}
+.pf-steps li.on{color:var(--navy)}.pf-steps li.on::before{background:var(--blue);color:#fff}
+.pf-steps li.done{color:var(--navy)}.pf-steps li.done::before{content:"✓";background:var(--green);color:var(--navy)}
+.pf-body{padding:16px;display:grid;gap:16px}
+.protection-panel h4{margin:0;font-size:15px;color:var(--navy)}
+.protection-panel+.protection-panel{padding-top:16px;border-top:1px solid var(--line)}
+.protection-question{margin:0 0 2px;font-size:16px}
+.protection-action,.protection-category{border-radius:12px;padding:13px 14px;transition:border-color .15s,background .15s}
+.protection-action{position:relative;padding-left:46px}
+.protection-action::before{content:"";position:absolute;left:14px;top:15px;width:18px;height:18px;border-radius:50%;border:2px solid #b8cbda;background:#fff;box-sizing:border-box}
+.protection-action.is-selected{border-color:var(--blue);background:#eef8fd}
+.protection-action.is-selected::before{border-color:var(--blue);background:var(--blue);box-shadow:inset 0 0 0 3px #fff}
+.protection-category{--cc:var(--blue);border-left:5px solid var(--cc)}
+.protection-category[data-protection-category=standard]{--cc:var(--green)}
+.protection-category[data-protection-category=specific]{--cc:var(--navy)}
+.protection-category.is-selected{border-color:var(--cc);background:#f3f9fd}
+.pi-family{display:flex;align-items:center;gap:10px;margin:12px 0 0;font-size:12px;font-weight:700;color:var(--blue-d)}
+.pi-family::after{content:"";flex:1;height:1px;background:var(--line)}
+.pi-family:first-child{margin-top:2px}
+.protection-item{border-radius:12px;transition:border-color .15s,background .15s}
+.protection-item.has-qty{border-color:var(--blue);background:#eef8fd}
+.qty-stepper button{border-radius:50%}
+.qty-stepper button:last-child{background:var(--blue);border-color:var(--blue);color:#fff}
+.qty-stepper output{min-width:24px;font-size:15px}
+.protection-total{background:#f3f9fd;margin:4px 0 0}
+#protectionValidate{width:100%;padding:13px;font-size:15px}
+.protection-done{margin:0;border:1px solid #bfe0cf}
+.protection-done::before{content:"✓ ";font-weight:800}
+\n/* Catalogue marchandises : fiches de variantes et panier */
+.ge-families{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.ge-family,.ge-item{background:#fff;border:1px solid #d4e1e9;border-radius:10px;padding:11px;text-align:left;color:#173247;font-weight:700;min-height:44px}.ge-items,.ge-results{display:grid;gap:7px;margin:10px 0}.ge-items h4,.ge-items h5{margin:8px 0 2px;color:#075985}.ge-detail{border:1px solid #8fc9e5;background:#f1f9fd;border-radius:12px;padding:12px;margin:12px 0}.ge-detail-actions{display:flex;gap:8px}.ge-detail-actions button{flex:1}.ge-cart{display:grid;gap:7px}.ge-cart-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e2eaf0;padding:7px 0;font-size:13px}.ge-cart-row button{padding:6px 9px;min-height:34px}.ge-total{display:flex;justify-content:space-between;align-items:center;background:#eef7fb;padding:12px;border-radius:10px;margin:10px 0}.ge-total strong{color:#075985}.ge-family:active,.ge-item:active{background:#eaf6fc}
+
+</style>
+<script src="config.js"></script>
+</head>
+<body>
+<div id="geSplash" class="show" role="status" aria-label="Chargement GREAT EXPERTIZ">
+ <img id="geSplashLogo" alt="Logo GREAT EXPERTIZ">
+ <div class="splashName"><span>GREAT EXPERTIZ</span></div>
+ <div class="splashTag">TRANSPORT. LOGISTIQUE. B2B</div>
+</div>
+<div id="map" aria-label="Carte GPS de l’itinéraire"></div>
+<header id="topbar">
+  <a class="brand" href="./index.html" target="_top" aria-label="GREAT EXPERTIZ, accueil"><span class="g">GREAT</span> <span class="b">EXPERTIZ</span></a>
+  <a class="back" href="./index.html" target="_top">Retour à l’accueil</a>
+</header>
+<div id="mapinfo" class="card">
+  <div class="maptools">
+    <button class="secondary" type="button" id="gpsBtn">◎ Ma position GPS</button>
+    <button class="secondary" type="button" id="pickStart">Choisir l’enlèvement</button>
+    <button class="secondary" type="button" id="pickEnd">Choisir la livraison</button>
+  </div>
+  <div class="hint" id="gpsMsg" role="status" aria-live="polite"></div>
+  <strong id="distanceLabel">Distance : non calculée</strong>
+  <div class="hint" id="routeLabel">Choisissez les points d’enlèvement et de livraison.</div>
+  <div class="coordrow"><span><b>Enlèvement</b> : <span id="coordStart">non défini</span></span><a id="linkStart" href="#" target="_blank" rel="noopener" style="display:none">Ouvrir</a></div>
+  <div class="coordrow"><span><b>Livraison</b> : <span id="coordEnd">non défini</span></span><a id="linkEnd" href="#" target="_blank" rel="noopener" style="display:none">Ouvrir</a></div>
+</div>
+<aside id="panel" class="card">
+<button type="button" class="expbtn" id="expandBtn" aria-label="Agrandir ou réduire le panneau" aria-pressed="false" title="Agrandir / réduire"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5M4 4l6 6M20 4l-6 6M4 20l6-6M20 20l-6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="cardhead">
+  <div><h2 id="panelTitle">Organisons votre <span>livraison</span></h2><div class="hint">Les champs marqués * sont obligatoires.</div></div>
+</div>
+<div class="progress" id="progress"><div class="pbar"><i id="pfill"></i></div><div class="plabel" id="plabel">Étape 1 sur 6 · Itinéraire</div></div>
+ <div class="formbody" id="formBody">
+<form id="orderForm" novalidate>
+<div class="step on" id="step1" data-title="Itinéraire">
+<h3>D’où vers où ?</h3>
+<button class="secondary gps2" type="button" id="gpsBtn2">📍 Utiliser ma position</button>
+<div class="blk" id="blockPickup"><div class="field"><label for="pickupCommune">Enlèvement : commune ou ville *</label><select id="pickupCommune" required></select></div>
+<div class="field"><label for="pickupExtra">Quartier, rue, numéro d’habitation</label><input id="pickupExtra" placeholder="Ex. Angré 8e tranche, rue L100, villa 12"></div></div>
+<div class="blk" id="blockDropoff"><div class="field"><label for="dropoffCommune">Livraison : commune ou ville *</label><select id="dropoffCommune" required></select></div>
+<div class="field"><label for="dropoffExtra">Quartier, rue, numéro d’habitation</label><input id="dropoffExtra" placeholder="Ex. Zone 4, rue du Canal, lot 25"></div></div>
+<div class="hint" id="routeStatus" aria-live="polite">Choisissez la commune de départ et celle d’arrivée.</div>
+
+</div>
+<div class="step" id="step2" data-title="Organisons votre livraison">
+<h3>Organisons votre livraison</h3>
+<div class="field service-select-wrap"><label for="service">Quel type de transport souhaitez-vous organiser ? *</label>
+<select id="service" required>
+<option value="">Sélectionnez un type de transport…</option>
+<option>Déménagement</option>
+<option>Transport de marchandises</option>
+<option>Transport de matériel et équipements</option>
+<option>Transport frigorifique</option>
+<option>Transport exceptionnel et charges lourdes</option>
+<option>Autres transports et prestations</option>
+</select>
+<div class="hint" id="serviceRouteHint" aria-live="polite">Choisissez votre type de transport pour continuer.</div>
+</div>
+<div class="field"><label for="name">Nom / entreprise *</label><input id="name" required autocomplete="name" placeholder="Votre nom ou société"></div>
+<div class="field"><label for="phone">Téléphone *</label><input id="phone" required type="tel" autocomplete="tel" placeholder="Ex. 07 48 11 03 35" autocomplete="tel"><div class="hint">Un code de confirmation sera envoyé par WhatsApp à ce numéro.</div></div>
+<div class="recipient-block"><strong>Personne qui reçoit la livraison</strong><div class="recipient-grid"><div class="field"><label for="recipientName">Nom du destinataire</label><input id="recipientName" autocomplete="name" placeholder="Nom du réceptionnaire"></div><div class="field"><label for="recipientPhone">Téléphone du destinataire</label><input id="recipientPhone" type="tel" autocomplete="tel" placeholder="+225…"></div></div></div>
+<div class="date-compact"><label for="date">Date souhaitée de la prestation</label><input id="date" type="date" aria-label="Date souhaitée de la prestation"></div>
+
+<details class="more"><summary>➕ Plus de précisions (facultatif)</summary>
+<div class="field"><label for="email">E-mail (facultatif)</label><input id="email" type="email" placeholder="nom@entreprise.ci"></div>
+<div class="field"><label for="notes">Informations complémentaires</label><textarea id="notes" rows="2" placeholder="Accès, horaires, paiement souhaité…"></textarea></div>
+</details>
+</div>
+<div class="step" id="step3" data-title="Votre besoin">
+<h3>Que souhaitez-vous transporter ?</h3>
+<p class="hint">Choisissez les marchandises dans le catalogue. Pour les articles qui existent en plusieurs types ou dimensions, une fiche s’ouvre afin de préciser le modèle et la quantité.</p>
+<div class="field"><label for="geSearch">Rechercher un article</label><input id="geSearch" type="search" placeholder="Ex. canapé, réfrigérateur, assiettes…" autocomplete="off"></div><div id="geSearchResults" class="ge-results" hidden></div>
+<div id="geFamilies" class="ge-families"></div><div id="geItems" class="ge-items" hidden></div>
+<div id="geDetail" class="ge-detail" hidden><h4 id="geDetailTitle"></h4><div class="field" id="geVariantWrap"><label for="geVariant">Quel type / format ?</label><select id="geVariant"></select></div><div class="field"><label for="geQty">Quantité</label><input id="geQty" type="number" min="1" max="999" step="1" value="1" inputmode="numeric"></div><div class="ge-detail-actions"><button type="button" class="secondary" id="geCancel">Annuler</button><button type="button" class="primary" id="geAdd">Ajouter au panier</button></div></div>
+<h4>Votre sélection</h4><div id="geCart" class="ge-cart"></div><p id="geCartEmpty" class="hint">Aucun article sélectionné.</p><div class="ge-total"><span>Volume indicatif total</span><strong id="geTotal">0 m³</strong></div><div id="geRules" class="notice" hidden>Votre sélection comprend des articles fragiles, lourds ou soumis à vérification. GREAT EXPERTIZ confirmera les conditions de transport.</div><label id="geRegAckWrap" class="hint" hidden><input id="geRegAck" type="checkbox"> Je déclare les marchandises réglementées sélectionnées ; leur acceptation reste soumise à validation.</label>
+<div class="field"><label for="need">Autres précisions (facultatif)</label><textarea id="need" rows="3" maxlength="3000" placeholder="Décrivez ici un article absent du catalogue ou ajoutez des précisions."></textarea><div class="hint" id="needCount">0 / 3000</div></div>
+<div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
+<div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
+</div>
+<div class="step" id="step4" data-title="Accès et emballage">
+<h3>Accès et emballage</h3>
+<div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
+<div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? *</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
+<div class="notice">Cartons, film étirable, papier bulle, ruban adhésif et housses ne sont ni fournis ni inclus dans le transport. Une prestation d’emballage ou de protection fait l’objet d’une cotation séparée.</div>
+</div>
+<div class="step" id="step5" data-title="Vérification">
+<h3>Vérifiez votre demande</h3>
+<div id="recap"></div>
+<input type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
+<div id="otpIntro">
+<p>Pour confirmer, GREAT EXPERTIZ vous envoie un code à 6 chiffres par WhatsApp au numéro indiqué.</p>
+<div id="status" role="status" aria-live="polite"></div>
+<button class="primary submit" id="submitBtn" type="button">Envoyer ma demande</button>
+</div>
+<div id="otpPanel" hidden>
+<h3>Entrez votre code</h3>
+<p class="hint" id="otpHint"></p>
+<div class="field"><label for="otpCode">Code à 6 chiffres</label><input id="otpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="······" style="letter-spacing:.35em;font-size:22px;text-align:center"></div>
+<div class="hint" id="otpTimer"></div>
+<div id="otpMsg" role="status" aria-live="polite"></div>
+<button class="primary submit" id="verifyBtn" type="button">Valider le code</button>
+<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="secondary" id="resendBtn" type="button">Renvoyer le code</button><button class="secondary" id="editBtn" type="button">Modifier ma demande</button></div>
+</div>
+</div>
+<div class="step" id="step6" data-title="Confirmation">
+<div id="receipt">
+<div class="rhead"><span class="rbrand"><img id="rLogo" alt="GREAT EXPERTIZ" style="height:46px;display:block"></span><span class="rok">✔ Enregistrée</span></div>
+<div class="rtag">TRANSPORT. LOGISTIQUE. B2B</div>
+<h3 style="border:0;margin:14px 0 4px">Votre demande a bien été prise en compte</h3>
+<p id="confirmMsg"></p>
+<div class="receipt-alert"><strong>⚠ CONSERVEZ VOTRE NUMÉRO DE COMMANDE</strong><span>Il vous sera demandé pour le suivi de votre dossier.</span></div>
+<div class="rcode" id="receiptText"></div>
+<dl class="rdl" id="rdl"></dl>
+<div id="receiptRoute" aria-label="Références du trajet"></div>
+<div id="finalQr" class="qr" aria-label="QR code de suivi de la commande"></div>
+<p class="hint">Scannez ce QR code pour retrouver le suivi de votre demande.</p>
+<p class="hint">Ce récapitulatif n’est pas un reçu définitif : GREAT EXPERTIZ étudie votre demande et vous transmet un devis.</p>
+<div class="ractions">
+<button type="button" class="primary" id="dlBtn">⬇ Télécharger mon récapitulatif</button>
+<button type="button" class="secondary" id="printBtn">Imprimer / Enregistrer en PDF</button>
+<button type="button" class="secondary" id="copyCode">Copier le numéro</button>
+<a class="secondary" id="trackLink" target="_top" href="./index.html#suivi" style="padding:11px 13px;border-radius:9px;font-weight:bold;text-decoration:none">Suivre ma commande</a>
+<button type="button" class="secondary" id="newOrder">Nouvelle demande</button>
+</div>
+</div>
+</div>
+</form>
+</div>
+<div class="stepnav" id="stepNav"><div class="stepmsg" id="stepMsg" role="alert" aria-live="assertive"></div><div class="navbtns"><button type="button" class="secondary" id="prevBtn" style="display:none" aria-label="Retour">←</button><button type="button" class="secondary" id="routeBtn">🗺 Voir le trajet</button><button type="button" class="primary" id="nextBtn">Continuer →</button></div></div>
+</aside>
+
+<div id="routeStage" aria-live="polite">
+ <section class="routeStageCard" id="routeStageCard">
+  <h2 id="routeStageTitle">Votre trajet</h2>
+  <div class="route-summary" id="routeSummary">
+   <div class="rsline"><span>Départ</span><strong id="routeDeparture">À confirmer</strong></div>
+   <div class="rsline"><span>Arrivée</span><strong id="routeArrival">À confirmer</strong></div>
+   <div class="rsline"><span>Distance</span><strong id="routeDistance">À calculer</strong></div>
+   <div class="rsline"><span>Durée estimée</span><strong id="routeDuration">À calculer</strong></div>
+  </div>
+  <div class="routeStageActions">
+   <button type="button" class="secondary" id="routeStageBack">Modifier les lieux</button>
+   <button type="button" class="primary" id="routeStageNext">Continuer →</button>
+  </div>
+ </section>
+</div>
+<div id="routeMapTools" aria-label="Commandes de la carte">
+ <button type="button" id="routeZoomIn" aria-label="Agrandir la carte">+</button>
+ <button type="button" id="routeZoomOut" aria-label="Réduire la carte">−</button>
+ <button type="button" class="pointpick" id="routePickA" aria-label="Choisir le départ sur la carte">A</button>
+ <button type="button" class="pointpick" id="routePickB" aria-label="Choisir l’arrivée sur la carte">B</button>
+</div>
+
+<iframe name="geOrderFrame" id="geOrderFrame" title="Réponse du serveur" style="display:none"></iframe>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<button type="button" id="helpFloat" aria-label="Besoin d’aide, ouvrir WhatsApp"><span>●</span> Besoin d’aide <span class="grip">⠿</span></button>
+<script>
+(() => {
+'use strict';
+
+/* Adresse du backend : définie une seule fois dans config.js (identique pour index, commande et admin) */
+const SCRIPT_URL = window.GE_SCRIPT_URL || '';
+const SERVER_OK = /^https:\/\/script\.google\.com\/macros\//.test(SCRIPT_URL);   /* adresse définie dans config.js */
+
+const $ = id => document.getElementById(id);
+let map=null,startMarker=null,endMarker=null,routeLayer=null;
+let meMarker=null,meCircle=null;
+let startCoords=null,endCoords=null,distanceKm=null,routeDurationMinutes=null,routeSteps=[],pickMode=null;
+let requestCode=null,awaitingResponse=false,submitTimer=null,tileErrors=0;
+
+const money = n => Math.round(n).toLocaleString('fr-FR')+' FCFA';
+const fmtCoords = c => c ? c[0].toFixed(6)+', '+c[1].toFixed(6) : '';
+const mapsLink = c => c ? 'https://www.google.com/maps?q='+c[0].toFixed(6)+','+c[1].toFixed(6) : '';
+const GE_CATALOG=[
+['Vaisselle, couverts et cuisine',[
+ ['Couverts et ustensiles',['Fourchettes (lot de 12)|0.002','Couteaux (lot de 12)|0.003','Cuillères (lot de 12)|0.002','Petites cuillères (lot de 12)|0.001','Louches, spatules et pinces (lot)|0.006','Ustensiles de cuisine divers (carton)|0.04','Ménagère complète (coffret)|0.012']],
+ ['Assiettes et plats',['Assiettes plates (lot de 6)|0.012|F','Assiettes creuses (lot de 6)|0.014|F','Assiettes à dessert (lot de 6)|0.008|F','Plats de service|0.012|F','Plateaux|0.02']],
+ ['Bols, saladiers et tasses',['Bols (lot de 6)|0.012|F','Saladiers|0.012|F','Soupières|0.02|F','Tasses (lot de 6)|0.01|F','Mugs (lot de 6)|0.012|F']],
+ ['Verres, carafes et bouteilles',['Verres à eau (lot de 6)|0.008|F','Verres à vin (lot de 6)|0.012|F','Flûtes (lot de 6)|0.012|F','Carafes et pichets|0.008|F','Bouteilles vides (caisse de 12)|0.03|F']],
+ ['Marmites, casseroles et poêles',['Marmites|v|Petite=0.03;Moyenne=0.06;Grande=0.12','Casseroles (lot de 3)|0.03','Poêles (lot de 3)|0.03','Couvercles (lot)|0.02','Cocottes et faitouts|0.05']],
+ ['Accessoires de cuisine',['Passoires et râpes (lot)|0.02','Planches à découper (lot)|0.02','Boîtes alimentaires (carton)|0.05']],
+ ['Services et batteries complètes',['Service complet de table (12 personnes)|0.08|F','Batterie de cuisine complète|0.12','Vaisselle en carton|v|Verre=0.06;Porcelaine=0.06;Céramique=0.06;Inox=0.05;Plastique=0.07|F']]]],
+['Linge et textile',[
+ ['Literie',['Draps (lot)|v|Simple=0.01;Double=0.015;Queen size=0.018;King size=0.02','Housses de matelas|v|1 place=0.02;2 places=0.03;Queen/King=0.04','Taies d’oreiller (lot de 4)|0.005','Couettes|v|Simple=0.04;Double=0.06;King=0.08','Couvertures|0.03','Plaids|0.02','Oreillers (lot de 2)|0.06','Coussins (lot de 4)|0.08','Traversins|0.04']],
+ ['Linge de bain et de table',['Serviettes de toilette (lot)|0.01','Draps de bain (lot)|0.015','Gants de toilette (lot)|0.003','Nappes et chemins de table (lot)|0.01','Serviettes de table (lot de 12)|0.004']],
+ ['Rideaux et stores',['Rideaux (paire)|0.03','Voilages (paire)|0.015','Stores|0.03','Tringles (lot)|0.01']],
+ ['Vêtements, chaussures et sacs',['Vêtements (carton)|0.1','Chaussures (carton)|0.08','Sacs (carton)|0.12','Uniformes (carton)|0.08']],
+ ['Tapis et textiles',['Tapis|v|Petit=0.1;Moyen=0.2;Grand=0.4','Moquette (rouleau)|0.3','Tissus (rouleau)|0.1','Linge professionnel (balle)|0.2']]]],
+['Événementiel et réception',[
+ ['Chaises',['Chaises en plastique|0.06','Chaises pliantes|0.05','Chaises de cérémonie|0.12','Housses de chaise (lot de 50)|0.1']],
+ ['Tables, tréteaux et bancs',['Tables rondes|0.35','Tables rectangulaires|0.3','Tables pliantes|0.2','Mange-debout|0.35','Tréteaux (paire)|0.1','Plateaux de table|0.25','Bancs|0.2','Tabourets|0.08']],
+ ['Bâches, tentes et chapiteaux',['Bâches|0.08','Tentes|v|3 × 3 m=0.4;3 × 6 m=0.7;6 × 12 m=2.5','Chapiteaux|v|Petit=3;Moyen=6;Grand=12|L','Tonnelles|0.25','Structures démontables|0.8']],
+ ['Décoration',['Nappes événementielles (lot)|0.03','Housses de table (lot)|0.03','Arches|0.5','Fleurs artificielles (carton)|0.2|F','Décorations (carton)|0.15|F','Tapis de cérémonie (rouleau)|0.3']],
+ ['Podiums, barrières et supports',['Podiums|0.8','Estrades (module)|0.4','Barrières (lot de 5)|0.3','Portants|0.15','Supports et pieds (lot)|0.1']],
+ ['Sonorisation et éclairage',['Enceintes|v|Petite=0.05;Moyenne=0.15;Grande=0.4|F','Micros (valise)|0.02|F','Éclairages et projecteurs (flight case)|0.2|F','Tables de mixage|0.05|F']],
+ ['Matériel par type d’événement',['Matériel de mariage (carton)|0.15|F','Matériel de conférence (caisse)|0.2|F','Matériel de concert (flight case)|0.4|F','Matériel de réception (caisse)|0.2']]]],
+['Mobilier et déménagement',[
+ ['Salon',['Canapés|v|2 places=1.5;3 places=2;Angle=3','Fauteuils|0.8','Poufs|0.3','Tables basses|0.4']],
+ ['Chambre',['Lits (cadre)|v|1 place=0.8;2 places=1.5;Queen=1.7;King=2','Sommiers|v|1 place=0.7;2 places=1.2','Matelas|v|1 place=0.4;2 places=0.8;Queen/King=1','Têtes de lit|0.4']],
+ ['Rangements',['Armoires|v|2 portes=1.5;3 portes=2.5;4 portes=3.2','Commodes|0.6','Buffets|1','Vaisseliers|1.5|F','Vitrines|1.2|F']],
+ ['Bureau et séjour',['Étagères|0.5','Bureaux|1','Tables de réunion|1.5','Meubles TV|0.6','Bibliothèques|0.9']],
+ ['Meubles démontés',['Meubles démontés (lot)|0.5','Portes|0.3','Panneaux (lot)|0.3','Plans de travail|0.3']],
+ ['Électroménager',['Réfrigérateurs|v|Petit=0.5;Standard=0.9;Américain=1.6','Congélateurs|v|Coffre=1;Armoire=0.9','Lave-linge|0.6','Sèche-linge|0.6','Cuisinières|0.6','Fours|0.2','Micro-ondes|0.08','Climatiseurs|v|Split intérieur=0.12;Split extérieur=0.15;Fenêtre=0.15']],
+ ['Objets fragiles et décoratifs',['Miroirs|v|Petit=0.03;Moyen=0.08;Grand=0.15|F','Tableaux|v|Petit=0.02;Moyen=0.06;Grand=0.12|F','Lustres|0.15|F','Objets fragiles (carton)|0.06|F','Coffres-forts|v|Petit=0.1;Moyen=0.3;Grand=0.8|L']]]],
+['Bureautique, informatique et électronique',[
+ ['Ordinateurs et impression',['Ordinateurs de bureau|0.08|F','Ordinateurs portables|0.012|F','Écrans|0.06|F','Imprimantes|0.1|F','Scanners|0.05|F','Photocopieurs|v|De bureau=0.6;Grand format=1|F']],
+ ['Image et son',['Téléviseurs|v|32 pouces=0.12;43 pouces=0.2;55 pouces=0.3;65 pouces et plus=0.45|F','Vidéoprojecteurs|0.03|F','Consoles|0.02|F','Équipements audio|0.08|F']],
+ ['Téléphonie et réseau',['Téléphones (carton)|0.01|F','Routeurs et équipements réseau (lot)|0.02|F','Serveurs|0.15|F','Baies informatiques|0.8|F']],
+ ['Mobilier de bureau',['Bureaux de direction|1.5','Fauteuils de direction|0.4','Chaises de bureau|0.3','Armoires d’archives|1','Caissons et classeurs|0.3']],
+ ['Dossiers et fournitures',['Cartons de dossiers|0.04','Classeurs (carton)|0.04','Livres (carton)|0.03','Fournitures de bureau (carton)|0.05']],
+ ['Énergie et accessoires',['Onduleurs|0.05|R','Batteries|0.02|R','Câbles et accessoires (carton)|0.03']]]],
+['Commerce, marchandises et grossistes',[
+ ['Alimentaire emballé et boissons',['Cartons de produits alimentaires emballés|0.05','Cartons de boissons|0.04','Packs d’eau (pack de 6)|0.01','Sacs de denrées (sac)|0.05']],
+ ['Mode et accessoires',['Cartons de vêtements|0.1','Cartons de chaussures|0.08','Sacs et accessoires (carton)|0.1']],
+ ['Beauté et parfumerie',['Cosmétiques et produits de beauté (carton)|0.04|F','Parfumerie (carton)|0.04|F R']],
+ ['Maison',['Articles ménagers (carton)|0.08','Ustensiles et petits équipements (carton)|0.06']],
+ ['Jouets, scolaire et papeterie',['Jouets (carton)|0.1','Fournitures scolaires (carton)|0.04','Papeterie (carton)|0.04']],
+ ['Entretien et emballages commerciaux',['Produits d’entretien autorisés (carton)|0.04|R','Emballages commerciaux (balle)|0.2']],
+ ['E-commerce et commandes',['Colis e-commerce|v|Petit=0.005;Moyen=0.02;Grand=0.06','Commandes clients (lot)|0.1','Lots de marchandises|0.3']],
+ ['Sacs, ballots, caisses et palettes',['Sacs|0.05','Ballots|0.15','Caisses|0.12','Palettes de marchandises|v|Demi-palette=0.6;Palette standard=1.2;Palette haute=1.8']]]],
+['Matériaux, bricolage et équipements professionnels',[
+ ['Outils',['Caisses à outils|0.03','Outils (carton)|0.05','Établis|0.5','Échelles|v|Petite=0.1;Moyenne=0.2;Grande=0.35']],
+ ['Tuyaux, câbles et profilés',['Tuyaux (lot)|0.1','Câbles (rouleau)|0.15','Gaines (rouleau)|0.1','Rouleaux divers|0.1','Profilés (lot)|0.1']],
+ ['Carrelage et sanitaires',['Carrelage (carton)|0.02|L','Sanitaires|0.3|F','Lavabos|0.15|F','Robinetterie (carton)|0.03']],
+ ['Menuiserie',['Portes|0.3','Fenêtres|0.2|F','Panneaux|0.2','Plaques|0.15','Menuiserie (lot)|0.3']],
+ ['Matériaux de chantier',['Matériaux de chantier (palette)|1|L','Sacs de matériaux (sac)|0.04|L']],
+ ['Peintures',['Peintures et produits assimilés (carton)|0.03|R']],
+ ['Atelier et machines',['Équipements d’atelier|0.5','Compresseurs|v|Petit=0.1;Moyen=0.3;Grand=0.8|L','Machines|v|Petite=0.3;Moyenne=1;Grande=4|L']],
+ ['Agricole et jardinage professionnel',['Matériel agricole|1','Matériel de jardinage (carton)|0.2','Équipements professionnels (caisse)|0.5']]]],
+['Autres catégories',[
+ ['Bagages',['Valises cabine|0.04','Valises moyennes|0.08','Grandes valises|0.12','Malles|0.2','Sacs de voyage|0.07']],
+ ['Articles pour bébés',['Poussettes|0.2','Lits bébé|0.25','Chaises hautes|0.15','Parcs|0.2']],
+ ['Sport',['Haltères (lot)|0.03|L','Tapis de sport|0.05','Appareils de fitness|v|Petit=0.3;Moyen=0.8;Grand=1.5|L','Équipements sportifs (carton)|0.1']],
+ ['Loisirs',['Instruments de musique|v|Guitare=0.1;Clavier=0.15;Batterie=0.8;Piano droit=1.5|F','Jeux (carton)|0.05','Matériel de camping (carton)|0.1']],
+ ['Jardin',['Pots et jardinières|0.1','Mobilier extérieur (lot)|0.5','Décorations de jardin (carton)|0.1']],
+ ['Santé',['Mobilier médical|v|Petit=0.3;Moyen=0.8;Grand=1.5','Équipements médicaux autorisés|0.5|F']],
+ ['Automobile',['Pneus|0.15','Pièces détachées (carton)|0.05','Accessoires auto (carton)|0.04']],
+ ['Imprimerie, PLV et stands',['Présentoirs|0.2','Kakémonos|0.05','Enseignes|0.4|F','Stands (caisse)|1','PLV (carton)|0.1','Imprimés (carton)|0.04']],
+ ['Engins roulants',['Vélo|0.6','Moto|2','Scooter|1.5','Tricycle motorisé|5','Transpalette|0.6','Chariot élévateur|6|L','Voiture|12|L']]]]];
+
+const geParseItem=s=>{const p=s.split('|');let variants=[];if(p[1]==='v'){variants=p[2].split(';').map(x=>{const q=x.split('=');return{label:q[0],cbm:Number(q[1])}})}else variants=[{label:'',cbm:Number(p[1])}];return{name:p[0],variants,flags:p[1]==='v'?(p[3]||''):(p[2]||'')}};
+const geFamilies=GE_CATALOG.map((f,fi)=>({name:f[0],index:fi,subs:f[1].map((s,si)=>({name:s[0],index:si,items:s[1].map((raw,ii)=>({...geParseItem(raw),family:fi,sub:si,key:fi+'-'+si+'-'+ii}))}))}));
+const geAllItems=geFamilies.flatMap(f=>f.subs.flatMap(s=>s.items));
+const geCart={};let geCurrentItem=null;
+const geFmt=n=>Number(n||0).toLocaleString('fr-FR',{maximumFractionDigits:3});
+function geRenderFamilies(){const box=$('geFamilies');box.innerHTML='';geFamilies.forEach(f=>{const b=document.createElement('button');b.type='button';b.className='ge-family';b.textContent=f.name;b.addEventListener('click',()=>geRenderItems(f.index));box.appendChild(b)})}
+function geRenderItems(fi,query=''){const box=$('geItems');box.innerHTML='';const fam=geFamilies[fi];if(!fam)return;const back=document.createElement('button');back.type='button';back.className='secondary';back.textContent='← Familles';back.addEventListener('click',()=>{$('geItems').hidden=true;$('geFamilies').hidden=false});box.appendChild(back);const h=document.createElement('h4');h.textContent=fam.name;box.appendChild(h);fam.subs.forEach(sub=>{const sh=document.createElement('h5');sh.textContent=sub.name;box.appendChild(sh);sub.items.filter(it=>!query||it.name.toLocaleLowerCase('fr').includes(query)).forEach(it=>{const b=document.createElement('button');b.type='button';b.className='ge-item';b.textContent=it.name+(it.variants.length>1?' · choisir le type':'');b.addEventListener('click',()=>geOpenDetail(it));box.appendChild(b)})});$('geFamilies').hidden=true;$('geItems').hidden=false}
+function geOpenDetail(it){geCurrentItem=it;$('geDetailTitle').textContent=it.name;$('geVariantWrap').hidden=it.variants.length===1;$('geVariant').innerHTML='';it.variants.forEach((v,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=(v.label||'Standard')+' — '+geFmt(v.cbm)+' m³';$('geVariant').appendChild(o)});$('geQty').value='1';$('geDetail').hidden=false;$('geDetail').scrollIntoView({behavior:'smooth',block:'center'})}
+function geAddCurrent(){if(!geCurrentItem)return;const qty=Math.max(1,Math.min(999,parseInt($('geQty').value,10)||1));const variant=geCurrentItem.variants[parseInt($('geVariant').value||'0',10)]||geCurrentItem.variants[0];const key=geCurrentItem.key+'-'+(variant.label||'std');if(!geCart[key])geCart[key]={name:geCurrentItem.name+(variant.label?' ('+variant.label+')':''),qty:0,cbm:variant.cbm,flags:geCurrentItem.flags};geCart[key].qty=Math.min(999,geCart[key].qty+qty);$('geDetail').hidden=true;geCurrentItem=null;geRenderCart()}
+function geRenderCart(){const box=$('geCart');box.innerHTML='';let total=0,flags='';Object.keys(geCart).forEach(k=>{const x=geCart[k];total+=x.qty*x.cbm;flags+=x.flags;const row=document.createElement('div');row.className='ge-cart-row';const name=document.createElement('span');name.textContent=x.qty+' × '+x.name+' — '+geFmt(x.qty*x.cbm)+' m³';const rm=document.createElement('button');rm.type='button';rm.textContent='Retirer';rm.className='secondary';rm.addEventListener('click',()=>{delete geCart[k];geRenderCart()});row.append(name,rm);box.appendChild(row)});$('geTotal').textContent=geFmt(total)+' m³';$('geCartEmpty').hidden=Object.keys(geCart).length>0;$('geRules').hidden=!/[FRL]/.test(flags);$('geRegAckWrap').hidden=!flags.includes('R');$('geRegAck').checked=false}
+function geInit(){geRenderFamilies();$('geSearch').addEventListener('input',()=>{const q=$('geSearch').value.trim().toLocaleLowerCase('fr');const box=$('geSearchResults');box.innerHTML='';if(q.length<2){box.hidden=true;return}geAllItems.filter(it=>it.name.toLocaleLowerCase('fr').includes(q)).slice(0,30).forEach(it=>{const b=document.createElement('button');b.type='button';b.className='ge-item';b.textContent=it.name+(it.variants.length>1?' · choisir le type':'');b.addEventListener('click',()=>geOpenDetail(it));box.appendChild(b)});box.hidden=false});$('geAdd').addEventListener('click',geAddCurrent);$('geCancel').addEventListener('click',()=>{$('geDetail').hidden=true;geCurrentItem=null});$('geFamilies').hidden=false;}
+
+
+/* ---------- Carte : toujours affichée ---------- */
+function fixMapSize(){ if(map){ map.invalidateSize(); } }
+const wide=()=>window.innerWidth>820;
+/* Le formulaire flotte sur la carte : on décale le cadrage pour ne rien cacher */
+const fitPad=()=>wide()?{paddingTopLeft:[470,90],paddingBottomRight:[360,30]}:{paddingTopLeft:[24,64],paddingBottomRight:[24,100]};
+const pinIcon=c=>L.divIcon({className:'',html:'<div class="route-marker-label '+c+'">'+(c==='a'?'A':'B')+'</div>',iconSize:[27,27],iconAnchor:[13,13]});
+function centerOn(c,z){
+ z=z||Math.max(map.getZoom(),13);
+ const o=wide()?[-120,0]:[0,30];
+ map.setView(map.unproject(map.project(c,z).add(L.point(o[0],o[1])),z),z,{animate:true});
+}
+function loadLeafletFallback(cb){
+ const css=document.createElement('link');
+ css.rel='stylesheet';css.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';
+ document.head.appendChild(css);
+ const s=document.createElement('script');
+ s.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';
+ s.onload=cb;
+ s.onerror=()=>{ $('routeStatus').textContent='Carte indisponible. Vérifiez votre connexion Internet, puis actualisez la page.'; const splash=$('geSplash');if(splash){splash.classList.remove('show');splash.classList.add('hide')} };
+ document.head.appendChild(s);
+}
+
+function initMap(){
+ if(map) return;
+ if(!window.L){ loadLeafletFallback(initMap); return; }
+ map=L.map('map',{zoomControl:false}).setView([5.3599,-4.0083],11);
+ L.control.zoom({position:'bottomright'}).addTo(map);
+ const tiles=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  maxZoom:19,attribution:'© OpenStreetMap'
+ }).addTo(map);
+ const bootStarted=Date.now();
+ const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,3600-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
+ tiles.once('load',hideBootSplash);
+ /* Même si les tuiles sont rapides, toutes les lettres restent visibles au moins 3,6 s. */
+ window.setTimeout(hideBootSplash,7000);
+ tiles.on('tileerror',()=>{ if(tileErrors===0)window.setTimeout(hideBootSplash,1200);
+  tileErrors++;
+  if(tileErrors===5) $('routeStatus').textContent='Certaines tuiles de la carte ne se chargent pas. Vérifiez votre connexion.';
+ });
+ map.on('click',e=>{
+  if(!pickMode){$('routeStatus').textContent='Choisissez d’abord un bouton enlèvement ou livraison.';return}
+  const selectedMode=pickMode;
+  setPoint(selectedMode,[e.latlng.lat,e.latlng.lng],true);
+  setPickMode(null);$('routePickA').classList.remove('active');$('routePickB').classList.remove('active');
+  const label=selectedMode==='start'?'routeDeparture':'routeArrival';
+  $(label).textContent='Point '+(selectedMode==='start'?'A':'B')+' sélectionné';
+  setTimeout(()=>{if(document.body.classList.contains('route-stage')){const w=selectedMode==='start'?'pickup':'dropoff';$(label).textContent=[$(w+'Extra').value.trim(),$(w+'Commune').value].filter(Boolean).join(', ')||('Point '+(selectedMode==='start'?'A':'B'));fitRouteMap()}},900);
+  if(startCoords&&endCoords){setTimeout(()=>{if(document.body.classList.contains('route-stage'))fitRouteMap()},350)}
+ });
+ /* Garde la carte correctement dimensionnée en toutes circonstances */
+ if(window.ResizeObserver) new ResizeObserver(fixMapSize).observe($('map'));
+ window.addEventListener('resize',fixMapSize);
+ window.addEventListener('orientationchange',()=>setTimeout(fixMapSize,300));
+ window.addEventListener('load',fixMapSize);
+ setTimeout(fixMapSize,200);setTimeout(fixMapSize,1000);
+ /* Si des coordonnées existaient déjà avant l'initialisation de la carte */
+ if(startCoords) setPoint('start',startCoords,false);
+ if(endCoords) setPoint('end',endCoords,false);
+}
+
+function setPickMode(mode){
+ pickMode=mode;
+ $('pickStart').classList.toggle('armed',mode==='start');
+ $('pickEnd').classList.toggle('armed',mode==='end');
+}
+
+function refreshCoordsUI(){
+ $('coordStart').textContent=startCoords?fmtCoords(startCoords):'non défini';
+ $('coordEnd').textContent=endCoords?fmtCoords(endCoords):'non défini';
+ const ls=$('linkStart'),le=$('linkEnd');
+ ls.style.display=startCoords?'inline':'none';ls.href=mapsLink(startCoords)||'#';
+ le.style.display=endCoords?'inline':'none';le.href=mapsLink(endCoords)||'#';
+}
+
+function setPoint(which,coords,reverse,zoom){
+ const label=which==='start'?'Enlèvement':'Livraison';
+ if(which==='start') startCoords=coords; else endCoords=coords;
+ refreshCoordsUI();
+ if(map){
+  if(which==='start'){
+   if(startMarker)map.removeLayer(startMarker);
+   startMarker=L.marker(coords,{icon:pinIcon('a'),title:label,keyboard:true}).addTo(map);startMarker.on('click',()=>{map.setView(coords,Math.max(map.getZoom(),16),{animate:true});startMarker.openTooltip&&startMarker.openTooltip()});
+  }else{
+   if(endMarker)map.removeLayer(endMarker);
+   endMarker=L.marker(coords,{icon:pinIcon('b'),title:label,keyboard:true}).addTo(map);endMarker.on('click',()=>{map.setView(coords,Math.max(map.getZoom(),16),{animate:true});endMarker.openTooltip&&endMarker.openTooltip()});
+  }
+  centerOn(coords,zoom);
+ }
+ if(reverse)reverseGeocode(coords,which);
+ if(startCoords&&endCoords)calculateRoute();
+}
+
+function clearPoint(which){
+ if(which==='start'){
+  startCoords=null;
+  if(map&&startMarker){map.removeLayer(startMarker);startMarker=null}
+ }else{
+  endCoords=null;
+  if(map&&endMarker){map.removeLayer(endMarker);endMarker=null}
+ }
+ distanceKm=null;
+ if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ $('distanceLabel').textContent='Distance : non calculée';
+ refreshCoordsUI();
+}
+
+async function reverseGeocode(coords,which){
+ const w=which==='start'?'pickup':'dropoff';
+ try{
+  const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat='+coords[0]+'&lon='+coords[1]+'&accept-language=fr');
+  if(!r.ok)throw new Error();
+  const a=(await r.json()).address||{};
+  const guess=[a.suburb,a.city_district,a.city,a.town,a.village,a.county].filter(Boolean);
+  const opt=[...$(w+'Commune').options].find(o=>o.value&&guess.some(g=>norm(g)===norm(o.value)));
+  if(opt)$(w+'Commune').value=opt.value; else $('routeStatus').textContent='Point placé. Choisissez la commune ou ville dans le menu.';
+  $(w+'Extra').value=[a.neighbourhood||a.quarter,a.road].filter(Boolean).join(', ');
+ }catch(e){
+  $('routeStatus').textContent='Point sélectionné. Choisissez la commune ou ville dans le menu.';
+ }
+}
+
+const geoCache={},locTok={};let locWarn='';
+const hav=(a,b)=>{const t=x=>x*Math.PI/180,s=Math.sin(t(b[0]-a[0])/2)**2+Math.cos(t(a[0]))*Math.cos(t(b[0]))*Math.sin(t(b[1]-a[1])/2)**2;return 12742*Math.asin(Math.sqrt(s))};
+async function geocode(q){
+ if(geoCache[q])return geoCache[q];
+ for(const v of [q,q+', Côte d\'Ivoire']){
+  try{
+   const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=ci&q='+encodeURIComponent(v));
+   if(!r.ok)continue;
+   const d=await r.json();
+   if(d.length)return geoCache[q]=[+d[0].lat,+d[0].lon];
+  }catch(e){}
+ }
+ throw new Error('Lieu introuvable');
+}
+
+/* Choix dans le menu : le point se place tout de suite et la carte zoome dessus */
+async function locate(which){
+ const w=which==='start'?'pickup':'dropoff';
+ const commune=$(w+'Commune').value,extra=$(w+'Extra').value.trim();
+ if(!commune){clearPoint(which);return}
+ const tok=locTok[which]=(locTok[which]||0)+1;
+ const base=COORDS[commune]||null;
+ if(base){
+  setPoint(which,base.slice(),false,ABIDJAN_SET.has(commune)?14:13);
+  $('routeStatus').textContent='Lieu placé sur la carte.';
+ }
+ const place=commune+(ABIDJAN_SET.has(commune)?', Abidjan':'');
+ if(!base)clearPoint(which); /* pas d'ancien point qui ne correspond plus au menu */
+ if(extra||!base){
+  $('routeStatus').textContent='Recherche de l’adresse précise…';
+  try{
+   const c=await geocode(extra?extra+', '+place:place);
+   if(tok!==locTok[which])return;
+   if(base&&hav(base,c)>30)throw new Error('trop loin');
+   locWarn='';
+   setPoint(which,c,false,extra?17:14);
+   $('routeStatus').textContent='Lieu placé sur la carte.';
+  }catch(err){
+   if(tok!==locTok[which])return;
+   locWarn=base?'Adresse exacte introuvable : point placé au centre de '+commune+'. Touchez la carte pour le préciser.':'';
+   $('routeStatus').textContent=base?locWarn:'Impossible de placer '+commune+' automatiquement. Utilisez « Choisir l’enlèvement / la livraison » puis touchez la carte.';
+  }
+ }
+}
+
+const fetchT=async(url,ms)=>{const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),ms||9000);try{return await fetch(url,{signal:ctl.signal})}finally{clearTimeout(tm)}};
+function dec6(s){let i=0,la=0,lo=0;const out=[];while(i<s.length){let b,sh=0,r=0;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);la+=(r&1)?~(r>>1):(r>>1);sh=0;r=0;do{b=s.charCodeAt(i++)-63;r|=(b&31)<<sh;sh+=5}while(b>=32);lo+=(r&1)?~(r>>1):(r>>1);out.push([lo/1e6,la/1e6])}return out}
+/* Itinéraire routier réel : 3 services gratuits essayés l'un après l'autre (2 essais pour les deux premiers) */
+/* Moteurs d'itinéraire routier (données OpenStreetMap, couverture mondiale dont la Côte d'Ivoire). Aucun repli à vol d'oiseau. */
+const ROUTING_API_KEY='';   /* facultatif : clé OpenRouteService (https://openrouteservice.org), laissée vide par défaut */
+async function fetchRoute(){
+ const s=startCoords,e=endCoords;
+ const ok=r=>r&&r.geometry&&r.geometry.coordinates&&r.geometry.coordinates.length>1&&r.distance>0?r:null;
+ const path=s[1]+','+s[0]+';'+e[1]+','+e[0]+'?overview=full&geometries=geojson&steps=true';
+ const providers=[
+  'https://router.project-osrm.org/route/v1/driving/',
+  'https://routing.openstreetmap.de/routed-car/route/v1/driving/'
+ ];
+ const attempts=providers.map(async base=>{
+  const r=await fetchT(base+path,8500);if(!r.ok)return null;
+  const d=await r.json();return d&&d.code==='Ok'&&Array.isArray(d.routes)&&d.routes.length?ok(d.routes[0]):null;
+ });
+ try{const first=await Promise.any(attempts.map(p=>p.then(v=>v||Promise.reject(new Error('Route indisponible')))));if(first)return first}catch(_){/* Essai du moteur de secours ci-dessous. */}
+ try{
+  const j=JSON.stringify({locations:[{lat:s[0],lon:s[1]},{lat:e[0],lon:e[1]}],costing:'auto'});
+  const r=await fetchT('https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(j),8500);
+  if(r.ok){const t=(await r.json()).trip;if(t&&t.legs&&t.legs[0]){const v=ok({distance:t.summary.length*1000,duration:t.summary.time,geometry:{type:'LineString',coordinates:dec6(t.legs[0].shape)}});if(v)return v}}
+ }catch(x){}
+ if(ROUTING_API_KEY){
+  try{const r=await fetchT('https://api.openrouteservice.org/v2/directions/driving-car?api_key='+encodeURIComponent(ROUTING_API_KEY)+'&start='+s[1]+','+s[0]+'&end='+e[1]+','+e[0],8500);if(r.ok){const f=(await r.json()).features[0];const v=ok({distance:f.properties.summary.distance,duration:f.properties.summary.duration,geometry:f.geometry});if(v)return v}}catch(x){}
+ }
+ return null;
+}
+
+/* Affiche le trajet dès que les deux lieux sont connus (ligne directe si le calcul routier est indisponible) */
+let geRouteRequest=0;
+async function calculateRoute(){
+ if(!startCoords||!endCoords)return;
+ const routeRequest=++geRouteRequest,s0=startCoords,e0=endCoords;
+ $('routeStatus').textContent='Calcul du trajet en cours…';
+ const rt=await fetchRoute();
+ if(routeRequest!==geRouteRequest||s0!==startCoords||e0!==endCoords)return;
+ if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ if(rt){
+  distanceKm=rt.distance/1000;
+  routeDurationMinutes=Math.round(rt.duration/60);
+  routeSteps=(rt.legs||[]).flatMap(leg=>(leg.steps||[]).map(step=>{const m=step.maneuver||{},type=m.type||'continuer',mod=m.modifier||'',road=(step.name||'').trim();let action='Continuer';if(type==='turn')action='Tourner '+(mod==='left'?'à gauche':mod==='right'?'à droite':mod==='slight left'?'légèrement à gauche':mod==='slight right'?'légèrement à droite':mod==='uturn'?'faire demi-tour':'');else if(type==='roundabout'||type==='rotary')action='Prendre le rond-point';else if(type==='depart')action='Départ';else if(type==='arrive')action='Arrivée';else if(type==='merge')action='Rejoindre la voie';else if(type==='fork')action='Prendre la branche '+(mod==='left'?'de gauche':mod==='right'?'de droite':'indiquée');else if(type==='end of road')action='En fin de route, tourner '+(mod==='left'?'à gauche':'à droite');return {instruction:(action+(road?' sur '+road:'' )).trim(),distance:step.distance||0,duration:step.duration||0}})).filter(x=>x.instruction);
+  if(map){
+   routeLayer=L.geoJSON({type:'Feature',geometry:rt.geometry},{style:{color:'#087eae',weight:6,opacity:.95}}).addTo(map);
+   if(startMarker)startMarker.setZIndexOffset(1000);if(endMarker)endMarker.setZIndexOffset(1000);
+   if(document.body.classList.contains('route-stage'))fitRouteMap();else map.fitBounds(routeLayer.getBounds().pad(.15),fitPad());
+  }
+  $('distanceLabel').textContent='Distance : '+distanceKm.toFixed(1).replace('.',',')+' km';
+  $('routeLabel').textContent='Durée indicative : '+routeDurationMinutes+' minutes, hors trafic';
+  $('routeStatus').textContent='Trajet affiché sur la carte.';
+  if(document.body.classList.contains('route-stage')){
+   $('routeDistance').textContent=distanceKm.toFixed(1).replace('.',',')+' km';
+   $('routeDuration').textContent=routeDurationMinutes<60?routeDurationMinutes+' min':Math.floor(routeDurationMinutes/60)+' h '+(routeDurationMinutes%60)+' min';
+  }
+ }else{
+  /* Jamais de distance ni de durée inventées : l'itinéraire n'est simplement pas calculé */
+  distanceKm=null;
+  routeDurationMinutes=null;
+  routeSteps=[];
+  $('distanceLabel').textContent='Itinéraire non calculé';
+  $('routeLabel').textContent='L’itinéraire routier ne peut pas être calculé pour le moment.';
+  if(document.body.classList.contains('route-stage')){$('routeDistance').textContent='À confirmer';$('routeDuration').textContent='À confirmer';}
+  if(map&&startCoords&&endCoords){
+   routeLayer=L.polyline([startCoords,endCoords],{color:'#087eae',weight:6,dashArray:'9 8',opacity:.95}).addTo(map);
+   if(startMarker)startMarker.setZIndexOffset(1000);if(endMarker)endMarker.setZIndexOffset(1000);
+   if(document.body.classList.contains('route-stage'))fitRouteMap();else map.fitBounds(routeLayer.getBounds().pad(.18),{animate:false});
+   $('routeStatus').textContent='Tracé indicatif affiché en pointillés. Le calcul de la route routière est momentanément indisponible ; distance et durée à confirmer.';
+   if(document.body.classList.contains('route-stage'))$('routeDuration').textContent='À confirmer';
+  }else $('routeStatus').textContent='La carte est prête, mais le tracé ne peut pas être affiché sans les deux positions GPS.';
+ }
+ 
+}
+
+function goBlock(w){
+ const b=$(w==='pickup'?'blockPickup':'blockDropoff');
+ if(b.scrollIntoView)b.scrollIntoView({behavior:'smooth',block:'center'});
+ b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),1600);
+ const s=$(w+'Commune');if(s.focus)s.focus();
+}
+$('pickStart').addEventListener('click',()=>{setPickMode('start');goBlock('pickup');$('routeStatus').textContent='Choisissez la commune de l’enlèvement dans le menu, ou touchez la carte.'});
+$('pickEnd').addEventListener('click',()=>{setPickMode('end');goBlock('dropoff');$('routeStatus').textContent='Choisissez la commune de la livraison dans le menu, ou touchez la carte.'});
+
+function nearestCommune(c){
+ let best=null,bd=1e9;
+ Object.keys(COORDS).forEach(k=>{if(k==='Abidjan')return;const d=hav(c,COORDS[k]);if(d<bd){bd=d;best=k}});
+ return bd<40?best:null;
+}
+const gpsSay=t=>{$('routeStatus').textContent=t;$('gpsMsg').textContent=t};
+$('gpsBtn').addEventListener('click',()=>{
+ if(window.isSecureContext===false){gpsSay('La localisation demande une connexion sécurisée (adresse en https://). Choisissez le lieu dans les menus.');return}
+ if(!navigator.geolocation){gpsSay('La localisation n’est pas disponible sur cet appareil ou ce navigateur : choisissez le lieu dans les menus.');return}
+ gpsSay('Autorisez l’accès à votre position dans la fenêtre qui s’affiche…');
+ let answered=false;
+ const guard=setTimeout(()=>{if(!answered)gpsSay('Aucune réponse de l’appareil. Vérifiez que la localisation est activée et autorisée pour votre navigateur (ouvrez le site dans Chrome), puis réessayez.')},20000);
+ navigator.geolocation.getCurrentPosition(p=>{
+  answered=true;clearTimeout(guard);
+  const c=[p.coords.latitude,p.coords.longitude],nc=nearestCommune(c);
+  if(nc)$('pickupCommune').value=nc;
+  setPoint('start',c,true,16);
+  if(map&&typeof L.circleMarker==='function'){
+   if(meMarker)map.removeLayer(meMarker);if(meCircle)map.removeLayer(meCircle);
+   meCircle=L.circle(c,{radius:Math.max(p.coords.accuracy||30,15),color:'#2f80ed',weight:1,fillColor:'#2f80ed',fillOpacity:.12}).addTo(map);
+   meMarker=L.circleMarker(c,{radius:9,color:'#fff',weight:3,fillColor:'#2f80ed',fillOpacity:1}).bindTooltip('Vous êtes ici').addTo(map);
+  }
+  gpsSay(map?'Votre position est placée sur la carte comme lieu d’enlèvement (précision ≈ '+Math.round(p.coords.accuracy)+' m).':'La carte n’est pas affichée (connexion), mais votre position est enregistrée comme lieu d’enlèvement.');
+  if(!nc)$('gpsMsg').textContent+=' Choisissez la commune la plus proche dans le menu.';
+ },err=>{
+  answered=true;clearTimeout(guard);
+  gpsSay(err&&err.code===1?'Localisation non autorisée : pas de souci, choisissez le lieu dans les menus.':'Position introuvable pour le moment : choisissez le lieu dans les menus.');
+ },{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
+});
+
+[['pickupCommune','start'],['pickupExtra','start'],['dropoffCommune','end'],['dropoffExtra','end']].forEach(([id,w])=>$(id).addEventListener('change',()=>locate(w)));
+const LOGO_URI='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAl4AAABgCAMAAAD7EIxAAAABIFBMVEX///////7///n//+z//9r+///8///3///8//78/9Xz///u///n///c///X///V///t/+/+/v/+/v3+/f38/v76/v72/f3y/f3w+v7q/P3t+P7b/P3b+fz9/fT7/N31++Ln+vf0+bfw+J7l7Zre6HbT+v3P9fzA9f288Pu66/nI3qDK2FS8yj+r7fun5fai3+2Y4vKa3u2U1/CY0eF/z+tuzOqbvHentyCjtg+fsAmYsAVwvdtyudhwt9ZcvN9XstSdrAybrAKXqweXqwGZpwaWpwRYqMtPq8hNqciGqSuAoThAst08qdM2os0Ho+sIn+UBoewwnMkSnNYDnOwEnOA8lbg4lLUvlcAglscykbonirUSltMVlsYGltgQkMgTib6/o2oQAAA3lElEQVR42u19iVfa3PZ2AEM0CVp5CUgZxLZJyG0BZVgOKDjrXYAW1Epl8P//L7797JMwidbe9q71W99lv68VITknw8Men7MjSX9LojFZlhaykP+GRIIZXU9K0cWVWMjfl2UpkTQtx0lKxvLiaizkb0vCtPOlUslJKotrsZC/KeRyxfRVu1A6ujwqWYm4sbgkC/l76CKv3iDdVa23flyXHDMUXFyThfw9iSqq5RSrV63u08/6jh2KLwLIhfwtbJFhVO18udZ87Pf63Yeqs6YvrspC/o5djBpBzSJ01Vvd4eC20+/WC5Yekxb6ayF/wac3jLhpZ7cr1+3eYHB3czPoX5ezenyRX13I31BeMcmkiJFV19337zff7/uPVSeUWWivhfwFeEWXkxQxXj0+Pw/u777f3Hy/7XUvyTpuLK7NQv4cXuGYXqhePz4P729JeZHcDYatStZSPywuzkL+3Dhu6KWjx+cedJeA1/2wW8tn9czi4izkLwSOSuGw1Z+CV79Zzi9SXwv5O/BySvV2fwSv29vBsF3dsdXY4uos5E9lXfqo56vN/nBwK9B1f3vf6zbKjh5fBI8L+XN4xbRssdbu91h93d/fk/rqt2p5M768gNdC/tg6xiQrV663Oe0FeN3cDIb9RjGrLHITC/lT8UlGTLNz1dbz8F7A6/vN/WDYrORC86yjLC3S+Qv5LYmqiWyx/jgcEL7u2QG7GXRq26v6K87X+uKSLeQ3RJOsfPm62xvB6/t9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';
+const el=(t,c,x)=>{const n=document.createElement(t);if(c)n.className=c;if(x!==undefined)n.textContent=x;return n};
+const num=v=>{const x=parseFloat(String(v).replace(',','.'));return isFinite(x)&&x>0?x:0};
+const normS=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+
+/* ---------- Étapes (V3 : parcours simplifié, validation par code WhatsApp) ---------- */
+let mview=false,expandedOnce=false;
+function setFull(on){$('panel').classList.toggle('full',on);document.body.classList.toggle('sheetfull',on);$('expandBtn').setAttribute('aria-pressed',String(!!on))}
+const STEPS=['Itinéraire','Informations','Votre besoin','Accès et emballage','Vérification','Confirmation'],LAST=6;let step=1;
+function stepMsg(t,focusId){$('stepMsg').textContent=t||'';if(focusId){const e=$(focusId);if(e){try{if(e.focus)e.focus({preventScroll:true})}catch(x){}if(e.scrollIntoView)e.scrollIntoView({behavior:'smooth',block:'center'})}}return !t}
+function normPhone(raw){let s=String(raw||'').replace(/\D/g,'');if(s.indexOf('00225')===0)s=s.slice(5);else if(s.indexOf('225')===0&&s.length===13)s=s.slice(3);
+ if(s.length===8||s.length===9)return{ok:false,msg:'Les numéros ivoiriens comportent 10 chiffres (ex. 07 48 11 03 35).'};
+ if(s.length!==10)return{ok:false,msg:'Numéro invalide : indiquez 10 chiffres.'};
+ if(!/^(01|05|07)\d{8}$/.test(s))return{ok:false,msg:'Numéro mobile invalide : il doit commencer par 01, 05 ou 07.'};
+ return{ok:true,e164:'+225'+s,national:s}}
+const SPECIAL=['Transport frigorifique','Transport exceptionnel et charges lourdes','Autres transports et prestations'];
+function stepOk(n){
+ if(n===1){if(!$('pickupCommune').value)return stepMsg('Choisissez la commune ou la ville d’enlèvement.','pickupCommune');if(!$('dropoffCommune').value)return stepMsg('Choisissez la commune ou la ville de livraison.','dropoffCommune')}
+ if(n===2){if(!$('service').value)return stepMsg('Sélectionnez un type de transport avant de continuer.','service');if(!$('name').value.trim())return stepMsg('Indiquez votre nom ou celui de votre société.','name');
+  const p=normPhone($('phone').value);if(!p.ok)return stepMsg(p.msg,'phone');
+  if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
+  const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
+ if(n===3){if(!Object.keys(geCart).length&&$('need').value.trim().length<5)return stepMsg('Ajoutez au moins un article du catalogue ou décrivez ce que vous transportez.','geSearch');if(!$('geRegAckWrap').hidden&&!$('geRegAck').checked)return stepMsg('Confirmez la déclaration des marchandises réglementées.','geRegAck');
+  if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
+  const w=$('weight').value.trim();if(w&&!(parseFloat(w.replace(',','.'))>=0))return stepMsg('Poids invalide : indiquez un nombre de kilogrammes, ou cochez « Je ne sais pas ».','weight')}
+ if(n===4){if(!$('packaging').value)return stepMsg('Indiquez si vos marchandises sont déjà emballées.','packaging')}
+ return stepMsg('');
+}
+function formOk(){for(let n=1;n<=4;n++){if(!stepOk(n)){showStep(n);stepOk(n);return false}}return true}
+function showStep(n){
+ step=n;for(let k=1;k<=LAST;k++)$('step'+k).classList.toggle('on',k===n);
+ $('plabel').textContent='Étape '+n+' sur '+LAST+' · '+STEPS[n-1];$('pfill').style.width=Math.round(n/LAST*100)+'%';
+ $('prevBtn').style.display=(n>1&&n<LAST)?'inline-block':'none';$('nextBtn').style.display=n<5?'inline-block':'none';$('stepNav').style.display=n===LAST?'none':'flex';
+ $('routeBtn').style.display=n===1?'inline-block':'none';document.body.classList.remove('mapmin');$('panel').classList.remove('min');$('routeBtn').textContent='🗺 Voir le trajet';if(n>1)expandedOnce=true;setFull(expandedOnce);mview=false;$('panel').classList.remove('mview');$('prevBtn').textContent='←';$('nextBtn').textContent='Continuer →';document.body.classList.toggle('late',n>1);
+ if(n===5)renderRecap();$('stepMsg').textContent='';$('formBody').scrollTop=0;
+ setTimeout(()=>{if(typeof map!=='undefined'&&map&&map.invalidateSize)map.invalidateSize()},60);
+}
+
+/* Bouton d’aide flottant et déplaçable : visible après l’étape GPS, ouverture WhatsApp directe. */
+(function(){
+ const b=$('helpFloat');if(!b)return;let dragged=false,down=false,ox=0,oy=0,startX=0,startY=0;
+ function visible(){b.classList.toggle('show',step>1&&step<LAST)}
+ const oldShowStep=showStep;showStep=function(n){oldShowStep(n);visible()};visible();
+ b.addEventListener('pointerdown',e=>{down=true;dragged=false;startX=e.clientX;startY=e.clientY;const r=b.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;try{b.setPointerCapture(e.pointerId)}catch(_){}});
+ b.addEventListener('pointermove',e=>{if(!down)return;const dx=e.clientX-startX,dy=e.clientY-startY;if(Math.abs(dx)+Math.abs(dy)>7)dragged=true;if(dragged){b.style.left=Math.max(4,Math.min(innerWidth-b.offsetWidth-4,e.clientX-ox))+'px';b.style.top=Math.max(4,Math.min(innerHeight-b.offsetHeight-4,e.clientY-oy))+'px';b.style.right='auto';b.style.bottom='auto'}});
+ b.addEventListener('pointerup',e=>{down=false;if(!dragged){const msg='Bonjour GREAT EXPERTIZ, j’ai besoin d’aide pour ma commande.';window.open('https://wa.me/2250748110335?text='+encodeURIComponent(msg),'_blank','noopener')} });
+ b.addEventListener('pointercancel',()=>{down=false});
+})();
+function recapBlock(title,stepN,rows){const b=el('div','rblk'),h=el('div','rbh');h.appendChild(el('b','',title));const m=el('button','rmod','Modifier');m.type='button';m.setAttribute('aria-label','Modifier : '+title);m.addEventListener('click',()=>showStep(stepN));h.appendChild(m);b.appendChild(h);rows.forEach(r=>{if(r[1])b.appendChild(el('div','rrow',r[0]+' : '+r[1]))});return b}
+function fmtKm(){return distanceKm===null?'à confirmer par GREAT EXPERTIZ':distanceKm.toFixed(1).replace('.',',')+' km'}
+function weightText(){if($('weightUnknown').checked)return 'inconnu (à déterminer par GREAT EXPERTIZ)';const w=$('weight').value.trim();return w?w.replace(',','.')+' kg (estimation du client)':''}
+function packText(){const o=$('packaging');return o.value?o.options[o.selectedIndex].text:''}
+function renderRecap(){
+ const d=getPayload(),box=$('recap');box.innerHTML='';
+ box.appendChild(recapBlock('🧭 Itinéraire',1,[['Enlèvement',d.enlevement],['Livraison',d.livraison],['Distance',fmtKm()]]));
+ box.appendChild(recapBlock('👤 Informations',2,[['Client',d.nom+' · '+d.telephone],['Prestation',d.prestation],['Date souhaitée',d.dateSouhaitee],['Destinataire',[d.nomDestinataire,d.telephoneDestinataire].filter(Boolean).join(' · ')],['E-mail',d.email]]));
+ box.appendChild(recapBlock('📦 Votre besoin',3,[['Description',d.detail],['Température',d.temperature],['Poids',weightText()]]));
+ box.appendChild(recapBlock('🧰 Accès et emballage',4,[['Étage / accès',$('access').value.trim()],['Emballage',packText()],['Notes',$('notes').value.trim()]]));
+}
+function showStatus(message,type){
+ $('status').className=type;
+ $('status').textContent=message;
+ $('status').style.display='block';
+}
+function getPayload(){
+ const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
+ const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',!$('geRegAckWrap').hidden&&$('geRegAck').checked?'Déclaration réglementaire confirmée par le client':''].filter(Boolean).join(' | ');
+ const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
+  nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
+  enlevement:place('pickup'),livraison:place('dropoff'),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
+  dateSouhaitee:$('date').value,detail:[Object.keys(geCart).map(k=>geCart[k].qty+' × '+geCart[k].name).join(' ; '),$('need').value.trim(), 'Volume catalogue indicatif : '+$('geTotal').textContent].filter(Boolean).join(' | '),cbm:Object.keys(geCart).reduce((t,k)=>t+geCart[k].qty*geCart[k].cbm,0).toFixed(6),emballage:$('packaging').value,notes:notes,
+  distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
+  gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
+  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
+ try{const t=localStorage.getItem('geClientToken');if(t)p.clientToken=t}catch(e){}
+ return p;
+}
+function routeDirectionsUrl(d){
+ const origin=(startCoords?startCoords.join(','):d.enlevement)||'';
+ const destination=(endCoords?endCoords.join(','):d.livraison)||'';
+ return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(destination)+'&travelmode=driving';
+}
+function renderReceiptRoute(d){
+ const box=$('receiptRoute');
+ const point=(label,value,coords)=>'<div class="rrpoint"><b>'+label+'</b>'+escapeHtml(value||'Non renseigné')+(coords?'<div class="rrmeta">Référence GPS : '+escapeHtml(fmtCoords(coords))+'</div>':'')+'</div>';
+ const dist=distanceKm===null?'Distance à confirmer par GREAT EXPERTIZ': 'Distance calculée : '+distanceKm.toFixed(1).replace('.',',')+' km';
+ box.innerHTML='<div class="rrtitle">🧭 RÉFÉRENCES DU TRAJET</div>'+point('Lieu d’enlèvement',d.enlevement,startCoords)+point('Lieu de livraison',d.livraison,endCoords)+'<div class="rrmeta">'+dist+'</div><a href="'+routeDirectionsUrl(d)+'" target="_blank" rel="noopener">Ouvrir le trajet dans Google Maps ↗</a>';
+}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+
+function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation=finalWrite?'splashWrite 2.8s steps(14,end) .15s forwards':'splashWrite 2.8s steps(14,end) .15s infinite'}}
+function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
+
+/* ---------- Dialogue avec le serveur : demande de code, renvoi, vérification (réponse par message GE_OTP_RESULT) ---------- */
+let pendingId='',otpDeadline=0,busy=false,timerHandle=null,resendAt=0;
+const rid=()=>'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function callServer(data){
+ return new Promise(resolve=>{
+  if(!SERVER_OK){resolve({ok:false,error:'CONFIG',message:'Configuration manquante : l’adresse du serveur n’est pas renseignée (fichier config.js).'});return}
+  const id=rid();data.rid=id;let done=false;
+  const f=document.createElement('form');f.method='POST';f.action=SCRIPT_URL;f.target='geOrderFrame';f.style.display='none';
+  Object.keys(data).forEach(k=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=data[k];f.appendChild(i)});
+  const onMsg=e=>{const d=e.data;if(!d||typeof d!=='object'||d.type!=='GE_OTP_RESULT'||d.rid!==id)return;finish(d)};
+  const t=setTimeout(()=>finish({ok:false,error:'TIMEOUT',message:'Le serveur n’a pas répondu. Vérifiez votre connexion puis réessayez : aucun doublon ne sera créé.'}),45000);
+  function finish(d){if(done)return;done=true;clearTimeout(t);window.removeEventListener('message',onMsg);f.remove();resolve(d)}
+  window.addEventListener('message',onMsg);document.body.appendChild(f);f.submit();
+ });
+}
+function setBusy(on){busy=on;['submitBtn','verifyBtn','resendBtn','editBtn'].forEach(id=>{const b=$(id);if(b)b.disabled=on});if(on)showGESplash();else hideGESplash(0)}
+function tick(){
+ const left=Math.max(0,Math.round((otpDeadline-Date.now())/1000)),m=Math.floor(left/60),s=String(left%60).padStart(2,'0');
+ $('otpTimer').textContent=left>0?'Le code est valable encore '+m+':'+s+'.':'Ce code a expiré : demandez un nouvel envoi.';
+ const wait=Math.max(0,Math.ceil((resendAt-Date.now())/1000));$('resendBtn').disabled=busy||wait>0;$('resendBtn').textContent=wait>0?'Renvoyer le code ('+wait+' s)':'Renvoyer le code';
+ if(left<=0&&wait<=0&&timerHandle){clearInterval(timerHandle);timerHandle=null}
+}
+function showOtpPanel(d){
+ $('otpIntro').hidden=true;$('otpPanel').hidden=false;$('otpCode').value='';$('otpMsg').textContent='';$('otpMsg').className='';
+ $('otpHint').textContent='Le code a été transmis à WhatsApp pour le numéro '+(d.phoneMasked||'indiqué')+'. S’il n’arrive pas dans quelques instants, demandez un nouvel envoi.';
+ otpDeadline=Date.now()+(d.expiresInSec||600)*1000;resendAt=Date.now()+30000;if(timerHandle)clearInterval(timerHandle);timerHandle=setInterval(tick,1000);tick();
+ try{$('otpCode').focus()}catch(e){}
+}
+function backToIntro(){$('otpPanel').hidden=true;$('otpIntro').hidden=false;if(timerHandle){clearInterval(timerHandle);timerHandle=null}}
+async function requestCodeFlow(){
+ if(busy)return;if(!formOk())return;
+ $('status').style.display='none';setBusy(true);
+ const d=await callServer(pendingId?{action:'resendOtp',pendingId}:Object.assign({action:'requestOtp'},getPayload()));
+ setBusy(false);
+ if(d.pendingId)pendingId=d.pendingId;
+ if(d.ok){showOtpPanel(d);return}
+ if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE')pendingId='';
+ showStatus((d.message||'L’envoi du code n’a pas pu être confirmé.')+(pendingId?' Vous pouvez réessayer.':''),'err');
+ if(pendingId)$('submitBtn').textContent='Réessayer l’envoi du code';
+}
+async function resendFlow(){
+ if(busy||!pendingId)return;setBusy(true);const d=await callServer({action:'resendOtp',pendingId});setBusy(false);
+ if(d.ok){showOtpPanel(d);$('otpMsg').textContent='Un nouveau code vient d’être transmis.';return}
+ $('otpMsg').className='err';$('otpMsg').textContent=d.message||'Le nouvel envoi n’a pas pu être confirmé.';
+ if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE'){pendingId='';backToIntro();showStatus(d.message,'err')}
+ tick();
+}
+async function verifyFlow(){
+ if(busy)return;const code=$('otpCode').value.replace(/\s/g,'');
+ if(!/^\d{6}$/.test(code)){$('otpMsg').className='err';$('otpMsg').textContent='Saisissez les 6 chiffres reçus.';return}
+ setBusy(true);const d=await callServer({action:'verifyOtp',pendingId,code});
+ if(d.ok){busy=false;finishSubmit(d);return}
+ setBusy(false);$('otpMsg').className='err';$('otpMsg').textContent=d.message||'Le code n’a pas pu être vérifié.';
+ if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE'){pendingId='';backToIntro();showStatus(d.message,'err')}
+ tick();
+}
+function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;if(window.QRCode){new QRCode(el,{text:url,width:140,height:140,correctLevel:QRCode.CorrectLevel.M})}else{const img=new Image();img.alt='QR code de suivi';img.width=140;img.height=140;img.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(url);el.appendChild(img)}}
+function finishSubmit(d){
+ requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
+ showGESplash(true);
+ const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Besoin décrit',p.detail],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
+ $('receiptText').textContent=requestCode;geDrawQr();$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
+ renderReceiptRoute(p);
+ const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
+ $('trackLink').href='./index.html?code='+encodeURIComponent(requestCode)+'#suivi';
+ $('receipt').style.display='block';$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
+ requestAnimationFrame(()=>requestAnimationFrame(()=>hideGESplash(3050)));
+}
+$('orderForm').addEventListener('submit',e=>e.preventDefault());
+$('submitBtn').addEventListener('click',requestCodeFlow);$('verifyBtn').addEventListener('click',verifyFlow);$('resendBtn').addEventListener('click',resendFlow);
+$('editBtn').addEventListener('click',()=>{pendingId='';$('submitBtn').textContent='Envoyer ma demande';backToIntro();showStep(4)});
+$('otpCode').addEventListener('input',()=>{$('otpCode').value=$('otpCode').value.replace(/\D/g,'').slice(0,6)});
+$('otpCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();verifyFlow()}});
+$('need').addEventListener('input',()=>{$('needCount').textContent=$('need').value.length+' / 3000'});
+geInit();
+$('weightUnknown').addEventListener('change',()=>{$('weight').disabled=$('weightUnknown').checked;if($('weightUnknown').checked)$('weight').value=''});
+['name','phone','recipientPhone','email','need','weight','packaging','access','notes','date','service'].forEach(id=>$(id).addEventListener('input',()=>{if(pendingId&&$('otpPanel').hidden===false){/* une modification invalide le code en cours : retour à la vérification */}}));
+
+/* ---------- Suggestions de communes et villes ---------- */
+const ABIDJAN='Abobo|Adjamé|Anyama|Attécoubé|Bingerville|Cocody|Koumassi|Marcory|Plateau|Port-Bouët|Songon|Treichville|Yopougon|Abidjan';
+const VILLES=[...new Set((ABIDJAN+'|Abengourou|Aboisso|Adiaké|Adzopé|Agboville|Agnibilékrou|Akoupé|Alépé|Arrah|Attiégouakro|Ayamé|Azaguié|Bangolo|Béoumi|Bettié|Biankouma|Bin-Houyé|Bloléquin|Bocanda|Bondoukou|Bongouanou|Bonon|Bonoua|Bouaflé|Bouaké|Bouna|Boundiali|Brobo|Buyo|Dabakala|Dabou|Daloa|Danané|Daoukro|Didiévi|Dikodougou|Dimbokro|Divo|Djébonoua|Duékoué|Facobly|Ferkessédougou|Fresco|Gagnoa|Gbon|Gohitafla|Grand-Bassam|Grand-Béréby|Grand-Lahou|Guiglo|Guitry|Issia|Jacqueville|Kani|Katiola|Kong|Korhogo|Kouibly|Kounahiri|Kouto|Lakota|Logoualé|M\'Bahiakro|M\'Batto|Madinani|Man|Mankono|Minignan|Nassian|Niakaramandougou|Odienné|Ouangolodougou|Ouaninou|Oumé|Ouragahio|Prikro|Saïoua|Sakassou|Samatiguila|San-Pédro|Sandégué|Sangouiné|Sassandra|Séguéla|Sikensi|Sinématiali|Sinfra|Sipilou|Soubré|Tabou|Taï|Tanda|Téhini|Tengréla|Tiapoum|Tiassalé|Tiébissou|Tortiya|Touba|Toulépleu|Toumodi|Transua|Vavoua|Yamoussoukro|Zouan-Hounien|Zoukougbeu|Zuénoula').split('|'))];
+const QUARTIERS='Angré|Riviera|Riviera Palmeraie|Riviera Golf|Riviera Bonoumin|Deux-Plateaux|Danga|Blockhauss|Ambassades|Saint-Jean|Cocody Centre|Abatta|Akouédo|M\'Pouto|Zone 4|Biétry|Vridi|Remblais|Prodomo|Grand Campement|Sicogi|Sideci|Marcory Résidentiel|Treichville Arras|Avenue 16|Avenue 21|Williamsville|220 Logements|Adjamé Liberté|Abobo Baoulé|Abobo Avocatier|PK18|Siporex|Selmer|Niangon|Niangon Sud|Millionnaire|Gonzagueville|Adjouffou|Anoumabo|Banco|Locodjro|Palmeraie|Attoban|Cité Verte|Bonoumin'.split('|');
+
+const norm=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+function attachSuggest(input,list){
+ const box=document.createElement('div');box.className='sugg';box.hidden=true;
+ input.parentNode.appendChild(box);
+ let items=[],idx=-1;
+ const close=()=>{box.hidden=true;idx=-1};
+ const pick=v=>{input.value=v;close();input.dispatchEvent(new Event('change'))};
+ const render=()=>{
+  box.innerHTML='';
+  items.forEach((v,i)=>{const d=document.createElement('div');d.textContent=v;if(i===idx)d.className='on';
+   d.addEventListener('mousedown',e=>{e.preventDefault();pick(v)});box.appendChild(d)});
+  box.hidden=!items.length;
+ };
+ input.addEventListener('input',()=>{
+  const q=norm(input.value);if(!q){close();return}
+  const a=[],b=[];
+  list.forEach(v=>{const n=norm(v);if(n.startsWith(q))a.push(v);else if(n.includes(q))b.push(v)});
+  items=a.concat(b).slice(0,8);idx=-1;render();
+ });
+ input.addEventListener('keydown',e=>{
+  if(box.hidden)return;
+  if(e.key==='ArrowDown'){idx=(idx+1)%items.length;render();e.preventDefault()}
+  else if(e.key==='ArrowUp'){idx=(idx-1+items.length)%items.length;render();e.preventDefault()}
+  else if(e.key==='Enter'&&idx>=0){pick(items[idx]);e.preventDefault()}
+  else if(e.key==='Escape')close();
+ });
+ input.addEventListener('blur',close);
+}
+attachSuggest($('pickupExtra'),QUARTIERS);attachSuggest($('dropoffExtra'),QUARTIERS);
+
+/* Coordonnées intégrées : le point se place toujours, même sans service de recherche en ligne */
+const COORDS={"Abobo":[5.416,-4.02],"Adjamé":[5.36,-4.027],"Anyama":[5.494,-4.052],"Attécoubé":[5.339,-4.04],"Bingerville":[5.356,-3.886],"Cocody":[5.354,-3.987],"Koumassi":[5.298,-3.946],"Marcory":[5.302,-3.982],"Plateau":[5.322,-4.021],"Port-Bouët":[5.256,-3.926],"Songon":[5.325,-4.253],"Treichville":[5.299,-4.011],"Yopougon":[5.336,-4.088],"Abidjan":[5.336,-4.027],"Abengourou":[6.73,-3.496],"Aboisso":[5.468,-3.207],"Adiaké":[5.285,-3.304],"Adzopé":[6.107,-3.862],"Agboville":[5.928,-4.213],"Agnibilékrou":[7.131,-3.203],"Akoupé":[6.386,-3.887],"Alépé":[5.497,-3.665],"Arrah":[6.67,-3.968],"Ayamé":[5.614,-3.157],"Azaguié":[5.633,-4.083],"Bangolo":[7.012,-7.488],"Béoumi":[7.673,-5.576],"Bettié":[6.04,-3.513],"Biankouma":[7.739,-7.614],"Bocanda":[7.062,-4.499],"Bondoukou":[8.04,-2.8],"Bongouanou":[6.651,-4.204],"Bonoua":[5.272,-3.594],"Bouaflé":[6.99,-5.744],"Bouaké":[7.69,-5.03],"Bouna":[9.27,-2.995],"Boundiali":[9.52,-6.487],"Buyo":[6.27,-7.0],"Dabakala":[8.363,-4.428],"Dabou":[5.326,-4.377],"Daloa":[6.877,-6.45],"Danané":[7.26,-8.155],"Daoukro":[7.06,-3.96],"Dimbokro":[6.65,-4.705],"Divo":[5.837,-5.357],"Duékoué":[6.742,-7.35],"Ferkessédougou":[9.593,-5.197],"Fresco":[5.083,-5.567],"Gagnoa":[6.131,-5.951],"Grand-Bassam":[5.211,-3.739],"Grand-Béréby":[4.653,-6.917],"Grand-Lahou":[5.139,-5.026],"Guiglo":[6.544,-7.494],"Issia":[6.49,-6.585],"Jacqueville":[5.206,-4.424],"Kani":[8.48,-6.6],"Katiola":[8.137,-5.1],"Kong":[9.151,-4.61],"Korhogo":[9.458,-5.629],"Lakota":[5.855,-5.68],"Man":[7.412,-7.554],"Mankono":[8.06,-6.19],"Odienné":[9.51,-7.565],"Oumé":[6.38,-5.417],"Sakassou":[7.456,-5.294],"San-Pédro":[4.748,-6.636],"Sassandra":[4.95,-6.083],"Séguéla":[7.961,-6.673],"Sikensi":[5.673,-4.572],"Sinfra":[6.619,-5.916],"Soubré":[5.785,-6.594],"Tabou":[4.423,-7.355],"Taï":[5.87,-7.455],"Tanda":[7.8,-3.168],"Tengréla":[10.485,-6.405],"Tiassalé":[5.898,-4.823],"Tiébissou":[7.155,-5.228],"Toulépleu":[6.575,-8.416],"Touba":[8.283,-7.683],"Toumodi":[6.557,-5.017],"Vavoua":[7.382,-6.476],"Yamoussoukro":[6.827,-5.289],"Zouan-Hounien":[6.917,-8.215],"Zuénoula":[7.427,-6.051]};
+const ABIDJAN_SET=new Set(ABIDJAN.split('|'));
+function fillCommunes(){
+ ['pickupCommune','dropoffCommune'].forEach(id=>{
+  const s=$(id);s.innerHTML='';
+  const o0=document.createElement('option');o0.value='';o0.textContent='Choisir une commune ou une ville…';s.appendChild(o0);
+  const groups=[['Abidjan et environs',ABIDJAN.split('|').filter(x=>x!=='Abidjan')],
+   ['Autres villes de Côte d’Ivoire',VILLES.filter(v=>!ABIDJAN_SET.has(v)).sort((a,b)=>a.localeCompare(b,'fr'))]];
+  groups.forEach(([label,list])=>{
+   const og=document.createElement('optgroup');og.label=label;
+   list.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;og.appendChild(o)});
+   s.appendChild(og);
+  });
+ });
+}
+fillCommunes();
+
+/* Mode intégré : commande.html?embed=1 (affichée dans un cadre sur une autre page) */
+if(/[?&]embed=1/.test(window.location.search))document.body.classList.add('embed');
+
+
+function updateTemp(){$('tempField').style.display=$('service').value==='Transport frigorifique'?'block':'none'}
+$('service').addEventListener('change',()=>{
+ updateTemp();const v=$('service').value;
+ if(['Déménagement','Transport de marchandises'].includes(v))$('serviceRouteHint').textContent='Parcours standard : GREAT EXPERTIZ analyse votre demande et vous adresse un devis.';
+ else if(v==='Transport de matériel et équipements')$('serviceRouteHint').textContent='Parcours standard, sous réserve de vérifier le poids, les dimensions et le véhicule adapté.';
+ else if(SPECIAL.includes(v))$('serviceRouteHint').textContent='Prestation spécialisée : décrivez précisément votre besoin, une étude adaptée sera réalisée.';
+ else $('serviceRouteHint').textContent='Choisissez votre type de transport pour continuer.';
+});
+/* Lien depuis l'accueil : commande.html?prestation=…&vehicule=… */
+try{
+ const qs=new URLSearchParams(window.location.search);
+ const setSel=(id,val)=>{const e=$(id);if(val&&[...e.options].some(o=>o.value===val))e.value=val};
+ /* Les types de transport et véhicules ne sont jamais pré-sélectionnés : choix explicite du client. */
+ setSel('pickupCommune',qs.get('depart'));setSel('dropoffCommune',qs.get('arrivee'));
+}catch(e){}
+if($('pickupCommune').value)locate('start');
+if($('dropoffCommune').value)locate('end');
+
+$('copyCode').addEventListener('click',()=>{
+ const done=()=>{$('copyCode').textContent='Code copié ✔'};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(requestCode).then(done,()=>{});
+});
+$('newOrder').addEventListener('click',()=>window.location.reload());
+$('printBtn').addEventListener('click',()=>window.print());
+/* ===== MOBILE : le menu s'agrandit en pleine page dès qu'on saisit ; « Suivant » (étape 1) affiche la carte ===== */
+const isMobile=()=>!!(window.matchMedia&&window.matchMedia('(max-width:820px)').matches);
+function expand(){
+ if(mview)return;
+ if(!$('panel').classList.contains('full')){
+  expandedOnce=true;
+  setFull(true);
+  setTimeout(()=>{if(map&&map.invalidateSize)map.invalidateSize()},80);
+ }
+}
+let routeStageMode='';
+function fitRouteMap(){
+ const fit=()=>{if(!map)return;map.invalidateSize(true);if(routeLayer&&routeLayer.getBounds&&routeLayer.getBounds().isValid()){routeLayer.bringToFront();map.fitBounds(routeLayer.getBounds().pad(.18),{paddingTopLeft:[30,205],paddingBottomRight:[66,45],animate:false})}else if(startCoords&&endCoords){const b=L.latLngBounds(startCoords,endCoords);if(b.isValid())map.fitBounds(b.pad(.18),{paddingTopLeft:[30,205],paddingBottomRight:[66,45],animate:false})}};
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{fit();setTimeout(fit,260)}));
+}
+let routePointZoomed={a:false,b:false};
+function toggleRoutePointZoom(which){const key=which==='a'?'a':'b',coords=key==='a'?startCoords:endCoords,btn=$(key==='a'?'routePickA':'routePickB');if(!map||!coords)return;if(!routePointZoomed[key]){routePointZoomed[key]=true;btn.classList.add('zoomed');map.setView(coords,Math.max(map.getZoom(),16),{animate:true})}else{routePointZoomed[key]=false;btn.classList.remove('zoomed');fitRouteMap()}}
+function enterMapView(){
+ routePointZoomed={a:false,b:false};$('routePickA').classList.remove('zoomed');$('routePickB').classList.remove('zoomed');mview=true;routeStageMode='map';
+ $('routeStage').classList.add('active');$('routeStage').classList.remove('details');
+ $('routeStageTitle').textContent='Votre trajet';
+ const dep=[$('pickupExtra').value.trim(),$('pickupCommune').value].filter(Boolean).join(', ');
+ const arr=[$('dropoffExtra').value.trim(),$('dropoffCommune').value].filter(Boolean).join(', ');
+ $('routeDeparture').textContent=dep||'Lieu de départ';$('routeArrival').textContent=arr||'Lieu d’arrivée';
+ $('routeDistance').textContent=distanceKm===null?'Distance à confirmer':distanceKm.toFixed(1).replace('.',',')+' km';
+ $('routeDuration').textContent=distanceKm===null||routeDurationMinutes===null?'Durée à confirmer':(routeDurationMinutes<60?routeDurationMinutes+' min':Math.floor(routeDurationMinutes/60)+' h '+(routeDurationMinutes%60)+' min');
+ $('routeStageBack').textContent='Modifier les lieux';$('routeStageNext').textContent='Continuer →';
+ document.body.classList.add('route-stage');
+ $('routePickA').classList.remove('active');$('routePickB').classList.remove('active');setPickMode(null);
+ fitRouteMap();
+}
+function leaveMapView(toForm){mview=false;routeStageMode='';$('routeStage').classList.remove('active','details');document.body.classList.remove('route-stage');if(toForm){expandedOnce=true;setFull(true);showStep(1)}}
+async function goMap(){
+ if(!stepOk(1))return;
+ $('routeStatus').textContent='Préparation de la carte et calcul du trajet…';
+ /* Les recherches de position peuvent encore être en cours après la sélection des communes. */
+ await Promise.all([locate('start'),locate('end')]);
+ if(!startCoords||!endCoords){$('routeStatus').textContent='Impossible de placer les deux lieux. Vérifiez les communes et les adresses.';return}
+ if(!window.L){await new Promise(resolve=>{let n=0;const t=setInterval(()=>{n++;if(window.L||n>40){clearInterval(t);resolve()}},150)});if(!window.L){$('routeStatus').textContent='La bibliothèque cartographique ne se charge pas. Vérifiez la connexion puis réessayez.';return}}
+ if(!map)initMap();
+ await calculateRoute();
+ enterMapView();
+}
+$('routeZoomIn').addEventListener('click',()=>{if(map)map.zoomIn()});
+$('routeZoomOut').addEventListener('click',()=>{if(map)map.zoomOut()});
+$('routePickA').addEventListener('click',()=>toggleRoutePointZoom('a'));
+$('routePickB').addEventListener('click',()=>toggleRoutePointZoom('b'));
+$('routeStageBack').addEventListener('click',()=>leaveMapView(true));
+$('routeStageNext').addEventListener('click',()=>{leaveMapView(false);showStep(2)});
+$('gpsBtn2').addEventListener('click',()=>$('gpsBtn').click());
+$('expandBtn').addEventListener('click',()=>{
+ if(mview){leaveMapView(true);return}
+ const on=!$('panel').classList.contains('full');
+ expandedOnce=on;
+ setFull(on);
+ setTimeout(()=>{
+  if(map&&map.invalidateSize){map.invalidateSize();if(!on&&routeLayer){map.fitBounds(routeLayer.getBounds().pad(.15),{paddingTopLeft:[24,45],paddingBottomRight:[24,150]});}}
+ },120);
+});
+$('formBody').addEventListener('focusin',expand);$('formBody').addEventListener('click',expand);
+$('prevBtn').addEventListener('click',()=>{if(mview){leaveMapView(true);return}if(step>1)showStep(step-1)});
+$('nextBtn').addEventListener('click',async()=>{
+ if(mview){leaveMapView(false);showStep(2);return}
+ if(step===1){if(!stepOk(1))return;await goMap();return}
+ if(step<5&&stepOk(step)){expandedOnce=true;setFull(true);showStep(step+1)}
+});
+/* ===== FIN MOBILE ===== */
+
+/* Récapitulatif téléchargeable : image PNG dessinée à partir des données saisies (aucun prix, aucun QR : ce n'est pas un reçu définitif) */
+function wrapText(ctx,t,w){const out=[];String(t).split('\n').forEach(p=>{let cur='';p.split(' ').forEach(wd=>{const test=cur?cur+' '+wd:wd;if(ctx.measureText(test).width>w&&cur){out.push(cur);cur=wd}else cur=test});out.push(cur)});return out}
+function downloadSummary(){
+ const p=getPayload(),W=1080,cv=document.createElement('canvas'),ctx=cv.getContext('2d');
+ const rows=[['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Distance',fmtKm()],['Besoin décrit',p.detail],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
+ const draw=(logo,H)=>{cv.width=W;cv.height=H;ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);let y=50;
+  if(logo){const h=90,w=logo.width*h/logo.height;ctx.drawImage(logo,50,y,w,h)}y+=125;
+  ctx.fillStyle='#5b6e80';ctx.font='bold 22px Arial';ctx.fillText('TRANSPORT. LOGISTIQUE. B2B',50,y);y+=46;
+  ctx.fillStyle='#0b6a99';ctx.font='bold 34px Arial';ctx.fillText('Récapitulatif de demande',50,y);y+=50;
+  ctx.fillStyle='#18283a';ctx.font='bold 44px Arial';ctx.fillText(requestCode,50,y);y+=36;ctx.font='24px Arial';ctx.fillStyle='#5b6e80';ctx.fillText(new Date().toLocaleString('fr-FR')+' · ✔ Enregistrée',50,y);y+=40;
+  ctx.strokeStyle='#d6e3ec';ctx.beginPath();ctx.moveTo(50,y);ctx.lineTo(W-50,y);ctx.stroke();y+=40;
+  rows.forEach(r=>{if(!r[1])return;ctx.font='bold 24px Arial';ctx.fillStyle='#0b6a99';ctx.fillText(r[0],50,y);y+=32;ctx.font='24px Arial';ctx.fillStyle='#18283a';wrapText(ctx,r[1],W-100).forEach(l=>{ctx.fillText(l,50,y);y+=32});y+=12});
+  ctx.font='22px Arial';ctx.fillStyle='#5b6e80';wrapText(ctx,'Ce récapitulatif n’est pas un reçu définitif. GREAT EXPERTIZ étudie votre demande et vous transmet un devis. Conservez votre numéro de commande pour le suivi.',W-100).forEach(l=>{y+=30;ctx.fillText(l,50,y)});
+  return y+60};
+ const logo=new Image();
+ const finish=()=>{const lg=logo.width?logo:null;cv.width=W;cv.height=2600;const need=draw(lg,2600);draw(lg,Math.max(need,900));
+  const name='Recapitulatif-GREAT-EXPERTIZ-'+requestCode+'.png';
+  const save=url=>{const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>a.remove(),500);$('dlBtn').textContent='Récapitulatif téléchargé ✔'};
+  if(cv.toBlob)cv.toBlob(b=>{if(b)save(URL.createObjectURL(b));else save(cv.toDataURL('image/png'))},'image/png');else save(cv.toDataURL('image/png'));};
+ logo.onload=finish;logo.onerror=finish;logo.src=LOGO_URI;
+}
+$('dlBtn').addEventListener('click',downloadSummary);
+$('rLogo').src=LOGO_URI;
+$('geSplashLogo').src=LOGO_URI;
+try{const today=new Date().toISOString().slice(0,10);['date'].forEach(id=>{if($(id))$(id).min=today})}catch(e){}
+$('routeBtn').addEventListener('click',goMap);
+showStep(1);
+window.__geWiz={showStep:showStep,stepOk:stepOk,step:()=>step,getPayload:getPayload,renderRecap:renderRecap};
+/* ---------- Démarrage ---------- */
+refreshCoordsUI();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initMap);
+else initMap();
+})();
+</script>
+</body>
+</html>
