@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GREAT EXPERTIZ | Transport professionnel et logistique B2B en Côte d’Ivoire</title>
+<meta name="description" content="GREAT EXPERTIZ : transport de marchandises, déménagement et logistique B2B à Abidjan et partout en Côte d’Ivoire. Commande en ligne, reçu avec QR code, suivi par code.">
+<style>
+:root{--ink:#071f33;--navy:#0f3a57;--blue:#27a9e1;--blue-d:#0b6a99;--lime:#b7d334;--olive:#6f8610;--line:#e3edf3;--txt:#18283a;--r:22px;--lh:52px;--hh:80px;--ln:#4fa6c6}
+*{box-sizing:border-box}html{scroll-behavior:smooth}html,body{max-width:100%;overflow-x:clip}
+body{margin:0;color:var(--txt);background:#fff;font:16px/1.6 "Segoe UI",system-ui,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}a{color:inherit}img{max-width:100%}
+.wrap{max-width:1180px;margin:auto;padding:0 20px}section{scroll-margin-top:96px}
+.road{position:fixed;left:16px;top:110px;bottom:100px;width:6px;z-index:40;pointer-events:none;display:none}
+.road:before{content:"";position:absolute;inset:0;border-radius:3px;background:repeating-linear-gradient(180deg,#27a9e1aa 0 12px,transparent 12px 22px)}
+.road i{position:absolute;left:50%;top:0;font-style:normal;font-size:26px;transform:translate(-50%,-50%) scaleX(-1);transition:top .15s linear;filter:drop-shadow(0 3px 4px #0005)}
+@media(min-width:1320px){.road{display:block}}
+header.nav{position:sticky;top:0;z-index:100;background:#fff}
+header.nav:after{content:"";position:absolute;bottom:0;left:max(20px,calc((100% - 1180px)/2 + 20px));right:0;height:2px;background:var(--ln)}
+.nav .wrap{display:flex;align-items:flex-end;gap:14px;height:var(--hh)}
+.logo{display:block;margin-bottom:-1px;flex:none}.logo img{height:var(--lh);width:auto;display:block}
+.menu,.lang,.mini,.burger{margin-bottom:calc((var(--hh) - 40px)/2)}
+.menu{display:flex;gap:20px;margin-left:auto;align-items:center}
+.menu a:not(.btn){color:var(--navy);text-decoration:none;font-weight:600;font-size:15px}.menu a:not(.btn):hover{color:var(--blue-d)}
+.btn{display:inline-block;border:2px solid transparent;border-radius:999px;padding:11px 22px;font:700 15px/1.2 "Segoe UI",system-ui,Arial,sans-serif;text-decoration:none;cursor:pointer;transition:.18s;color:inherit;background:none}
+.btn-g{background:var(--lime);color:var(--ink)}.btn-g:hover{background:#c8e44c;transform:translateY(-1px)}
+.btn-o,.btn-w{border-color:var(--blue);color:var(--blue-d);background:#fff}.btn-o:hover,.btn-w:hover{background:#e8f6fd}
+.btn:disabled{opacity:.6;cursor:not-allowed}.menu .btn{padding:9px 18px;font-size:14px}
+.lang{display:flex;border:2px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.lang button{border:0;background:#fff;padding:6px 11px;font:700 13px "Segoe UI",Arial,sans-serif;color:var(--navy);cursor:pointer}.lang button[aria-pressed=true]{background:var(--navy);color:#fff}
+.menu .cmp{display:none}.nav .br{display:none}.mini{display:none}.burger{display:none;background:#fff;border:2px solid var(--line);border-radius:10px;padding:7px 12px;font-size:18px;cursor:pointer;color:var(--navy)}
+.hero{padding:56px 0 76px;background:#fff}
+.hgrid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.badge{display:inline-block;border:1px solid #bfe3f5;background:#f0f9fd;color:var(--blue-d);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:18px}
+h1{margin:0 0 20px;font-family:"Arial Black","Segoe UI Black","Helvetica Neue",Arial,sans-serif;font-weight:900;font-size:clamp(27px,5vw,62px);line-height:1.05;letter-spacing:-1.5px;color:var(--navy)}
+h1 em{font-style:normal;color:var(--olive);display:block}
+h1 em:after{content:"";display:block;height:8px;margin-top:12px;width:min(100%,340px);background:repeating-linear-gradient(90deg,var(--lime) 0 22px,transparent 22px 34px)}
+.lead{font-size:clamp(16px,1.6vw,20px);color:#4a5d6f;max-width:560px;margin:0 0 28px}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.photo .frame{border-radius:28px;overflow:hidden;box-shadow:0 30px 70px #0f3a5730;border:1px solid var(--line);background:#eef5f9}
+.photo img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.qwrap{position:relative;z-index:5;margin-top:-22px}
+.qbar{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 22px 60px #0f3a5726;padding:20px 24px}
+.qbar h2{margin:0 0 12px;font:800 19px "Segoe UI",Arial,sans-serif;color:var(--navy);letter-spacing:0}.qbar h2:after{display:none}
+.qf{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end}
+.qf label{display:block;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#6a7f91;margin:0 0 5px}
+.qbar .hint{margin:10px 0 0}
+.feats{margin-top:26px}.feats .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:0 10px 30px #0f3a5714}
+.feat .ico{font-size:30px}.feat b{display:block;color:var(--navy)}.feat span{color:#5b6e80;font-size:14px;line-height:1.35;display:block}
+.ticker{margin-top:44px;background:#fff;color:var(--blue-d);overflow:hidden;white-space:nowrap;font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:13px;padding:12px 0;border-top:2px dashed #bfe3f5;border-bottom:2px dashed #bfe3f5}
+.ticker .track{display:inline-block;animation:mq 80s linear infinite}.ticker:hover .track{animation-play-state:paused}
+.ticker span{margin:0 22px}.ticker span:after{content:"◆";margin-left:44px;color:var(--lime)}@keyframes mq{to{transform:translateX(-50%)}}
+section.s{padding:80px 0;position:relative}
+.kick{color:var(--blue-d);font-weight:800;font-size:13px;letter-spacing:2.5px;text-transform:uppercase}
+h2{font-family:"Arial Black","Segoe UI Black",Arial,sans-serif;font-weight:900;font-size:clamp(25px,3.5vw,40px);line-height:1.1;letter-spacing:-.5px;color:var(--navy);margin:8px 0 12px}
+h2:after{content:"";display:block;width:70px;height:6px;margin-top:14px;background:repeating-linear-gradient(90deg,var(--lime) 0 14px,transparent 14px 22px)}
+.sub{color:#5b6e80;max-width:680px;margin:0 0 38px}
+.sols{display:grid;gap:22px}.sol{display:grid;grid-template-columns:1fr 1fr;background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 12px 34px #0f3a5714}
+.sol:nth-child(even) .pic{order:2}.sol .pic{overflow:hidden}.sol .pic img{width:100%;height:100%;min-height:240px;object-fit:cover;display:block;transition:transform .6s}.sol:hover .pic img{transform:scale(1.05)}
+.sol .b{padding:30px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}
+.sol .n{font:900 54px/1 "Arial Black",Arial,sans-serif;color:#d3ebf8}.sol h3{margin:0;font-size:25px;color:var(--navy)}.sol p{margin:0 0 6px;color:#5b6e80}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.chip{border:1px solid var(--line);background:#fff;color:var(--navy);border-radius:999px;padding:8px 16px;font:600 14px "Segoe UI",Arial,sans-serif;cursor:pointer}.chip:hover{border-color:var(--blue)}.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.stage{display:grid;grid-template-columns:1.2fr .8fr;background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--line);box-shadow:0 14px 40px #0f3a5718}
+.stage .pic{position:relative;min-height:340px;background:#eef5f9}.stage .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.emo{display:flex;align-items:center;justify-content:center;font-size:110px;height:100%;position:absolute;inset:0}
+.stage .info{padding:30px;display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:flex-start}
+.info h3{margin:0;font:900 30px/1.1 "Arial Black",Arial,sans-serif;color:var(--navy)}.info p{margin:0;color:#5b6e80}
+.lab{font-size:11px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#8aa0b2;margin-top:6px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.tags span{background:#e8f6fd;color:var(--blue-d);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:600}.tags span.hl{background:var(--lime);color:var(--ink)}
+.thumbs{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:14px}
+.th{border:2px solid var(--line);border-radius:14px;overflow:hidden;background:#eef5f9;padding:0;cursor:pointer;position:relative;aspect-ratio:4/3;transition:.2s;color:#fff}
+.th img{width:100%;height:100%;object-fit:cover;display:block}.th.on{border-color:var(--blue);transform:translateY(-3px);box-shadow:0 8px 20px #0f3a5726}.th.dim{opacity:.35;filter:grayscale(.7)}
+.th span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,#071f33ee);font-size:11px;font-weight:700;padding:16px 4px 5px;text-align:center;line-height:1.15}
+.th .emo{font-size:32px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;position:relative;text-align:center}
+.steps:before{content:"";position:absolute;left:17%;right:17%;top:29px;border-top:4px dashed #bfe3f5}
+.st .c{width:60px;height:60px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font:900 22px "Arial Black",Arial,sans-serif;margin:0 auto 14px;position:relative;border:6px solid #fff}
+.st h3{margin:0 0 6px;color:var(--navy)}.st p{margin:0;color:#5b6e80}
+.band{padding:20px 0 80px}.bandcard{border:2px dashed #bfe3f5;border-radius:28px;padding:48px 20px;text-align:center;background:#fff}
+.bandcard h2{display:inline-block}.bandcard h2:after{margin-left:auto;margin-right:auto}.bandcard p{color:#5b6e80;max-width:560px;margin:0 auto 26px}
+.net{display:grid;grid-template-columns:.9fr 1.1fr;gap:34px;align-items:start}
+.ben{list-style:none;padding:0;margin:0;display:grid;gap:10px}.ben li{background:#fff;border:1px solid var(--line);border-left:5px solid var(--lime);border-radius:12px;padding:12px 14px;box-shadow:0 8px 22px #0f3a5710}.ben b{display:block;color:var(--navy)}.ben span{font-size:14px;color:#5b6e80}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:0 14px 40px #0f3a5720;padding:26px;color:var(--txt)}.card h3{margin:0 0 4px;color:var(--navy);font-size:22px}
+label{display:block;font-size:13px;font-weight:700;color:#42566c;margin:0 0 5px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #c5d6e3;border-radius:10px;background:#fff;font:inherit;color:var(--txt)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);border-color:var(--blue)}textarea{min-height:90px}
+.f{margin-bottom:14px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.hint{font-size:13px;color:#64748b}
+.msg{padding:12px;border-radius:10px;margin:12px 0;display:none}.msg.on{display:block}.ok{background:#eef6d3;color:#435200}.err{background:#fff0ee;color:#9a2e21}
+#done,#doneC{text-align:center}.ref{font-size:26px;font-weight:800;letter-spacing:1px;color:var(--navy);margin:8px 0 12px}
+.espw{max-width:640px;margin:auto}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#f2f7fa;padding:5px;border-radius:999px;margin-bottom:20px}
+.tabs button{border:0;border-radius:999px;padding:11px;font:700 15px "Segoe UI",Arial,sans-serif;color:var(--navy);background:transparent;cursor:pointer}.tabs button.on{background:#fff;box-shadow:0 2px 10px #0f3a5726;color:var(--blue-d)}
+.lnk{background:none;border:0;color:var(--blue-d);font:600 14px "Segoe UI",Arial,sans-serif;cursor:pointer;padding:6px 0;text-decoration:underline}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.ord{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}.ord .h{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.ord b{color:var(--navy);font-size:17px}
+.st2{background:#eaf5c8;color:#435200;border-radius:999px;padding:3px 12px;font-weight:700;font-size:13px}.ord p{margin:6px 0 0;color:#5b6e80;font-size:14px}.ord a{color:var(--blue-d);font-weight:700;font-size:14px}
+.chat{max-height:280px;overflow:auto;display:grid;gap:8px;margin-bottom:12px;padding:4px}.bub{max-width:82%;padding:9px 13px;border-radius:14px;font-size:15px;white-space:pre-wrap;word-break:break-word}.bub.client{background:#dff3fc;justify-self:end}.bub.admin{background:#eaf5c8;justify-self:start}.bub small{display:block;color:#64748b;font-size:11px;margin-top:3px}
+.empty{color:#64748b;font-size:14px;padding:6px 0}
+.track{max-width:760px;margin:auto;text-align:center}.tbox{display:flex;gap:10px;margin:22px 0 12px}
+.tbox input{flex:1;padding:15px 18px;border:2px solid var(--line);border-radius:999px;text-transform:uppercase}
+#tres{text-align:left;margin-top:12px}.tres{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 8px 22px #0f3a5710}
+.tres .st{display:inline-block;background:#eaf5c8;color:#435200;border-radius:999px;padding:4px 14px;font-weight:700;font-size:14px}.tres.err{background:#fff0ee;border-color:#f1c4bd;color:#9a2e21}
+.tres dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:12px 0 0}.tres dt{color:#5b6e80}.tres dd{margin:0;font-weight:600;color:var(--navy)}
+footer{background:#fff;border-top:2px solid var(--ln);color:#5b6e80;padding:50px 0 24px;font-size:14px;margin-top:20px}
+footer .fg{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:24px}footer h4{color:var(--navy);margin:0 0 12px}
+footer a{display:block;color:#5b6e80;text-decoration:none;margin:6px 0}footer a:hover{color:var(--blue-d)}
+footer img{height:54px;width:auto;display:block;margin-bottom:12px}
+.copy{border-top:1px solid var(--line);margin-top:30px;padding-top:16px;text-align:center;font-size:13px}
+#orderOverlay{position:fixed;inset:0;z-index:1000;background:#fff}#orderOverlay[hidden]{display:none}
+#orderOverlay iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#e5edf3}
+.oclose{position:absolute;top:12px;right:12px;z-index:2;background:#fff;color:var(--navy);border:0;border-radius:999px;padding:10px 16px;font:800 14px "Segoe UI",Arial,sans-serif;box-shadow:0 6px 18px #0006;cursor:pointer}
+@media(max-width:1279px){
+ :root{--lh:48px;--hh:76px}
+ .menu{display:none}
+ .menu.open{display:flex;flex-direction:column;align-items:flex-start;position:absolute;top:100%;left:0;right:0;margin:0;background:#fff;padding:16px 20px;gap:14px;border-bottom:1px solid var(--line);box-shadow:0 12px 24px #0f3a5726}
+ .menu .dsk{display:none}.menu.open .cmp{display:inline-block}
+ .mini{display:inline-block;margin-left:auto;padding:8px 14px;font-size:14px}.burger{display:block}
+}
+@media(max-width:679px){
+ :root{--lh:40px}
+ header.nav{position:relative}
+ .nav .wrap{flex-wrap:wrap;height:auto;align-items:center;padding-top:8px;gap:8px}
+ .mini{order:1;margin:0 auto 0 0}.lang{order:2;margin:0}.faqbtn{order:2;margin:0}
+ .nav .br{display:block;order:3;flex-basis:100%;height:0}
+ .logo{order:4;align-self:flex-end}.burger{order:5;margin:0 0 6px auto;align-self:flex-end}
+}
+@media(max-width:380px){:root{--lh:34px}.lang button{padding:5px 8px}.mini{padding:7px 11px;font-size:13px}}
+.faqbtn{flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--blue);background:#fff;color:var(--blue-d);font:800 16px "Segoe UI",Arial,sans-serif;cursor:pointer;margin-bottom:calc((var(--hh) - 34px)/2)}
+.faqbtn:hover{background:#e8f6fd}
+#faqOverlay{position:fixed;inset:0;z-index:950;background:#fff;overflow:auto;padding:70px 0 40px}#faqOverlay[hidden]{display:none}
+#faqOverlay .faqwrap{max-width:820px}#faqOverlay details{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:#fff}
+#faqOverlay summary{cursor:pointer;padding:14px 16px;font-weight:700;color:var(--navy)}#faqOverlay details[open] summary{border-bottom:1px solid var(--line)}
+#faqOverlay details p{margin:0;padding:12px 16px 14px;color:#4a5d6f}
+.gnote{margin:2px 0 0;font-size:12.5px;color:#6a7f91}
+@media(prefers-reduced-motion:reduce){.ticker .track{animation:none}html{scroll-behavior:auto}}
+@media(max-width:960px){
+ .hgrid,.net,.stage,.sol{grid-template-columns:1fr}.sol:nth-child(even) .pic{order:0}.sol .pic img{min-height:200px;height:200px}
+ .qf{grid-template-columns:1fr}.feats .wrap{grid-template-columns:1fr}.thumbs{grid-template-columns:repeat(4,1fr)}.steps{grid-template-columns:1fr}.steps:before{display:none}
+ footer .fg{grid-template-columns:1fr 1fr}.hero{padding:34px 0 60px}.stage .pic{min-height:230px}.g2{grid-template-columns:1fr}
+}
+@media(max-width:560px){footer .fg{grid-template-columns:1fr}.tbox{flex-direction:column}.thumbs{grid-template-columns:repeat(3,1fr)}.nav .wrap{gap:8px}.lang button{padding:5px 9px}}
+#splash{display:none}#splash.on,#splash.out{display:flex}
+#splash{position:fixed;inset:0;z-index:9999;background:#fff;align-items:center;justify-content:center;transition:opacity .5s}
+#splash.out{opacity:0;pointer-events:none}.sp-in{text-align:center;padding:20px}
+#spLogo{display:block;margin:0 auto 14px;width:120px;height:auto;animation:spPop .7s ease both}
+.sp-word{font:800 clamp(30px,8vw,52px)/1 "Segoe UI",Arial,sans-serif;letter-spacing:3px;display:flex;justify-content:center;gap:.4em;flex-wrap:wrap}
+.sp-g{color:#8fa814;display:inline-flex}.sp-e{color:#0b6a99;display:inline-flex}
+.sp-word b{opacity:0;transform:translateY(10px);animation:spIn .45s ease forwards}
+.sp-line{display:block;height:4px;width:0;max-width:260px;margin:14px auto 10px;border-radius:4px;background:#27a9e1;animation:spLine .9s .9s ease forwards}
+.sp-tag{font-size:12px;letter-spacing:3px;font-weight:700;color:#5b6e80;opacity:0;animation:spIn .5s 1.4s ease forwards}
+@keyframes spIn{to{opacity:1;transform:none}}@keyframes spLine{to{width:70%}}@keyframes spPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+</style>
+<script src="config.js"></script>
+<style id="ge-hero-photo">
+.hero.hero-photo{position:relative;padding:76px 0 96px;min-height:540px;background:#0f3a57 url(assets/accueil/accueil-hero.jpg) center/cover no-repeat;display:flex;align-items:center}
+.hero.hero-photo::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,58,87,.94) 0%,rgba(15,58,87,.78) 42%,rgba(15,58,87,.18) 100%)}
+.hero.hero-photo .hgrid{position:relative;display:block;width:100%}
+.hero.hero-photo h1,.hero.hero-photo .lead{color:#fff;text-shadow:0 2px 14px rgba(0,0,0,.35)}
+.hero.hero-photo h1 em{color:#b7d334;display:block}
+.hero.hero-photo .lead{color:#e8f3fa;max-width:600px}
+.hero.hero-photo .badge{background:#b7d334;color:#0f3a57}
+@media(max-width:700px){.hero.hero-photo{padding:44px 0 220px;min-height:560px;background-position:68% bottom;background-size:auto 62%;background-color:#0f3a57}.hero.hero-photo::before{background:linear-gradient(180deg,rgba(15,58,87,1) 0%,rgba(15,58,87,.96) 46%,rgba(15,58,87,.35) 78%,rgba(15,58,87,.08) 100%)}}
+</style>
+</head>
+<body>
+<div id="splash" aria-hidden="true"><div class="sp-in"><img id="spLogo" alt="" width="120" height="120"><div class="sp-word"><span class="sp-g"></span><span class="sp-e"></span></div><i class="sp-line"></i><div class="sp-tag">TRANSPORT. LOGISTIQUE. B2B</div></div></div>
+<script>(function(){var s=document.getElementById('splash');if(!s)return;
+function hide(){s.classList.add('out');setTimeout(function(){if(s.parentNode)s.parentNode.removeChild(s)},600)}
+try{if(sessionStorage.getItem('geSplash')||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches)){s.parentNode.removeChild(s);return}sessionStorage.setItem('geSplash','1')}catch(e){}
+document.addEventListener('DOMContentLoaded',function(){var lg=document.querySelector('header img'),sl=document.getElementById('spLogo');if(lg&&sl)sl.src=lg.src});
+function letters(el,t,d0){for(var i=0;i<t.length;i++){var x=document.createElement('b');x.textContent=t.charAt(i);x.style.animationDelay=(d0+i*70)+'ms';el.appendChild(x)}}
+letters(s.querySelector('.sp-g'),'GREAT',250);letters(s.querySelector('.sp-e'),'EXPERTIZ',700);
+s.className='on';setTimeout(hide,2300);window.addEventListener('load',function(){setTimeout(hide,2000)});})();</script>
+
+<div class="road" aria-hidden="true"><i class="truck" id="truck">🚚</i></div>
+<header class="nav" id="nav"><div class="wrap">
+ <a class="logo" href="#accueil" aria-label="GREAT EXPERTIZ"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAl4AAABgCAMAAAD7EIxAAAABIFBMVEX///////7///n//+z//9r+///8///3///8//78/9Xz///u///n///c///X///V///t/+/+/v/+/v3+/f38/v76/v72/f3y/f3w+v7q/P3t+P7b/P3b+fz9/fT7/N31++Ln+vf0+bfw+J7l7Zre6HbT+v3P9fzA9f288Pu66/nI3qDK2FS8yj+r7fun5fai3+2Y4vKa3u2U1/CY0eF/z+tuzOqbvHentyCjtg+fsAmYsAVwvdtyudhwt9ZcvN9XstSdrAybrAKXqweXqwGZpwaWpwRYqMtPq8hNqciGqSuAoThAst08qdM2os0Ho+sIn+UBoewwnMkSnNYDnOwEnOA8lbg4lLUvlcAglscykbonirUSltMVlsYGltgQkMgTib6/o2oQAAA3lElEQVR42u19iVfa3PZ2AEM0CVp5CUgZxLZJyG0BZVgOKDjrXYAW1Epl8P//L7797JMwidbe9q71W99lv68VITknw8Men7MjSX9LojFZlhaykP+GRIIZXU9K0cWVWMjfl2UpkTQtx0lKxvLiaizkb0vCtPOlUslJKotrsZC/KeRyxfRVu1A6ujwqWYm4sbgkC/l76CKv3iDdVa23flyXHDMUXFyThfw9iSqq5RSrV63u08/6jh2KLwLIhfwtbJFhVO18udZ87Pf63Yeqs6YvrspC/o5djBpBzSJ01Vvd4eC20+/WC5Yekxb6ayF/wac3jLhpZ7cr1+3eYHB3czPoX5ezenyRX13I31BeMcmkiJFV19337zff7/uPVSeUWWivhfwFeEWXkxQxXj0+Pw/u777f3Hy/7XUvyTpuLK7NQv4cXuGYXqhePz4P729JeZHcDYatStZSPywuzkL+3Dhu6KWjx+cedJeA1/2wW8tn9czi4izkLwSOSuGw1Z+CV79Zzi9SXwv5O/BySvV2fwSv29vBsF3dsdXY4uos5E9lXfqo56vN/nBwK9B1f3vf6zbKjh5fBI8L+XN4xbRssdbu91h93d/fk/rqt2p5M768gNdC/tg6xiQrV663Oe0FeN3cDIb9RjGrLHITC/lT8UlGTLNz1dbz8F7A6/vN/WDYrORC86yjLC3S+Qv5LYmqiWyx/jgcEL7u2QG7GXRq26v6K87X+uKSLeQ3RJOsfPm62xvB6/t9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" alt="GREAT EXPERTIZ"></a>
+ <nav class="menu" id="menu"><a href="#solutions">Nos services</a><a href="#flotte">Notre flotte</a><a href="#reseau">Rejoindre le réseau</a><a class="cmp" href="#suivi">Suivre ma commande</a><a class="btn btn-o dsk" href="#espace" data-auth="in">Se connecter</a><a class="btn btn-o cmp" href="#espace" data-auth="up">S’inscrire</a><button type="button" class="btn btn-g" data-order>Commander</button></nav>
+ <button type="button" class="faqbtn" data-faq aria-label="Questions fréquentes (FAQ)" title="Questions fréquentes (FAQ)">?</button>
+ <div class="lang" role="group" aria-label="Langue"><button type="button" data-lang="fr" aria-pressed="true">FR</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+ <a class="btn btn-o mini" href="#espace" data-auth="in">Se connecter</a>
+ <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" type="button">☰</button><span class="br" aria-hidden="true"></span>
+</div></header>
+
+<section class="hero hero-photo" id="accueil" data-ge-key="accueil.fond"><div class="wrap hgrid">
+  <div>
+   <span class="badge">VOTRE PARTENAIRE LOGISTIQUE B2B</span>
+   <h1>Le transport professionnel,<em>pensé pour votre activité.</em></h1>
+   <p class="lead" data-ge-key="accueil.sous_titre">Des solutions de transport et de logistique pour les entreprises, grossistes, commerçants et professionnels en Côte d’Ivoire.</p>
+   <div class="cta"><button type="button" class="btn btn-g" data-order>Passer une commande →</button><a class="btn btn-w" href="#reseau">Déposer votre candidature</a></div>
+  </div>
+</div></section>
+<div class="qwrap"><div class="wrap">
+ <form class="qbar" id="quote">
+  <h2>Votre trajet en 10 secondes</h2>
+  <div class="qf"><div><label for="qFrom">De</label><select id="qFrom"></select></div><div><label for="qTo">À</label><select id="qTo"></select></div><div><label for="qSvc">Prestation</label><select id="qSvc"></select></div><button type="submit" class="btn btn-g">Commander ce trajet →</button></div>
+  <p class="hint">Vous décrivez ensuite votre besoin ; GREAT EXPERTIZ vous adresse un devis.</p>
+ </form>
+</div></div>
+<div class="feats"><div class="wrap">
+ <div class="feat"><span class="ico">🚚</span><div><b>Transport de marchandises</b><span>Des solutions adaptées à vos volumes</span></div></div>
+ <div class="feat"><span class="ico">📦</span><div><b>Logistique professionnelle</b><span>Pour les besoins des entreprises</span></div></div>
+ <div class="feat"><span class="ico">📍</span><div><b>En Côte d’Ivoire</b><span>Abidjan et autres destinations selon service</span></div></div>
+</div></div>
+<div class="ticker" aria-hidden="true"><div class="track" id="ticker"></div></div>
+
+<section class="s" id="solutions"><div class="wrap">
+ <div class="kick">Nos solutions</div><h2>Une logistique qui accompagne votre croissance.</h2>
+ <p class="sub">Des prestations destinées aux professionnels qui ont besoin de déplacer, livrer ou organiser leurs marchandises.</p>
+ <div class="sols">
+  <div class="sol"><div class="pic"><img src="assets/services/transport-materiel-equipements.jpg" alt="Camion plateau chargé de palettes sanglées" loading="lazy" data-ge-key="service.b2b.image"></div><div class="b"><div class="n">01</div><h3>Transport B2B</h3><p>Transport de marchandises pour entreprises, fournisseurs, grossistes et commerçants.</p><button type="button" class="btn btn-o" data-order data-svc="Transport de marchandises">Décrire mon besoin →</button></div></div>
+  <div class="sol"><div class="pic"><img src="assets/services/transport-marchandises.jpg" alt="Utilitaire chargé de cartons" loading="lazy" data-ge-key="service.distribution.image"></div><div class="b"><div class="n">02</div><h3>Livraison et distribution</h3><p>Organisation des livraisons, transferts de marchandises et besoins inter-agences.</p><button type="button" class="btn btn-o" data-order data-svc="Transport de marchandises">Décrire mon besoin →</button></div></div>
+  <div class="sol"><div class="pic"><img src="assets/accueil/presentation-avantages.jpg" alt="Fourgons blancs alignés" loading="lazy" data-ge-key="service.surmesure.image"></div><div class="b"><div class="n">03</div><h3>Solutions sur mesure</h3><p>Des solutions à étudier selon le volume, la destination, les délais et le type de véhicule.</p><button type="button" class="btn btn-o" data-order data-svc="Autres transports et prestations">Décrire mon besoin →</button></div></div>
+ </div>
+</div></section>
+
+<section class="s" id="flotte"><div class="wrap">
+ <div class="kick">Les moyens de transport</div><h2>Le bon gabarit pour chaque marchandise.</h2>
+ <p class="sub">Du petit utilitaire au poids lourd, le véhicule doit correspondre au volume et aux caractéristiques du chargement. Ces moyens sont mobilisés selon la prestation, en propre ou avec nos partenaires ; leur disponibilité dépend de la demande. Vous n’avez pas à choisir : GREAT EXPERTIZ détermine le véhicule adapté après analyse de votre demande.</p>
+ <div class="chips" id="chips"><button type="button" class="chip on" data-p="-1">Toutes les prestations</button><button type="button" class="chip" data-p="0">Déménagement</button><button type="button" class="chip" data-p="1">Transport de marchandises</button><button type="button" class="chip" data-p="2">Matériel et équipements</button><button type="button" class="chip" data-p="3">Transport frigorifique</button><button type="button" class="chip" data-p="4">Charges lourdes</button><button type="button" class="chip" data-p="5">Autres prestations</button></div>
+ <div class="stage"><div class="pic" id="gPic"></div><div class="info"><div class="lab">Moyen de transport</div><h3 id="gName"></h3><p id="gDesc"></p><div class="lab">Convient pour</div><div class="tags" id="gTags"></div><p class="gnote" id="gNote"></p><button type="button" class="btn btn-g" id="gOrder" data-order>Décrire mon besoin →</button></div></div>
+ <div class="thumbs" id="gThumbs"></div>
+ <p style="text-align:center;margin:30px 0 0"><button type="button" class="btn btn-w" data-order>Décrire mon besoin de transport →</button></p>
+</div></section>
+
+<section class="s" id="comment"><div class="wrap">
+ <div class="kick">Comment ça marche</div><h2>Une demande claire, en quelques étapes.</h2><p class="sub"></p>
+ <div class="steps">
+  <div class="st"><div class="c">1</div><h3>Décrivez votre besoin</h3><p>Indiquez les lieux de départ et d’arrivée, la marchandise et le volume estimé.</p></div>
+  <div class="st"><div class="c">2</div><h3>Vérification de la demande</h3><p>Les informations et la disponibilité doivent être confirmées avant l’organisation du transport.</p></div>
+  <div class="st"><div class="c">3</div><h3>Organisation du transport</h3><p>Les modalités de prise en charge sont confirmées selon le service demandé.</p></div>
+ </div>
+</div></section>
+
+<section class="band" id="commande-cta"><div class="wrap"><div class="bandcard"><h2>Prêt à expédier ?</h2><p>Décrivez votre besoin en quelques minutes : vous confirmez avec un code reçu par WhatsApp, puis GREAT EXPERTIZ vous adresse un devis.</p><button type="button" class="btn btn-g" data-order>Passer une commande →</button></div></div></section>
+
+<section class="s" id="reseau"><div class="wrap net">
+ <div>
+  <div class="kick">Rejoindre notre réseau</div><h2>Vous souhaitez rejoindre notre réseau ?</h2>
+  <p class="sub" style="margin-bottom:22px">Proposez votre candidature pour collaborer avec GREAT EXPERTIZ. Chaque candidature est étudiée avant toute intégration.</p>
+  <ul class="ben"><li><b>Missions B2B en Côte d’Ivoire</b><span>Transport, livraison et logistique pour des entreprises.</span></li><li><b>Une réponse de notre équipe</b><span>Vous êtes recontacté si votre profil correspond à nos besoins.</span></li><li><b>Vos données protégées</b><span>Utilisées uniquement pour étudier votre candidature.</span></li></ul>
+ </div>
+ <div class="card">
+  <form id="cform" novalidate>
+   <h3>Votre candidature</h3><p class="hint" style="margin:0 0 16px">Les champs marqués * sont obligatoires.</p>
+   <div class="f"><label for="profil">Votre profil *</label><select id="profil"><option value="">Choisir…</option><option value="Propriétaire d’engin / transporteur">Propriétaire d’engin / transporteur</option><option value="Chauffeur avec véhicule">Chauffeur avec véhicule</option><option value="Chauffeur sans véhicule">Chauffeur sans véhicule</option></select></div>
+   <div class="g2"><div class="f"><label for="nom">Nom et prénom *</label><input id="nom" autocomplete="name"></div><div class="f"><label for="telephone">Téléphone *</label><input id="telephone" type="tel" autocomplete="tel" placeholder="+225 07…"></div></div>
+   <div class="g2"><div class="f"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email"></div><div class="f"><label for="localisation">Commune ou ville *</label><select id="localisation"></select></div></div>
+   <div class="g2"><div class="f"><label for="vehicule">Véhicule / engin</label><select id="vehicule"><option value="">Aucun / à préciser</option><option value="Pick-up">Pick-up</option><option value="Fourgonnette">Fourgonnette</option><option value="Camionnette / fourgon">Camionnette / fourgon</option><option value="Camion porteur">Camion porteur</option><option value="Camion frigorifique">Camion frigorifique</option><option value="Plateau / porte-engins">Plateau / porte-engins</option><option value="Semi-remorque">Semi-remorque</option><option value="Autre">Autre</option></select></div><div class="f"><label for="capacite">Capacité</label><input id="capacite" placeholder="Ex. 3 tonnes, 12 m³"></div></div>
+   <div class="g2"><div class="f"><label for="permis">Permis</label><select id="permis"><option value="">Choisir…</option><option value="B">B</option><option value="C">C</option><option value="CE">CE</option><option value="D">D</option><option value="Autre">Autre</option><option value="Aucun">Aucun</option></select></div><div class="f"><label for="disponibilite">Disponibilité</label><select id="disponibilite"><option value="">Choisir…</option><option value="Immédiate">Immédiate</option><option value="Sous 1 semaine">Sous 1 semaine</option><option value="Sous 1 mois">Sous 1 mois</option><option value="À définir">À définir</option></select></div></div>
+   <div class="f"><label for="experience">Expérience</label><select id="experience"><option value="">Choisir…</option><option value="Moins d’1 an">Moins d’1 an</option><option value="1 à 3 ans">1 à 3 ans</option><option value="3 à 5 ans">3 à 5 ans</option><option value="Plus de 5 ans">Plus de 5 ans</option></select></div>
+   <div class="f"><label for="message">Message</label><textarea id="message" placeholder="Présentez-vous en quelques mots : zones couvertes, types de missions…"></textarea></div>
+   <label style="font-weight:400;display:flex;gap:10px;align-items:flex-start;margin-bottom:14px"><input id="consent" type="checkbox" style="width:auto;margin-top:4px"><span>J’accepte que GREAT EXPERTIZ utilise ces informations pour étudier ma candidature et me recontacter. *</span></label>
+   <div class="msg" id="msg" role="status" aria-live="polite"></div>
+   <button class="btn btn-g" id="send" type="submit" style="width:100%;padding:14px">Envoyer ma candidature</button>
+  </form>
+  <div id="done" hidden><div style="font-size:54px;line-height:1">✅</div><h3>Candidature enregistrée</h3><div class="ref" id="ref"></div><p>Merci ! Notre équipe étudie votre profil et vous contactera s’il correspond à nos besoins. Conservez cette référence.</p></div>
+ </div>
+</div></section>
+
+<section class="s" id="espace"><div class="wrap espw">
+ <div class="kick">Espace client</div><h2>Mon espace GREAT EXPERTIZ</h2>
+ <p class="sub" style="margin-bottom:26px">Suivez vos commandes et écrivez-nous. Commander sans compte reste possible.</p>
+ <div class="card" id="auth">
+  <div class="tabs"><button type="button" id="tLogin" class="on">Se connecter</button><button type="button" id="tReg">Créer un compte</button></div>
+  <form id="fLogin"><div class="f"><label for="lEmail">E-mail</label><input id="lEmail" type="email" autocomplete="email"></div><div class="f"><label for="lPwd">Mot de passe</label><input id="lPwd" type="password" autocomplete="current-password"></div><button class="btn btn-g" type="submit" style="width:100%">Se connecter</button><div style="text-align:center;margin-top:8px"><button class="lnk" type="button" id="goForgot">Mot de passe oublié ?</button></div></form>
+  <form id="fReg" hidden><div class="f"><label for="rNom">Nom et prénom *</label><input id="rNom" autocomplete="name"></div><div class="g2"><div class="f"><label for="rEnt">Entreprise</label><input id="rEnt" autocomplete="organization"></div><div class="f"><label for="rTel">Téléphone</label><input id="rTel" type="tel" autocomplete="tel"></div></div><div class="f"><label for="rEmail">E-mail *</label><input id="rEmail" type="email" autocomplete="email"></div><div class="g2"><div class="f"><label for="rPwd">Mot de passe * (8 caractères minimum)</label><input id="rPwd" type="password" autocomplete="new-password"></div><div class="f"><label for="rPwd2">Confirmer *</label><input id="rPwd2" type="password" autocomplete="new-password"></div></div><button class="btn btn-g" type="submit" style="width:100%">Créer mon compte</button></form>
+  <div id="vForgot" hidden><p class="hint">Saisissez votre e-mail : nous vous envoyons un code de réinitialisation.</p><form id="fForgot1"><div class="f"><label for="fEmail">E-mail</label><input id="fEmail" type="email"></div><button class="btn btn-g" type="submit" style="width:100%">Envoyer le code</button></form><form id="fForgot2" hidden><div class="f"><label for="fCode">Code reçu par e-mail</label><input id="fCode" autocomplete="one-time-code"></div><div class="f"><label for="fPwd">Nouveau mot de passe (8 caractères minimum)</label><input id="fPwd" type="password" autocomplete="new-password"></div><button class="btn btn-g" type="submit" style="width:100%">Changer le mot de passe</button></form><div style="text-align:center;margin-top:8px"><button class="lnk" type="button" id="backLogin">← Retour à la connexion</button></div></div>
+  <div class="msg" id="amsg" role="status" aria-live="polite"></div>
+ </div>
+ <div id="dash" hidden>
+  <div class="card"><div class="top"><div><div class="kick">Espace client</div><h3 id="hello" style="font-size:24px;margin:2px 0"></h3></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn btn-g" data-order>Nouvelle commande</button><button class="btn btn-o" id="logout" type="button">Se déconnecter</button></div></div>
+   <h3 style="font-size:19px">Mes commandes</h3><div id="orders"><p class="empty">Chargement…</p></div></div>
+  <div class="card" style="margin-top:16px"><h3 style="font-size:19px">Messagerie</h3><p class="hint" style="margin:0 0 10px">Écrivez à notre équipe, elle vous répond ici.</p><div class="chat" id="chat"><p class="empty">Chargement…</p></div>
+   <form id="fMsg"><div class="f"><textarea id="mTxt" placeholder="Votre message…" maxlength="1200"></textarea></div><button class="btn btn-g" type="submit" id="mSend">Envoyer</button></form><div class="msg" id="mmsg" role="status" aria-live="polite"></div></div>
+ </div>
+</div></section>
+
+<section class="s" id="suivi" style="padding-top:20px"><div class="wrap track">
+ <div class="kick">Suivi de commande</div><h2 style="display:inline-block">Retrouvez l’état de votre commande.</h2>
+ <p class="sub" style="margin:0 auto">Saisissez le code reçu à la fin de votre commande (par exemple FRT-261024-AB12C).</p>
+ <form class="tbox" id="tform"><input id="tcode" placeholder="Votre code de commande" autocomplete="off" aria-label="Code de commande"><button class="btn btn-g" type="submit">Suivre</button></form>
+ <div id="tres" aria-live="polite"></div>
+</div></section>
+
+<footer><div class="wrap">
+ <div class="fg">
+  <div><img id="flogo" alt="GREAT EXPERTIZ"><p>Transport, logistique et solutions B2B en Côte d’Ivoire.</p></div>
+  <div><h4>Services</h4><a href="#solutions">Nos services</a><a href="#flotte">Notre flotte</a><a href="#reseau">Rejoindre le réseau</a></div>
+  <div><h4>Mon compte</h4><a href="#espace">Se connecter</a><a href="#espace">Créer un compte</a><a href="#suivi">Suivre ma commande</a><a href="#faq" data-faq>Questions fréquentes (FAQ)</a></div>
+  <div><h4>Contact</h4><a href="tel:+2250748110335">+225 07 48 11 03 35</a><a href="https://wa.me/225748110335" target="_blank" rel="noopener" data-ge-key="contact.whatsapp">WhatsApp</a></div>
+ </div>
+ <div class="copy">© GREAT EXPERTIZ. Tous droits réservés.</div>
+</div></footer>
+
+<div id="faqOverlay" hidden role="dialog" aria-modal="true" aria-labelledby="faqTitle"><button type="button" class="oclose" id="faqClose">✕ Fermer</button><div class="wrap faqwrap"><div class="kick">Aide</div><h2 id="faqTitle">Questions fréquentes</h2><p class="sub">Des réponses simples pour découvrir GREAT EXPERTIZ et passer votre première commande.</p><div id="faqList"><details><summary>Comment passer une commande ?</summary><p>Touchez « Passer une commande ». Indiquez le lieu d’enlèvement et de livraison, votre type de transport, vos coordonnées et décrivez simplement ce que vous souhaitez transporter. Touchez « Envoyer ma demande » : vous recevez un code à 6 chiffres par WhatsApp, à saisir pour confirmer. Votre numéro de commande s’affiche alors ; GREAT EXPERTIZ étudie votre demande et vous adresse un devis.</p></details><details><summary>Comment renseigner l’adresse de départ et l’adresse d’arrivée ?</summary><p>Choisissez d’abord la commune ou la ville dans le menu, puis précisez le quartier, la rue et le numéro dans la case en dessous. Le point se place sur la carte et le trajet se trace automatiquement.</p></details><details><summary>Comment utiliser la géolocalisation ?</summary><p>Touchez « Ma position GPS » et autorisez l’accès à votre position quand votre navigateur le demande : votre position devient le lieu d’enlèvement. Si vous refusez, choisissez le lieu dans les menus. Si rien ne se passe, activez la localisation du téléphone et ouvrez le site dans Chrome ou Safari (pas dans une application de messagerie).</p></details><details><summary>Dois-je choisir un véhicule ?</summary><p>Non. GREAT EXPERTIZ détermine le véhicule adapté après analyse de votre demande, du volume, du poids et des contraintes de la marchandise. Vous décrivez simplement votre besoin.</p></details><details><summary>Que dois-je décrire ?</summary><p>Ce que vous souhaitez transporter, avec des mots simples (par exemple « 2 canapés, 1 réfrigérateur, 8 cartons »). Vous pouvez ajouter un poids estimé si vous le connaissez ; sinon, cochez « Je ne sais pas ». GREAT EXPERTIZ évalue le volume et le poids.</p></details><details><summary>Qui fournit l’emballage ?</summary><p>Les cartons, films, papiers bulle, rubans et housses ne sont ni fournis ni inclus dans le transport. Vous indiquez si vos marchandises sont déjà emballées, si vous souhaitez une protection supplémentaire ou si vous avez besoin de conseils. Toute prestation d’emballage fait l’objet d’une cotation séparée.</p></details><details><summary>Comment obtenir mon numéro de commande ?</summary><p>Il s’affiche après la saisie du code reçu par WhatsApp, au moment où votre demande est enregistrée. Notez-le : il sert au suivi. Si aucune confirmation n’apparaît, la demande n’est pas enregistrée : réessayez ou appelez-nous.</p></details><details><summary>Reçois-je un reçu ?</summary><p>À la fin de la demande, vous pouvez télécharger un récapitulatif. Ce n’est pas un reçu définitif : GREAT EXPERTIZ vous transmet d’abord un devis. Si vous l’acceptez, le reçu définitif est établi avec le même numéro de commande.</p></details><details><summary>Comment suivre une commande ?</summary><p>Dans la section « Suivre ma commande » de l’accueil, saisissez votre numéro de commande (par exemple GE-261124-AB3K). Vous voyez le statut et les communes de départ et d’arrivée.</p></details><details><summary>Comment contacter GREAT EXPERTIZ en cas de problème ?</summary><p>Appelez le +225 07 48 11 03 35 ou écrivez sur WhatsApp. Si vous avez un compte, vous pouvez aussi écrire depuis la messagerie de « Mon espace ».</p></details></div><p style="text-align:center;margin:28px 0 8px"><button type="button" class="btn btn-g" data-order>Passer une commande →</button></p></div></div>
+<div id="orderOverlay" hidden><button type="button" class="oclose" id="oclose">✕ Fermer</button><iframe id="orderFrame" title="Commande de transport" allow="geolocation"></iframe></div>
+<iframe name="geCandFrame" style="display:none" title="Réponse du serveur"></iframe>
+<iframe name="geClientFrame" style="display:none" title="Réponse du serveur"></iframe>
+<script>
+(function(){
+'use strict';
+const SCRIPT_URL=window.GE_SCRIPT_URL||'';   /* adresse du backend : définie une seule fois dans config.js */
+const SERVER_OK=/^https:\/\/script\.google\.com\/macros\//.test(SCRIPT_URL);
+const ABIDJAN='Abobo|Adjamé|Anyama|Attécoubé|Bingerville|Cocody|Koumassi|Marcory|Plateau|Port-Bouët|Songon|Treichville|Yopougon|Abidjan';
+const VILLES=[...new Set((ABIDJAN+'|Abengourou|Aboisso|Adiaké|Adzopé|Agboville|Agnibilékrou|Akoupé|Alépé|Arrah|Attiégouakro|Ayamé|Azaguié|Bangolo|Béoumi|Bettié|Biankouma|Bin-Houyé|Bloléquin|Bocanda|Bondoukou|Bongouanou|Bonon|Bonoua|Bouaflé|Bouaké|Bouna|Boundiali|Brobo|Buyo|Dabakala|Dabou|Daloa|Danané|Daoukro|Didiévi|Dikodougou|Dimbokro|Divo|Djébonoua|Duékoué|Facobly|Ferkessédougou|Fresco|Gagnoa|Gbon|Gohitafla|Grand-Bassam|Grand-Béréby|Grand-Lahou|Guiglo|Guitry|Issia|Jacqueville|Kani|Katiola|Kong|Korhogo|Kouibly|Kounahiri|Kouto|Lakota|Logoualé|M\'Bahiakro|M\'Batto|Madinani|Man|Mankono|Minignan|Nassian|Niakaramandougou|Odienné|Ouangolodougou|Ouaninou|Oumé|Ouragahio|Prikro|Saïoua|Sakassou|Samatiguila|San-Pédro|Sandégué|Sangouiné|Sassandra|Séguéla|Sikensi|Sinématiali|Sinfra|Sipilou|Soubré|Tabou|Taï|Tanda|Téhini|Tengréla|Tiapoum|Tiassalé|Tiébissou|Tortiya|Touba|Toulépleu|Toumodi|Transua|Vavoua|Yamoussoukro|Zouan-Hounien|Zoukougbeu|Zuénoula').split('|'))];
+
+const $=id=>document.getElementById(id);
+const EN={"GREAT EXPERTIZ | Transport professionnel et logistique B2B en Côte d’Ivoire": "GREAT EXPERTIZ | Professional transport and B2B logistics in Côte d’Ivoire", "Nos services": "Our services", "Notre flotte": "Our fleet", "Rejoindre le réseau": "Join our network", "Suivre ma commande": "Track my order", "Se connecter": "Log in", "S’inscrire": "Sign up", "Commander": "Order", "Mon espace": "My account", "Langue": "Language", "Livraison de colis en ville": "Parcel delivery in the city", "Réponse du serveur": "Server response", "Menu": "Menu", "VOTRE PARTENAIRE LOGISTIQUE B2B": "YOUR B2B LOGISTICS PARTNER", "Le transport professionnel,": "Professional transport,", "pensé pour votre activité.": "built for your business.", "Des solutions de transport et de logistique pour les entreprises, grossistes, commerçants et professionnels en Côte d’Ivoire.": "Transport and logistics solutions for companies, wholesalers, merchants and professionals in Côte d’Ivoire.", "Passer une commande →": "Place an order →", "Déposer votre candidature": "Submit your application", "Votre trajet en 10 secondes": "Your route in 10 seconds", "De": "From", "À": "To", "Prestation": "Service", "Commander ce trajet →": "Order this route →", "Vous choisissez ensuite le véhicule, les marchandises et la date.": "You then choose the vehicle, the goods and the date.", "Commune de départ…": "Departure town…", "Commune d’arrivée…": "Arrival town…", "Choisir une commune ou une ville…": "Choose a town or city…", "Abidjan et environs": "Abidjan and surroundings", "Autres villes de Côte d’Ivoire": "Other towns in Côte d’Ivoire", "Transport de marchandises": "Goods transport", "Des solutions adaptées à vos volumes": "Solutions suited to your volumes", "Logistique professionnelle": "Professional logistics", "Pour les besoins des entreprises": "For business needs", "En Côte d’Ivoire": "In Côte d’Ivoire", "Abidjan et autres destinations selon service": "Abidjan and other destinations depending on the service", "Nos solutions": "Our solutions", "Une logistique qui accompagne votre croissance.": "Logistics that supports your growth.", "Des prestations destinées aux professionnels qui ont besoin de déplacer, livrer ou organiser leurs marchandises.": "Services for professionals who need to move, deliver or organise their goods.", "Transport B2B": "B2B transport", "Transport de marchandises pour entreprises, fournisseurs, grossistes et commerçants.": "Goods transport for companies, suppliers, wholesalers and merchants.", "Commander →": "Order →", "Livraison et distribution": "Delivery and distribution", "Organisation des livraisons, transferts de marchandises et besoins inter-agences.": "Organisation of deliveries, goods transfers and inter-branch needs.", "Solutions sur mesure": "Tailor-made solutions", "Des solutions à étudier selon le volume, la destination, les délais et le type de véhicule.": "Solutions studied according to volume, destination, deadlines and vehicle type.", "Les véhicules": "Vehicles", "Le bon gabarit pour chaque marchandise.": "The right size for every load.", "Du petit utilitaire au poids lourd, le véhicule doit correspondre au volume et aux caractéristiques du chargement. La disponibilité dépend de la prestation demandée.": "From small vans to heavy trucks, the vehicle must match the volume and characteristics of the load. Availability depends on the requested service.", "Toutes les prestations": "All services", "Livraison urgente": "Urgent delivery", "Déménagement": "Moving", "Transport frigorifique": "Refrigerated transport", "Transport B2B / inter-agences": "B2B / inter-branch transport", "Autre prestation": "Other service", "Véhicule": "Vehicle", "Convient pour": "Suitable for", "Commander ce véhicule →": "Order this vehicle →", "Décrire mon besoin de transport →": "Describe my transport need →", "Fourgonnette": "Small van", "Pick-up": "Pick-up", "Camionnette / fourgon": "Van / panel van", "Camion porteur": "Rigid truck", "Camion frigorifique": "Refrigerated truck", "Semi-remorque": "Semi-trailer", "Plateau / porte-engins": "Flatbed / machine carrier", "Courses rapides, petits volumes, livraisons de proximité.": "Quick runs, small volumes, local deliveries.", "Petites charges et missions urgentes.": "Small loads and urgent missions.", "Transport urbain, déménagement, équipements professionnels.": "Urban transport, moving, professional equipment.", "Distribution, transferts et chargements importants.": "Distribution, transfers and large loads.", "Marchandises à température contrôlée.": "Temperature-controlled goods.", "Palettes, matériaux et gros volumes.": "Pallets, materials and large volumes.", "Charges volumineuses ou lourdes, à préciser selon la marchandise.": "Bulky or heavy loads, to be specified according to the goods.", "Comment ça marche": "How it works", "Une demande claire, en quelques étapes.": "A clear request in a few steps.", "Décrivez votre besoin": "Describe your need", "Indiquez les lieux de départ et d’arrivée, la marchandise et le volume estimé.": "Enter the pickup and delivery places, the goods and the estimated volume.", "Vérification de la demande": "Request check", "Les informations et la disponibilité doivent être confirmées avant l’organisation du transport.": "The information and availability must be confirmed before the transport is organised.", "Organisation du transport": "Transport organisation", "Les modalités de prise en charge sont confirmées selon le service demandé.": "Pick-up arrangements are confirmed according to the requested service.", "Prêt à expédier ?": "Ready to ship?", "Décrivez votre besoin en quelques minutes : vous recevez un reçu avec code et QR code.": "Describe your need in a few minutes: you receive a receipt with a code and QR code.", "Rejoindre notre réseau": "Join our network", "Vous souhaitez rejoindre notre réseau ?": "Would you like to join our network?", "Proposez votre candidature pour collaborer avec GREAT EXPERTIZ. Chaque candidature est étudiée avant toute intégration.": "Submit your application to work with GREAT EXPERTIZ. Every application is reviewed before any onboarding.", "Missions B2B en Côte d’Ivoire": "B2B missions in Côte d’Ivoire", "Transport, livraison et logistique pour des entreprises.": "Transport, delivery and logistics for companies.", "Une réponse de notre équipe": "A reply from our team", "Vous êtes recontacté si votre profil correspond à nos besoins.": "You are contacted if your profile matches our needs.", "Vos données protégées": "Your data protected", "Utilisées uniquement pour étudier votre candidature.": "Used only to review your application.", "Votre candidature": "Your application", "Les champs marqués * sont obligatoires.": "Fields marked * are required.", "Votre profil *": "Your profile *", "Choisir…": "Choose…", "Propriétaire d’engin / transporteur": "Machine owner / carrier", "Chauffeur avec véhicule": "Driver with vehicle", "Chauffeur sans véhicule": "Driver without vehicle", "Nom et prénom *": "Full name *", "Téléphone *": "Phone *", "E-mail": "Email", "Commune ou ville *": "Town or city *", "Véhicule / engin": "Vehicle / machine", "Aucun / à préciser": "None / to be specified", "Autre": "Other", "Capacité": "Capacity", "Ex. 3 tonnes, 12 m³": "E.g. 3 tonnes, 12 m³", "Permis": "Licence", "Aucun": "None", "Disponibilité": "Availability", "Immédiate": "Immediate", "Sous 1 semaine": "Within 1 week", "Sous 1 mois": "Within 1 month", "À définir": "To be defined", "Expérience": "Experience", "Moins d’1 an": "Less than 1 year", "1 à 3 ans": "1 to 3 years", "3 à 5 ans": "3 to 5 years", "Plus de 5 ans": "More than 5 years", "Message": "Message", "Présentez-vous en quelques mots : zones couvertes, types de missions…": "Introduce yourself in a few words: areas covered, types of missions…", "J’accepte que GREAT EXPERTIZ utilise ces informations pour étudier ma candidature et me recontacter. *": "I agree that GREAT EXPERTIZ may use this information to review my application and contact me. *", "Envoyer ma candidature": "Send my application", "Candidature enregistrée": "Application recorded", "Merci ! Notre équipe étudie votre profil et vous contactera s’il correspond à nos besoins. Conservez cette référence.": "Thank you! Our team is reviewing your profile and will contact you if it matches our needs. Keep this reference.", "Espace client": "Customer area", "Mon espace GREAT EXPERTIZ": "My GREAT EXPERTIZ account", "Suivez vos commandes et écrivez-nous. Commander sans compte reste possible.": "Track your orders and write to us. Ordering without an account remains possible.", "Créer un compte": "Create an account", "Mot de passe": "Password", "Mot de passe oublié ?": "Forgot your password?", "Entreprise": "Company", "Téléphone": "Phone", "E-mail *": "Email *", "Mot de passe * (8 caractères minimum)": "Password * (8 characters minimum)", "Confirmer *": "Confirm *", "Créer mon compte": "Create my account", "Saisissez votre e-mail : nous vous envoyons un code de réinitialisation.": "Enter your email: we will send you a reset code.", "Envoyer le code": "Send the code", "Code reçu par e-mail": "Code received by email", "Nouveau mot de passe (8 caractères minimum)": "New password (8 characters minimum)", "Changer le mot de passe": "Change password", "← Retour à la connexion": "← Back to log in", "Nouvelle commande": "New order", "Se déconnecter": "Log out", "Mes commandes": "My orders", "Chargement…": "Loading…", "Messagerie": "Messages", "Écrivez à notre équipe, elle vous répond ici.": "Write to our team, they reply here.", "Votre message…": "Your message…", "Envoyer": "Send", "Suivi de commande": "Order tracking", "Retrouvez l’état de votre commande.": "Find the status of your order.", "Saisissez le code reçu à la fin de votre commande (par exemple FRT-261024-AB12C).": "Enter the code received at the end of your order (for example FRT-261024-AB12C).", "Votre code de commande": "Your order code", "Code de commande": "Order code", "Suivre": "Track", "Transport, logistique et solutions B2B en Côte d’Ivoire.": "Transport, logistics and B2B solutions in Côte d’Ivoire.", "Services": "Services", "Mon compte": "My account", "Contact": "Contact", "© GREAT EXPERTIZ. Tous droits réservés.": "© GREAT EXPERTIZ. All rights reserved.", "✕ Fermer": "✕ Close", "Commande de transport": "Transport order", "Envoi en cours…": "Sending…", "Envoi en cours… ne fermez pas la page.": "Sending… do not close the page.", "Veuillez renseigner": "Please fill in", "le profil": "your profile", "le nom": "your name", "le téléphone": "your phone number", "la commune ou la ville": "your town or city", "Veuillez accepter l’utilisation de vos informations pour étudier votre candidature.": "Please accept the use of your information to review your application.", "L’envoi n’a pas été confirmé. Vérifiez votre connexion. Avant de renvoyer, appelez-nous au +225 07 48 11 03 35 pour éviter un doublon.": "Sending was not confirmed. Check your connection. Before resending, call us on +225 07 48 11 03 35 to avoid a duplicate.", "Le serveur ne répond pas. Réessayez dans un instant.": "The server is not responding. Please try again shortly.", "Connexion…": "Logging in…", "Connexion impossible.": "Unable to log in.", "Le mot de passe doit contenir au moins 8 caractères.": "The password must contain at least 8 characters.", "Les deux mots de passe ne sont pas identiques.": "The two passwords do not match.", "Création du compte…": "Creating the account…", "Inscription impossible.": "Sign-up failed.", "Veuillez patienter…": "Please wait…", "Si cet e-mail est inscrit, un code vient d’être envoyé. Saisissez-le ci-dessous.": "If this email is registered, a code has just been sent. Enter it below.", "Envoi impossible.": "Could not send.", "Mot de passe modifié. Vous pouvez vous connecter.": "Password changed. You can now log in.", "Code invalide ou expiré.": "Invalid or expired code.", "Impossible de charger vos commandes pour le moment.": "Unable to load your orders right now.", "Votre session a expiré. Reconnectez-vous.": "Your session has expired. Please log in again.", "Bonjour": "Hello", "Aucune commande pour le moment. Les commandes passées connecté apparaissent ici.": "No orders yet. Orders placed while logged in appear here.", "Trajet :": "Route:", "Volume :": "Volume:", "Estimation :": "Estimate:", "Suivre cette commande →": "Track this order →", "Messages indisponibles pour le moment.": "Messages unavailable right now.", "Aucun message. Écrivez-nous ci-dessous.": "No messages. Write to us below.", "Vous": "You", "Message non envoyé.": "Message not sent.", "Recherche en cours…": "Searching…", "Aucune commande trouvée avec ce code. Vérifiez-le et réessayez.": "No order found with this code. Check it and try again.", "Le service de suivi ne répond pas. Réessayez dans un instant ou appelez-nous.": "The tracking service is not responding. Try again shortly or call us.", "Code": "Code", "Trajet": "Route", "Volume": "Volume", "Estimation": "Estimate", "Date souhaitée": "Requested date", "Reçue": "Received", "Confirmée": "Confirmed", "En cours": "In progress", "Livrée": "Delivered", "Annulée": "Cancelled", "Sur devis": "On quote", "e-mail ou mot de passe incorrect": "incorrect email or password", "cet e-mail est déjà inscrit": "this email is already registered", "compte suspendu, contactez GREAT EXPERTIZ": "account suspended, please contact GREAT EXPERTIZ", "session invalide, reconnectez-vous": "invalid session, please log in again", "Aide": "Help", "Questions fréquentes": "Frequently asked questions", "Questions fréquentes (FAQ)": "Frequently asked questions (FAQ)", "Des réponses simples pour découvrir GREAT EXPERTIZ et passer votre première commande.": "Simple answers to discover GREAT EXPERTIZ and place your first order.", "Volume (CBM) et charge utile (kg) sont deux limites distinctes : la capacité exacte est confirmée à l’affectation du véhicule.": "Volume (CBM) and payload (kg) are two separate limits: the exact capacity is confirmed when the vehicle is assigned.", "Température contrôlée : à indiquer lors de la commande.": "Temperature-controlled: to be specified when ordering.", "Comment passer une commande ?": "How do I place an order?", "Touchez « Passer une commande ». Choisissez le lieu d’enlèvement et de livraison, la prestation et le véhicule, ajoutez vos objets, choisissez l’emballage, renseignez vos coordonnées, puis touchez « Envoyer la demande ». Votre reçu avec le code et le QR code s’affiche dès que le serveur a confirmé l’enregistrement.": "Tap \"Place an order\". Choose the pickup and delivery places, the service and the vehicle, add your items, choose the packaging, enter your details, then tap \"Send the request\". Your receipt with the code and QR code appears as soon as the server has confirmed the registration.", "Comment renseigner l’adresse de départ et l’adresse d’arrivée ?": "How do I enter the departure and arrival addresses?", "Choisissez d’abord la commune ou la ville dans le menu, puis précisez le quartier, la rue et le numéro dans la case en dessous. Le point se place sur la carte et le trajet se trace automatiquement.": "First choose the town or city in the menu, then enter the neighbourhood, street and number in the box below. The point is placed on the map and the route is drawn automatically.", "Comment utiliser la géolocalisation ?": "How do I use geolocation?", "Touchez « Ma position GPS » et autorisez l’accès à votre position quand votre navigateur le demande : votre position devient le lieu d’enlèvement. Si vous refusez, choisissez le lieu dans les menus. Si rien ne se passe, activez la localisation du téléphone et ouvrez le site dans Chrome ou Safari (pas dans une application de messagerie).": "Tap \"My GPS position\" and allow access to your location when your browser asks: your position becomes the pickup place. If you refuse, choose the place in the menus. If nothing happens, turn on your phone's location and open the site in Chrome or Safari (not inside a messaging app).", "Comment choisir un véhicule ?": "How do I choose a vehicle?", "Dans la commande, choisissez d’abord la prestation : les véhicules conseillés s’affichent avec leur photo. Vous pouvez aussi choisir « À déterminer » et GREAT EXPERTIZ vous conseille. Pour des marchandises à température contrôlée, choisissez le camion frigorifique.": "In the order, first choose the service: the recommended vehicles appear with their photo. You can also choose \"To be determined\" and GREAT EXPERTIZ will advise you. For temperature-controlled goods, choose the refrigerated truck.", "Comment ajouter plusieurs objets ?": "How do I add several items?", "Recherchez un objet par son nom ou parcourez les catégories, puis ajoutez-le avec les boutons + et −. Vous pouvez ajouter autant d’objets différents que nécessaire : ils s’ajoutent à votre liste avec le volume total.": "Search for an item by name or browse the categories, then add it with the + and − buttons. You can add as many different items as needed: they are added to your list with the total volume.", "Comment renseigner les quantités ?": "How do I enter quantities?", "Utilisez les boutons + et − ou saisissez le nombre à côté de chaque objet. Pour les objets proposés en plusieurs formats (par exemple un lit 1 place ou 2 places), choisissez d’abord le format.": "Use the + and − buttons or type the number next to each item. For items offered in several formats (for example a single or double bed), choose the format first.", "Comment choisir un format de carton ?": "How do I choose a carton format?", "Ouvrez « Cartons : formats, dimensions et volume (CBM) », choisissez le format et saisissez la quantité : le volume total est calculé automatiquement. Les dimensions sont des références : modifiez-les si votre carton est différent.": "Open \"Cartons: formats, dimensions and volume (CBM)\", choose the format and enter the quantity: the total volume is calculated automatically. The dimensions are references: change them if your carton is different.", "Comment estimer le volume CBM ?": "How do I estimate the CBM volume?", "1 CBM = 1 m³ = 1 000 litres. Pour un objet non répertorié, utilisez « Autre objet non répertorié » : déplacez le curseur, ou saisissez longueur × largeur × hauteur en centimètres (CBM = longueur × largeur × hauteur ÷ 1 000 000). Si vous ne savez pas, cochez « Je ne sais pas estimer le volume ». Le poids et le volume sont deux mesures différentes : on ne peut pas déduire l’un de l’autre.": "1 CBM = 1 m³ = 1,000 litres. For an item not in the catalogue, use \"Other item not listed\": move the slider, or enter length × width × height in centimetres (CBM = length × width × height ÷ 1,000,000). If you do not know, tick \"I cannot estimate the volume\". Weight and volume are two different measures: one cannot be deduced from the other.", "Comment choisir une prestation d’emballage ?": "How do I choose a packaging service?", "Dans la rubrique « Emballage », choisissez le niveau (standard, renforcé, premium, spécialisé, protection du mobilier, industriel ou export) ou « Je fournis mes propres emballages ». Les tarifs sont confirmés par GREAT EXPERTIZ avec votre demande.": "In the \"Packaging\" section, choose the level (standard, reinforced, premium, specialised, furniture protection, industrial or export) or \"I provide my own packaging\". Prices are confirmed by GREAT EXPERTIZ with your request.", "Comment obtenir le code de commande ?": "How do I get the order code?", "Le code s’affiche sur votre reçu, avec un QR code, juste après la confirmation d’enregistrement par le serveur. Notez-le : il sert au suivi. Si aucune confirmation n’apparaît, la demande n’est pas enregistrée : réessayez ou appelez-nous.": "The code appears on your receipt, with a QR code, right after the server confirms the registration. Note it down: it is used for tracking. If no confirmation appears, the request has not been registered: try again or call us.", "Comment récupérer le reçu ?": "How do I get the receipt?", "Le reçu s’affiche à la fin de la commande : touchez « Imprimer / Enregistrer en PDF ». Si vous avez un compte et que vous étiez connecté, la commande apparaît aussi dans « Mon espace ».": "The receipt appears at the end of the order: tap \"Print / Save as PDF\". If you have an account and were logged in, the order also appears in \"My account\".", "Comment suivre une commande ?": "How do I track an order?", "Dans la section « Suivre ma commande » de l’accueil, saisissez votre code (par exemple FRT-261024-AB12C). Vous voyez le statut, les communes de départ et d’arrivée, le volume et l’estimation.": "In the \"Track my order\" section of the home page, enter your code (for example FRT-261024-AB12C). You see the status, the departure and arrival towns, the volume and the estimate.", "Comment contacter GREAT EXPERTIZ en cas de problème ?": "How do I contact GREAT EXPERTIZ if there is a problem?", "Appelez le +225 07 48 11 03 35 ou écrivez sur WhatsApp. Si vous avez un compte, vous pouvez aussi écrire depuis la messagerie de « Mon espace ».": "Call +225 07 48 11 03 35 or write on WhatsApp. If you have an account, you can also write from the messaging in \"My account\"."};
+const TITLE_FR=document.title;
+let lang='fr';try{lang=localStorage.getItem('geLang')==='en'?'en':'fr'}catch(e){}
+const tr=s=>(lang==='en'&&EN[s])?EN[s]:s;
+const KEY='geClientToken';
+const tok=()=>{try{return localStorage.getItem(KEY)||''}catch(e){return ''}};
+const setTok=t=>{try{t?localStorage.setItem(KEY,t):localStorage.removeItem(KEY)}catch(e){}};
+const el=(t,c,x)=>{const n=document.createElement(t);if(c)n.className=c;if(x!==undefined)n.textContent=x;return n};
+
+/* ================= Langue FR / EN ================= */
+function applyLang(){
+ const w=document.createTreeWalker(document.body,4,null),a=[];while(w.nextNode())a.push(w.currentNode);
+ a.forEach(n=>{const p=n.parentNode&&n.parentNode.nodeName;if(p==='SCRIPT'||p==='STYLE')return;
+  if(n.__fr===undefined)n.__fr=n.nodeValue;const fr=n.__fr,k=fr.trim();if(!k)return;
+  n.nodeValue=(lang==='en'&&EN[k])?fr.replace(k,EN[k]):fr});
+ ['placeholder','aria-label','title','alt'].forEach(at=>{[].forEach.call(document.querySelectorAll('['+at+']'),e=>{
+  const key='data-fr-'+at;if(!e.hasAttribute(key))e.setAttribute(key,e.getAttribute(at));
+  const fr=e.getAttribute(key);e.setAttribute(at,(lang==='en'&&EN[fr])?EN[fr]:fr)})});
+ document.documentElement.lang=lang;document.title=tr(TITLE_FR);
+ [].forEach.call(document.querySelectorAll('[data-lang]'),b=>b.setAttribute('aria-pressed',String(b.getAttribute('data-lang')===lang)));
+ ['msg','amsg','mmsg'].forEach(i=>{$(i).className='msg'});$('tres').innerHTML='';
+ renderGarage();fillQuote();fillLoc();authUI();if(!$('dash').hidden)reloadDash();
+}
+[].forEach.call(document.querySelectorAll('[data-lang]'),b=>b.addEventListener('click',()=>{
+ lang=b.getAttribute('data-lang')==='en'?'en':'fr';try{localStorage.setItem('geLang',lang)}catch(e){}applyLang()}));
+
+/* ================= Menu, logo, route qui suit le défilement ================= */
+$('burger').addEventListener('click',function(){const m=$('menu'),o=m.classList.toggle('open');this.setAttribute('aria-expanded',String(o))});
+[].forEach.call(document.querySelectorAll('#menu a'),a=>a.addEventListener('click',()=>$('menu').classList.remove('open')));
+const hl=document.querySelector('.logo img');if(hl)$('flogo').src=hl.src;
+const truck=$('truck');let tk=false;
+function road(){tk=false;const h=document.documentElement.scrollHeight-window.innerHeight;truck.style.top=(h>0?Math.min(100,Math.max(0,window.pageYOffset/h*100)):0)+'%'}
+window.addEventListener('scroll',()=>{if(!tk){tk=true;requestAnimationFrame(road)}},{passive:true});
+(function(){const n=ABIDJAN.split('|').filter(x=>x!=='Abidjan').concat(['Abidjan']).concat(VILLES.filter(v=>ABIDJAN.split('|').indexOf(v)<0));
+ const h=n.map(x=>'<span>'+x+'</span>').join('');$('ticker').innerHTML=h+h})();
+
+/* ================= Flotte : véhicules et prestations ================= */
+const PRES=['Déménagement','Transport de marchandises','Transport de matériel et équipements','Transport frigorifique','Transport exceptionnel et charges lourdes','Autres transports et prestations'];
+const VEH=[
+ {k:'Fourgonnette',l:'Fourgonnette',d:'Courses rapides, petits volumes, livraisons de proximité.',img:'',emo:'🚐',f:[1,2]},
+ {k:'Pick-up',l:'Pick-up',d:'Petites charges et missions urgentes.',img:'',emo:'🛻',f:[1]},
+ {k:'Camionnette',l:'Camionnette / fourgon',d:'Transport urbain, déménagement, équipements professionnels.',img:'',emo:'🚚',f:[0,1,2]},
+ {k:'Camion / poids lourd',l:'Camion porteur',d:'Distribution, transferts et chargements importants.',img:'assets/vehicules/poids-lourd-chassis.jpg',emo:'🚛',f:[0,1,2]},
+ {k:'Frigorifique',l:'Camion frigorifique',d:'Marchandises à température contrôlée.',img:'assets/services/transport-frigorifique.jpg',emo:'❄️',f:[3]},
+ {k:'Semi-remorque',l:'Semi-remorque',d:'Palettes, matériaux et gros volumes.',img:'assets/vehicules/frigorifique-semi-remorque.jpg',emo:'🚛',f:[1,2]},
+ {k:'Plateau / porte-engins',l:'Plateau / porte-engins',d:'Charges volumineuses ou lourdes, à préciser selon la marchandise.',img:'assets/services/charges-lourdes.jpg',emo:'🏗️',f:[2,4,5]}
+];
+let gSel=0,gPres=-1;
+function visual(box,v){if(v.img){const im=el('img');im.src=v.img;im.alt=tr(v.l);im.loading='lazy';box.appendChild(im)}else{box.appendChild(el('div','emo',v.emo))}}
+function renderGarage(){
+ const th=$('gThumbs');th.innerHTML='';
+ VEH.forEach((v,i)=>{const b=el('button','th'+(i===gSel?' on':'')+((gPres>=0&&v.f.indexOf(gPres)<0)?' dim':''));b.type='button';b.setAttribute('aria-label',tr(v.l));
+  visual(b,v);b.appendChild(el('span','',tr(v.l)));b.addEventListener('click',()=>{gSel=i;renderGarage()});th.appendChild(b)});
+ const v=VEH[gSel],pic=$('gPic');pic.innerHTML='';visual(pic,v);
+ $('gName').textContent=tr(v.l);$('gDesc').textContent=tr(v.d);
+ const tg=$('gTags');tg.innerHTML='';v.f.forEach(p=>tg.appendChild(el('span',p===gPres?'hl':'',tr(PRES[p]))));
+ $('gNote').textContent=tr('Volume (CBM) et charge utile (kg) sont deux limites distinctes : la capacité exacte est confirmée à l’affectation du véhicule.')+(v.k==='Frigorifique'?' '+tr('Température contrôlée : à indiquer lors de la commande.'):'');
+ $('gOrder').setAttribute('data-svc',PRES[(gPres>=0&&v.f.indexOf(gPres)>=0)?gPres:v.f[0]]);
+}
+[].forEach.call(document.querySelectorAll('.chip'),b=>b.addEventListener('click',()=>{
+ gPres=+b.getAttribute('data-p');[].forEach.call(document.querySelectorAll('.chip'),c=>c.classList.toggle('on',c===b));
+ if(gPres>=0&&VEH[gSel].f.indexOf(gPres)<0)gSel=VEH.findIndex(v=>v.f.indexOf(gPres)>=0);renderGarage()}));
+
+/* ================= Trajet express et listes de communes ================= */
+function opts(sel,ph){
+ const c=sel.value;sel.innerHTML='';const o0=el('option','',ph);o0.value='';sel.appendChild(o0);
+ [[tr('Abidjan et environs'),ABIDJAN.split('|').filter(x=>x!=='Abidjan')],[tr('Autres villes de Côte d’Ivoire'),VILLES.filter(v=>ABIDJAN.split('|').indexOf(v)<0).sort((a,b)=>a.localeCompare(b,'fr'))]].forEach(g=>{
+  const og=el('optgroup');og.label=g[0];g[1].forEach(v=>{const o=el('option','',v);o.value=v;og.appendChild(o)});sel.appendChild(og)});
+ if(c)sel.value=c;
+}
+function fillQuote(){
+ opts($('qFrom'),tr('Commune de départ…'));opts($('qTo'),tr('Commune d’arrivée…'));
+ const s=$('qSvc'),c=s.value;s.innerHTML='';PRES.forEach(p=>{const o=el('option','',tr(p));o.value=p;s.appendChild(o)});if(c)s.value=c;
+}
+function fillLoc(){opts($('localisation'),tr('Choisir une commune ou une ville…'))}
+
+/* ================= Commande : la page commande.html s'ouvre par-dessus (même page) ================= */
+function openOrder(p){
+ const q=new URLSearchParams();q.set('embed','1');q.set('lang',lang);
+ let has=false;if(p)['prestation','depart','arrivee'].forEach(k=>{if(p[k]){q.set(k,p[k]);has=true}});
+ const f=$('orderFrame');if(has||!f.getAttribute('src'))f.src='commande.html?'+q.toString();
+ $('orderOverlay').hidden=false;document.body.classList.add('lock');
+ try{history.pushState({ge:'order'},'','#commande')}catch(e){}
+}
+function openFaq(){$('faqOverlay').hidden=false;document.body.classList.add('lock');try{history.pushState({ge:'faq'},'','#faq')}catch(e){}}
+function closeFaq(){$('faqOverlay').hidden=true;if($('orderOverlay').hidden)document.body.classList.remove('lock');try{if(location.hash==='#faq')history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
+function closeOrder(){
+ $('orderOverlay').hidden=true;document.body.classList.remove('lock');
+ try{if(location.hash==='#commande')history.replaceState(null,'',location.pathname+location.search)}catch(e){}
+}
+$('faqClose').addEventListener('click',()=>{if(history.state&&history.state.ge==='faq')history.back();else closeFaq()});
+$('oclose').addEventListener('click',()=>{if(history.state&&history.state.ge==='order')history.back();else closeOrder()});
+window.addEventListener('popstate',()=>{if(!$('orderOverlay').hidden)closeOrder();if(!$('faqOverlay').hidden)closeFaq()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(!$('faqOverlay').hidden)closeFaq();else if(!$('orderOverlay').hidden)closeOrder()}});
+document.addEventListener('click',e=>{const fq=e.target.closest&&e.target.closest('[data-faq]');if(fq){e.preventDefault();openFaq();return}
+ const b=e.target.closest&&e.target.closest('[data-order]');if(!b)return;e.preventDefault();if(!$('faqOverlay').hidden){$('faqOverlay').hidden=true;document.body.classList.remove('lock')}
+ openOrder({prestation:b.getAttribute('data-svc')})});
+$('quote').addEventListener('submit',e=>{e.preventDefault();openOrder({prestation:$('qSvc').value,depart:$('qFrom').value,arrivee:$('qTo').value})});
+/* La confirmation du serveur arrive à cette page : on la transmet à la commande ouverte par-dessus */
+window.addEventListener('message',e=>{const d=e.data;if(d&&typeof d==='object'&&(d.type==='GE_ORDER_RESULT'||d.type==='GE_OTP_RESULT')){const f=$('orderFrame');if(f&&f.contentWindow)f.contentWindow.postMessage(d,'*')}});
+
+/* ================= Candidature ================= */
+let cWait=false,cTimer=null;
+function cSay(t,c){const m=$('msg');m.textContent=t;m.className='msg on '+c}
+function cFinish(ok,d){
+ clearTimeout(cTimer);cWait=false;$('send').disabled=false;$('send').textContent=tr('Envoyer ma candidature');
+ if(ok){$('ref').textContent=d.reference||'';$('cform').hidden=true;$('done').hidden=false}
+ else cSay(d&&d.error?d.error:tr('L’envoi n’a pas été confirmé. Vérifiez votre connexion. Avant de renvoyer, appelez-nous au +225 07 48 11 03 35 pour éviter un doublon.'),'err');
+}
+window.addEventListener('message',e=>{const d=e.data;if(!cWait||!d||typeof d!=='object'||d.type!=='GE_CANDIDATE_RESULT')return;d.ok===true?cFinish(true,d):cFinish(false,d)});
+$('cform').addEventListener('submit',e=>{
+ e.preventDefault();if(cWait)return;
+ const need=[['profil','le profil'],['nom','le nom'],['telephone','le téléphone'],['localisation','la commune ou la ville']];
+ for(const n of need){if(!$(n[0]).value.trim()){cSay(tr('Veuillez renseigner')+' '+tr(n[1])+'.','err');$(n[0]).focus();return}}
+ if(!$('consent').checked){cSay(tr('Veuillez accepter l’utilisation de vos informations pour étudier votre candidature.'),'err');return}
+ const data={action:'submitCandidate',consentement:'oui'};
+ ['profil','nom','telephone','email','localisation','vehicule','capacite','permis','disponibilite','experience','message'].forEach(k=>{data[k]=$(k).value.trim()});
+ const f=el('form');f.method='POST';f.action=SCRIPT_URL;f.target='geCandFrame';f.style.display='none';
+ Object.keys(data).forEach(k=>{const i=el('input');i.name=k;i.value=data[k];f.appendChild(i)});
+ document.body.appendChild(f);cWait=true;$('send').disabled=true;$('send').textContent=tr('Envoi en cours…');cSay(tr('Envoi en cours… ne fermez pas la page.'),'ok');
+ cTimer=setTimeout(()=>{if(cWait)cFinish(false,null)},45000);f.submit();setTimeout(()=>f.remove(),1000);
+});
+
+/* ================= Espace client : connexion, inscription, commandes, messagerie ================= */
+function say(id,t,c){const m=$(id);m.textContent=t;m.className='msg on '+(c||'ok')}
+function clr(id){$(id).className='msg'}
+let pending=null;
+window.addEventListener('message',e=>{const d=e.data;if(!pending||!d||typeof d!=='object'||d.type!=='GE_CLIENT_RESULT'||d.action!==pending.action)return;const p=pending;pending=null;clearTimeout(p.t);p.cb(d)});
+function post(action,data,cb){
+ if(pending)return;
+ const f=el('form');f.method='POST';f.action=SCRIPT_URL;f.target='geClientFrame';f.style.display='none';
+ const all=Object.assign({action:action},data);Object.keys(all).forEach(k=>{const i=el('input');i.name=k;i.value=all[k];f.appendChild(i)});
+ pending={action:action,cb:cb,t:setTimeout(()=>{pending=null;cb({ok:false,error:tr('Le serveur ne répond pas. Réessayez dans un instant.')})},30000)};
+ document.body.appendChild(f);f.submit();setTimeout(()=>f.remove(),1000);
+}
+function jsonp(params,cb){
+ const name='geC'+Date.now()+Math.floor(Math.random()*1000);let done=false;const s=el('script');
+ const end=()=>{done=true;try{delete window[name]}catch(e){}if(s.parentNode)s.parentNode.removeChild(s)};
+ window[name]=d=>{if(done)return;end();cb(d)};s.onerror=()=>{if(done)return;end();cb(null)};
+ s.src=SCRIPT_URL+'?'+Object.keys(params).map(k=>k+'='+encodeURIComponent(params[k])).join('&')+'&callback='+name;document.head.appendChild(s);
+ setTimeout(()=>{if(!done){end();cb(null)}},15000);
+}
+function authUI(){
+ const t=tok();
+ [].forEach.call(document.querySelectorAll('[data-auth="in"]'),a=>{a.textContent=t?tr('Mon espace'):tr('Se connecter')});
+ [].forEach.call(document.querySelectorAll('[data-auth="up"]'),a=>{a.style.display=t?'none':''});
+}
+function view(v){$('fLogin').hidden=v!=='login';$('fReg').hidden=v!=='reg';$('vForgot').hidden=v!=='forgot';$('tLogin').classList.toggle('on',v==='login');$('tReg').classList.toggle('on',v==='reg');$('tLogin').parentNode.hidden=v==='forgot';clr('amsg')}
+$('tLogin').addEventListener('click',()=>view('login'));$('tReg').addEventListener('click',()=>view('reg'));
+$('goForgot').addEventListener('click',()=>{view('forgot');$('fForgot1').hidden=false;$('fForgot2').hidden=true});
+$('backLogin').addEventListener('click',()=>view('login'));
+[].forEach.call(document.querySelectorAll('[data-auth="up"]'),a=>a.addEventListener('click',()=>view('reg')));
+[].forEach.call(document.querySelectorAll('[data-auth="in"]'),a=>a.addEventListener('click',()=>{if(!tok())view('login')}));
+function busy(b,on,txt){b.disabled=on;if(txt)b.textContent=on?tr('Veuillez patienter…'):txt}
+function enter(d){setTok(d.token);authUI();showDash(true)}
+$('fLogin').addEventListener('submit',e=>{e.preventDefault();const b=e.target.querySelector('button[type=submit]');busy(b,true);say('amsg',tr('Connexion…'));
+ post('loginClient',{email:$('lEmail').value.trim(),password:$('lPwd').value},d=>{busy(b,false);d.ok?enter(d):say('amsg',d.error?tr(d.error):tr('Connexion impossible.'),'err')})});
+$('fReg').addEventListener('submit',e=>{e.preventDefault();
+ if($('rPwd').value.length<8){say('amsg',tr('Le mot de passe doit contenir au moins 8 caractères.'),'err');return}
+ if($('rPwd').value!==$('rPwd2').value){say('amsg',tr('Les deux mots de passe ne sont pas identiques.'),'err');return}
+ const b=e.target.querySelector('button[type=submit]');busy(b,true);say('amsg',tr('Création du compte…'));
+ post('registerClient',{nom:$('rNom').value.trim(),entreprise:$('rEnt').value.trim(),email:$('rEmail').value.trim(),telephone:$('rTel').value.trim(),password:$('rPwd').value},d=>{busy(b,false);d.ok?enter(d):say('amsg',d.error?tr(d.error):tr('Inscription impossible.'),'err')})});
+$('fForgot1').addEventListener('submit',e=>{e.preventDefault();const b=e.target.querySelector('button[type=submit]');busy(b,true);
+ post('requestPasswordReset',{email:$('fEmail').value.trim()},d=>{busy(b,false);if(d.ok){say('amsg',tr('Si cet e-mail est inscrit, un code vient d’être envoyé. Saisissez-le ci-dessous.'));$('fForgot1').hidden=true;$('fForgot2').hidden=false}else say('amsg',d.error?tr(d.error):tr('Envoi impossible.'),'err')})});
+$('fForgot2').addEventListener('submit',e=>{e.preventDefault();const b=e.target.querySelector('button[type=submit]');busy(b,true);
+ post('confirmPasswordReset',{resetToken:$('fCode').value.trim(),newPassword:$('fPwd').value},d=>{busy(b,false);if(d.ok){view('login');say('amsg',tr('Mot de passe modifié. Vous pouvez vous connecter.'))}else say('amsg',d.error?tr(d.error):tr('Code invalide ou expiré.'),'err')})});
+const fmtD=v=>{const d=new Date(v);return isNaN(d)?'':d.toLocaleDateString(lang==='en'?'en-GB':'fr-FR')+' '+d.toLocaleTimeString(lang==='en'?'en-GB':'fr-FR',{hour:'2-digit',minute:'2-digit'})};
+function loadOrders(){
+ jsonp({action:'myOrders',token:tok()},d=>{
+  const box=$('orders');box.innerHTML='';
+  if(!d){box.appendChild(el('p','empty',tr('Impossible de charger vos commandes pour le moment.')));return}
+  if(!d.auth||!d.auth.valid){setTok('');authUI();$('dash').hidden=true;$('auth').hidden=false;say('amsg',tr('Votre session a expiré. Reconnectez-vous.'),'err');return}
+  $('hello').textContent=tr('Bonjour')+' '+(d.auth.nom||'');
+  if(!d.orders.length){box.appendChild(el('p','empty',tr('Aucune commande pour le moment. Les commandes passées connecté apparaissent ici.')));return}
+  d.orders.forEach(o=>{const c=el('div','ord'),h=el('div','h');h.appendChild(el('b','',o.code));h.appendChild(el('span','st2',tr(o.statut||'Reçue')));c.appendChild(h);
+   c.appendChild(el('p','',tr(o.prestation||'')+' · '+fmtD(o.date)));c.appendChild(el('p','',tr('Trajet :')+' '+(o.enlevement||'')+' → '+(o.livraison||'')));
+   c.appendChild(el('p','',tr('Volume :')+' '+(o.cbm||'?')+' m³ · '+tr('Estimation :')+' '+(/^\d+$/.test(String(o.prix))?Number(o.prix).toLocaleString(lang==='en'?'en-GB':'fr-FR')+' FCFA':tr(o.prix||'—'))));
+   const a=el('a','',tr('Suivre cette commande →'));a.href='?code='+encodeURIComponent(o.code)+'#suivi';c.appendChild(a);box.appendChild(c)});
+ });
+}
+function loadMsgs(){
+ jsonp({action:'myMessages',token:tok()},d=>{
+  const box=$('chat');box.innerHTML='';
+  if(!d||!d.auth||!d.auth.valid){box.appendChild(el('p','empty',tr('Messages indisponibles pour le moment.')));return}
+  if(!d.messages.length){box.appendChild(el('p','empty',tr('Aucun message. Écrivez-nous ci-dessous.')));return}
+  d.messages.forEach(m=>{const b=el('div','bub '+(m.auteur==='admin'?'admin':'client'),m.message);b.appendChild(el('small','',(m.auteur==='admin'?'GREAT EXPERTIZ':tr('Vous'))+' · '+fmtD(m.date)));box.appendChild(b)});
+  box.scrollTop=box.scrollHeight;
+ });
+}
+function reloadDash(){loadOrders();loadMsgs()}
+function showDash(sc){$('auth').hidden=true;$('dash').hidden=false;if(sc&&$('espace').scrollIntoView)$('espace').scrollIntoView();reloadDash()}
+$('fMsg').addEventListener('submit',e=>{e.preventDefault();const t=$('mTxt').value.trim();if(!t)return;const b=$('mSend');busy(b,true);
+ post('sendMessage',{token:tok(),message:t},d=>{busy(b,false,tr('Envoyer'));if(d.ok){$('mTxt').value='';clr('mmsg');loadMsgs()}else say('mmsg',d.error?tr(d.error):tr('Message non envoyé.'),'err')})});
+$('logout').addEventListener('click',()=>{const t=tok();setTok('');authUI();$('dash').hidden=true;$('auth').hidden=false;view('login');if(t)post('logoutClient',{token:t},()=>{})});
+
+/* ================= Suivi de commande ================= */
+function trow(dl,k,v){if(v===undefined||v===null||v==='')return;dl.appendChild(el('dt','',k));dl.appendChild(el('dd','',v))}
+function tshow(msg,err,d){
+ const box=$('tres');box.innerHTML='';const c=el('div','tres'+(err?' err':''));
+ if(d){c.appendChild(el('span','st',tr(d.statut||'Reçue')));const dl=el('dl');
+  trow(dl,tr('Code'),d.code);trow(dl,tr('Prestation'),tr(d.prestation||''));trow(dl,tr('Trajet'),(d.enlevement||'')+' → '+(d.livraison||''));
+  trow(dl,tr('Volume'),d.cbm?d.cbm+' m³':'');trow(dl,tr('Estimation'),/^\d+$/.test(String(d.prix))?Number(d.prix).toLocaleString(lang==='en'?'en-GB':'fr-FR')+' FCFA':tr(String(d.prix||'')));trow(dl,tr('Date souhaitée'),d.dateSouhaitee);c.appendChild(dl);
+ }else c.textContent=msg;
+ box.appendChild(c);
+}
+function track(code){
+ code=String(code||'').trim().toUpperCase();if(!code)return;tshow(tr('Recherche en cours…'),false);
+ const cb='geTrack'+Date.now();let done=false;const s=el('script');
+ const end=()=>{done=true;try{delete window[cb]}catch(e){}if(s.parentNode)s.parentNode.removeChild(s)};
+ const bad=()=>tshow(tr('Le service de suivi ne répond pas. Réessayez dans un instant ou appelez-nous.'),true);
+ window[cb]=d=>{if(done)return;end();d&&d.found?tshow('',false,d):tshow(tr('Aucune commande trouvée avec ce code. Vérifiez-le et réessayez.'),true)};
+ s.onerror=()=>{if(done)return;end();bad()};
+ s.src=SCRIPT_URL+'?action=track&code='+encodeURIComponent(code)+'&callback='+cb;document.head.appendChild(s);
+ setTimeout(()=>{if(!done){end();bad()}},12000);
+}
+$('tform').addEventListener('submit',e=>{e.preventDefault();track($('tcode').value)});
+const qm=/[?&]code=([^&#]+)/.exec(window.location.search);
+if(qm){$('tcode').value=decodeURIComponent(qm[1]).toUpperCase();track($('tcode').value);setTimeout(()=>{if($('suivi').scrollIntoView)$('suivi').scrollIntoView()},300)}
+
+
+/* ================= Contenu publié depuis l'administration (Gestion du site Web) ================= */
+const SITE_VEH={'flotte.fourgonnette.image':0,'flotte.pickup.image':1,'flotte.camionnette.image':2,'flotte.camion.image':3,'flotte.frigorifique.image':4,'flotte.semi.image':5,'flotte.plateau.image':6};
+function applySiteContent(items){
+ [].forEach.call(document.querySelectorAll('[data-ge-key]'),n=>{const it=items[n.getAttribute('data-ge-key')];if(!it||!it.valeur)return;
+  if(it.type==='texte')n.textContent=it.valeur;
+  else if(it.type==='lien'&&n.tagName==='A')n.setAttribute('href',it.valeur);
+  else if(it.type==='image'){if(n.tagName==='IMG')n.src=it.valeur;else n.style.backgroundImage='url("'+it.valeur+'")'}});
+ let changed=false;Object.keys(SITE_VEH).forEach(k=>{const it=items[k];if(it&&it.type==='image'&&it.valeur){VEH[SITE_VEH[k]].img=it.valeur;changed=true}});if(changed)renderGarage();
+}
+function loadSiteContent(){
+ if(!SERVER_OK)return;const cb='geSite'+Date.now();let done=false;const s=el('script');
+ const end=()=>{done=true;try{delete window[cb]}catch(e){}if(s.parentNode)s.parentNode.removeChild(s)};
+ window[cb]=d=>{if(done)return;end();if(d&&d.ok&&d.items)applySiteContent(d.items)};s.onerror=()=>{if(!done)end()};
+ s.src=SCRIPT_URL+'?action=siteContent&callback='+cb;document.head.appendChild(s);setTimeout(()=>{if(!done)end()},8000);
+}
+
+/* ================= Démarrage ================= */
+view('login');renderGarage();fillQuote();fillLoc();authUI();loadSiteContent();
+if(lang==='en')applyLang();
+if(tok())showDash(false);
+if(window.location.hash==='#commande')openOrder();
+if(window.location.hash==='#faq')openFaq();
+window.__ge={applyLang:applyLang,tr:tr,EN:EN,openOrder:openOrder,closeOrder:closeOrder};
+})();
+
+</script>
+</body>
+</html>
