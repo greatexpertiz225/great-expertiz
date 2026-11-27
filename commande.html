@@ -1529,6 +1529,7 @@ function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f
 function geVariantsFor(item){
  if(Array.isArray(item.variants)&&item.variants.length)return item.variants;
  const n=geNorm(item.name);
+ if(/table de cuisson|tables? de mixage|tableaux/.test(n))return [];
  if(/^tables? (carrees|rondes|rectangulaires|pliantes|basses|d'etude|de reunion)$/.test(n))return [];
  const rules=[
   [/frigo|refrigerateur/,['Petit','Standard','Américain']],
