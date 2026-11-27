@@ -225,6 +225,20 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
 @media(max-width:760px){.sidebar,.admin-sidebar{box-shadow:none!important}.nav-item{margin:2px 6px!important}}
 
 </style>
+<style>
+.ge-admin-results{display:grid;gap:6px;margin:8px 0}
+.ge-admin-results[hidden],.ge-admin-detail[hidden],#geAdminVariantWrap[hidden]{display:none!important}
+.ge-admin-results button{display:block;width:100%;text-align:left;padding:9px;border:1px solid #d4e1e9;border-radius:7px;background:#fff;color:#173247}
+.ge-admin-results small{display:block;color:#657c8b;font-size:.78rem}
+.ge-admin-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:12px;border:1px solid #b9d9e8;border-radius:9px;background:#f5fbfe;margin:8px 0}
+.ge-admin-detail strong{grid-column:1/-1}
+.ge-admin-cart{display:grid;gap:5px;margin-top:10px}
+.ge-admin-cart-row{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #e4edf1;padding:7px 0;font-size:.84rem}
+.ge-admin-cart-row span{min-width:0;overflow-wrap:anywhere}
+.ge-admin-cart-row button{flex:none}
+.ge-admin-volume-total{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#edf7fb;padding:10px;border-radius:8px;margin-top:10px}
+@media(max-width:600px){.ge-admin-volume-total{align-items:flex-start;flex-direction:column}}
+</style>
 </head>
 <body>
 
@@ -326,7 +340,22 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
             <div><label for="quoteVolumeManual">Supplément volume manuel (FCFA)</label><input id="quoteVolumeManual" type="number" min="0" max="100000000" step="1" placeholder="Obligatoire au-delà de 10 CBM"></div>
             <div><label for="quotePackagingManual">Emballage / protection manuel (FCFA)</label><input id="quotePackagingManual" type="number" min="0" max="100000000" step="1" placeholder="Si le client demande une protection"></div>
           </div>
-          <div class="order-actions" style="margin-top:14px;">
+          <div class="content-card ge-admin-volume" style="padding:14px;margin-top:16px">
+ <h3 style="margin:0 0 6px">Calculateur CBM interne — catalogue GREAT EXPERTIZ</h3>
+ <p class="hint" style="margin:0 0 10px">Sélectionnez les articles de la demande. Les volumes sont des références indicatives : vérifiez les dimensions réelles, le démontage et la protection avant de valider le CBM.</p>
+ <div><label for="geAdminItemSearch">Rechercher un article ou un lot</label><input id="geAdminItemSearch" type="search" autocomplete="off" placeholder="Ex. fauteuil, table ronde, carton, lot salon…"></div>
+ <div id="geAdminItemResults" class="ge-admin-results" hidden></div>
+ <div id="geAdminItemDetail" class="ge-admin-detail" hidden>
+  <strong id="geAdminItemName"></strong>
+  <div id="geAdminVariantWrap" hidden><label for="geAdminVariant">Type / modèle</label><select id="geAdminVariant"><option value="">Choisir…</option></select></div>
+  <div><label for="geAdminQty">Quantité</label><input id="geAdminQty" type="number" min="1" max="999" step="1" value="1"></div>
+  <button type="button" class="status-save" id="geAdminAddItem" style="margin-top:8px">Ajouter au calcul</button>
+ </div>
+ <div id="geAdminItemCart" class="ge-admin-cart"><p class="hint">Aucun article ajouté au calcul.</p></div>
+ <div class="ge-admin-volume-total"><strong id="geAdminVolumeText">Volume de référence : 0,000 m³</strong><span id="geAdminCountText">0 ligne</span></div>
+ <div class="order-actions" style="margin-top:8px"><button type="button" class="status-save" id="geAdminUseVolume">Reporter dans le CBM de la cotation</button><button type="button" class="status-save" id="geAdminClearItems">Vider le calcul</button></div>
+</div>
+<div class="order-actions" style="margin-top:14px;">
             <button type="button" class="status-save" id="quoteCalcBtn">Calculer l’estimation</button>
             <button type="button" class="btn-primary" id="quoteSaveBtn">Enregistrer la cotation</button>
           </div>
@@ -386,6 +415,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
 </div>
 
 <script src="config.js"></script>
+<script src="./catalogue-admin.js"></script>
 <script>
   var SCRIPT_URL = window.GE_SCRIPT_URL || '';
   var KEY_STORAGE = 'ge_admin_key';
@@ -653,6 +683,74 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
   document.getElementById('menuToggle').addEventListener('click', function(){ document.getElementById('sidebar').classList.toggle('open'); });
 
 
+  /* Calculateur CBM interne : volumes de référence réservés à l'administration. */
+  var geAdminCatalog=window.GE_ADMIN_CATALOG||[],geAdminCurrent=null,geAdminLines=[];
+  function geAdminNorm(v){return String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
+  function geAdminVolumeCm3(){return geAdminLines.reduce(function(s,x){return s+x.cm3*x.qty},0)}
+  function geAdminRender(){
+    var box=document.getElementById('geAdminItemCart');box.innerHTML='';
+    if(!geAdminLines.length){var p=document.createElement('p');p.className='hint';p.textContent='Aucun article ajouté au calcul.';box.appendChild(p)}
+    geAdminLines.forEach(function(x,i){
+      var row=document.createElement('div');row.className='ge-admin-cart-row';
+      var label=document.createElement('span');label.textContent=x.item.name+(x.variant&&x.variant.label?' — '+x.variant.label:'')+' × '+x.qty+' · '+(x.cm3/1000000*x.qty).toFixed(3)+' m³';
+      var del=document.createElement('button');del.type='button';del.className='status-save';del.textContent='Retirer';del.addEventListener('click',function(){geAdminLines.splice(i,1);geAdminRender()});
+      row.appendChild(label);row.appendChild(del);box.appendChild(row);
+    });
+    var total=geAdminVolumeCm3()/1000000;
+    document.getElementById('geAdminVolumeText').textContent='Volume de référence : '+total.toFixed(3).replace('.',',')+' m³';
+    document.getElementById('geAdminCountText').textContent=geAdminLines.length+' ligne(s)';
+    if(geAdminLines.length)document.getElementById('quoteCbm').value=total.toFixed(3);
+  }
+  function geAdminChoose(item){
+    geAdminCurrent=item;document.getElementById('geAdminItemName').textContent=item.name+' — '+item.family+' / '+item.group;
+    var wrap=document.getElementById('geAdminVariantWrap'),sel=document.getElementById('geAdminVariant');sel.innerHTML='<option value="">Choisir…</option>';
+    if(item.variants.length>1){item.variants.forEach(function(v){var o=document.createElement('option');o.value=v.label;o.textContent=v.label+' · '+(v.cm3/1000000).toFixed(3)+' m³';sel.appendChild(o)});wrap.hidden=false}
+    else{wrap.hidden=true}
+    document.getElementById('geAdminQty').value='1';document.getElementById('geAdminItemDetail').hidden=false;
+  }
+  function geAdminSearch(){
+    var q=geAdminNorm(document.getElementById('geAdminItemSearch').value.trim()),box=document.getElementById('geAdminItemResults');box.innerHTML='';
+    if(q.length<2){box.hidden=true;return}
+    geAdminCatalog.filter(function(x){return geAdminNorm(x.name+' '+x.family+' '+x.group).indexOf(q)>=0}).slice(0,15).forEach(function(item){
+      var b=document.createElement('button');b.type='button';b.textContent=item.name;
+      var sm=document.createElement('small');sm.textContent=item.family+' · '+item.group;b.appendChild(sm);
+      b.addEventListener('click',function(){geAdminChoose(item);box.hidden=true;document.getElementById('geAdminItemSearch').value=item.name});box.appendChild(b);
+    });
+    if(!box.children.length){var p=document.createElement('p');p.className='hint';p.textContent='Aucun article correspondant.';box.appendChild(p)}
+    box.hidden=false;
+  }
+  document.getElementById('geAdminItemSearch').addEventListener('input',geAdminSearch);
+  document.getElementById('geAdminAddItem').addEventListener('click',function(){
+    if(!geAdminCurrent)return;
+    var variant=null;
+    if(geAdminCurrent.variants.length>1){var label=document.getElementById('geAdminVariant').value;if(!label){alert('Choisissez le type ou le modèle.');return}variant=geAdminCurrent.variants.find(function(v){return v.label===label})}
+    else variant=geAdminCurrent.variants[0];
+    var qty=Math.max(1,Math.min(999,parseInt(document.getElementById('geAdminQty').value,10)||1));
+    geAdminLines.push({item:geAdminCurrent,variant:variant,qty:qty,cm3:variant.cm3});
+    geAdminCurrent=null;document.getElementById('geAdminItemDetail').hidden=true;document.getElementById('geAdminItemSearch').value='';document.getElementById('geAdminItemResults').hidden=true;geAdminRender();
+  });
+  document.getElementById('geAdminUseVolume').addEventListener('click',function(){
+    if(!geAdminLines.length){alert('Ajoutez d’abord des articles au calcul.');return}
+    document.getElementById('quoteCbm').value=(geAdminVolumeCm3()/1000000).toFixed(3);
+    document.getElementById('quoteCbm').focus();
+  });
+  document.getElementById('geAdminClearItems').addEventListener('click',function(){geAdminLines=[];geAdminRender()});
+  function geAdminLoadFromOrder(order){
+    geAdminLines=[];var detail=String(order.detail||''),first=detail.split(' | ')[0];
+    first.split(' ; ').forEach(function(line){
+      var m=line.match(/^(.*?)\\s*\\/\\s*(.*?)\\s*:\\s*(.*?)\\s*×\\s*(\\d+)(?:\\s*\\[contenu\\s*:\\s*.*\\])?$/);
+      if(!m)return;
+      var family=m[1].trim(),group=m[2].trim(),body=m[3].trim(),qty=Math.max(1,parseInt(m[4],10)||1);
+      var item=geAdminCatalog.find(function(x){return x.family===family&&x.group===group&&(body===x.name||body.indexOf(x.name+' (')===0)});
+      if(!item)return;
+      var variant=item.variants[0];
+      if(item.variants.length>1){var suffix=body.slice(item.name.length).replace(/^\\s*\\(/,'').replace(/\\)\\s*$/,'');variant=item.variants.find(function(v){return v.label===suffix});if(!variant)return}
+      geAdminLines.push({item:item,variant:variant,qty:qty,cm3:variant.cm3});
+    });
+    geAdminRender();
+  }
+  geAdminRender();
+
   function quotePayload(save){
     return {
       action:'adminQuote', key:getKey(), code:document.getElementById('quoteOrder').value,
@@ -713,6 +811,8 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
     if(o.zone)document.getElementById('quoteZone').value=o.zone;
     if(o.distanceKm)document.getElementById('quoteDistance').value=o.distanceKm;
     if(o.cbm)document.getElementById('quoteCbm').value=o.cbm;
+    var hm=String(o.notes||'').match(/Manutentionnaires souhaités\\s*:\\s*(\\d+)/i);if(hm)document.getElementById('quoteHelpers').value=hm[1];
+    geAdminLoadFromOrder(o);
   });
   function loadQuotes(){
     var sel=document.getElementById('quoteOrder'),keep=sel.value;
