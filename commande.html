@@ -1118,8 +1118,13 @@ function clearPoint(which){
   if(map&&endMarker){map.removeLayer(endMarker);endMarker=null}
  }
  distanceKm=null;
+ routeDurationMinutes=null;
+ routeSteps=[];
  if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
  $('distanceLabel').textContent='Distance : non calculée';
+ $('routeLabel').textContent='Sélectionnez les deux lieux pour calculer l’itinéraire.';
+ if($('routeDistance'))$('routeDistance').textContent='À confirmer';
+ if($('routeDuration'))$('routeDuration').textContent='À confirmer';
  refreshCoordsUI();
 }
 
@@ -1217,6 +1222,10 @@ let geRouteRequest=0;
 async function calculateRoute(){
  if(!startCoords||!endCoords)return;
  const routeRequest=++geRouteRequest,s0=startCoords,e0=endCoords;
+ if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ distanceKm=null;routeDurationMinutes=null;routeSteps=[];
+ $('distanceLabel').textContent='Calcul en cours…';
+ $('routeLabel').textContent='Calcul de l’itinéraire routier…';
  $('routeStatus').textContent='Calcul du trajet en cours…';
  const rt=await fetchRoute();
  if(routeRequest!==geRouteRequest||s0!==startCoords||e0!==endCoords)return;
