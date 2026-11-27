@@ -1,3 +1,2 @@
-
-/* GREAT EXPERTIZ — configuration du backend */
-window.GE_SCRIPT_URL = 'COLLER_ICI_URL_DU_DEPLOIEMENT_APPS_SCRIPT_TEST';
+/* URL du déploiement Apps Script TEST à renseigner après publication depuis le compte GREAT EXPERTIZ. */
+window.GE_SCRIPT_URL = '';
