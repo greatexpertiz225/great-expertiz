@@ -1527,22 +1527,23 @@ window.geSelectedItems=[];
 let gePrecisionMode=false;
 function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function geVariantsFor(item){
+ if(Array.isArray(item.variants)&&item.variants.length)return item.variants;
  const n=geNorm(item.name);
  const rules=[
-  [/frigo|refrigerateur/,['Petit réfrigérateur','Réfrigérateur moyen','Grand réfrigérateur','Réfrigérateur deux battants','Congélateur coffre','Congélateur vertical']],
-  [/fauteuil/,['Fauteuil 1 place','Fauteuil 2 places','Fauteuil 3 places']],
-  [/canape|salon/,['Canapé 1 place','Canapé 2 places','Canapé 3 places','Canapé d’angle','Canapé convertible']],
-  [/chaise/,['Chaise classique','Chaise haute','Chaise de bar','Chaise pliante','Chaise de bureau','Chaise en plastique','Chaise de cérémonie']],
-  [/table/,['Table ronde','Table carrée','Table rectangulaire','Table à manger','Table d’angle','Table basse','Table de bureau','Table pliante']],
-  [/matelas/,['Matelas 1 place','Matelas 2 places','Matelas Queen size','Matelas King size']],
-  [/\blit\b|lits/,['Lit 1 place','Lit 2 places','Lit Queen size','Lit King size','Lit superposé']],
-  [/armoire|dressing/,['Petite armoire','Armoire 2 portes','Armoire 3 portes','Armoire 4 portes','Dressing']],
-  [/ventilateur/,['Ventilateur sur pied','Ventilateur de plafond','Ventilateur mural','Petit ventilateur']],
-  [/bureau/,['Petit bureau','Bureau droit','Bureau d’angle','Bureau professionnel']],
-  [/television|televiseur|ecran/,['Petit écran','Écran moyen','Grand écran']]
+  [/frigo|refrigerateur/,['Petit','Standard','Américain']],
+  [/fauteuil/,['1 place','2 places','3 places']],
+  [/canape|salon/,['1 place','2 places','3 places','Angle']],
+  [/chaise/,['Classique','Haute','De bar','Pliante','De bureau','En plastique','De cérémonie']],
+  [/table/,['Carrée','Rectangulaire','Ronde','Pliante']],
+  [/matelas/,['1 place','2 places','Queen/King']],
+  [/\\blit\\b|lits/,['1 place','2 places','Queen','King']],
+  [/armoire|dressing/,['2 portes','3 portes','4 portes']],
+  [/ventilateur/,['Sur pied','De plafond','Mural']],
+  [/bureau/,['Petit','Standard','Professionnel']],
+  [/television|televiseur|ecran/,['Petit','Moyen','Grand']]
  ];
  const found=rules.find(([re])=>re.test(n));
- return found?found[1]:(Array.isArray(item.variants)?item.variants:[]);
+ return found?found[1]:[];
 }
 function geRenderSelectedItems(){
  const box=$('geSelectedItems');if(!box)return;box.innerHTML='';
@@ -1571,28 +1572,34 @@ function geShowPrecision(on){
  $('nextBtn').textContent='Continuer →';
 }
 function geSearchItems(){
- const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';
+ const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';box.dataset.keys='';
  if(q.length<2){box.hidden=true;return}
  const catalog=window.GE_CLIENT_CATALOG||[];
  const matches=catalog.filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q));
  const addButton=(item,label,variant='')=>{
-  const key=geNorm(label);if(box.dataset.keys&&box.dataset.keys.split('|').includes(key))return;
-  box.dataset.keys=(box.dataset.keys?box.dataset.keys+'|':'')+key;
+  const key=geNorm(label);if(box.dataset.keys.split('|').includes(key))return;
+  box.dataset.keys+=(box.dataset.keys?'|':'')+key;
   const b=document.createElement('button');b.type='button';b.className='ge-result-choice';b.textContent=label;
   b.addEventListener('click',()=>geChooseItem(item,variant));box.appendChild(b);
  };
- box.dataset.keys='';
- const representative=matches[0];
- if(q.includes('table')&&representative){
-  ['Table ronde','Table carrée','Table rectangulaire','Table à manger','Table d’angle','Table basse','Table de bureau','Table pliante'].forEach(v=>addButton({name:'Table',family:representative.family,group:representative.group},v,v));
+ if(q.includes('table')){
+  matches.filter(item=>/^tables?\\b/.test(geNorm(item.name))).forEach(item=>{
+   const variants=geVariantsFor(item);
+   if(variants.length){
+    variants.forEach(v=>{
+     const label=item.name==='Tables à manger'?'Table '+geNorm(v):item.name.replace(/^Tables?\\s*/i,'Table ');
+     addButton(item,label,v);
+    });
+   }else addButton(item,item.name.replace(/^Tables?\\s*/i,'Table '),'');
+  });
+ }else{
+  matches.forEach(item=>{
+   const variants=geVariantsFor(item);
+   if(variants.length)variants.forEach(v=>addButton(item,item.name+' · '+v,v));
+   else addButton(item,item.name,'');
+  });
  }
- matches.forEach(item=>{
-  const variants=geVariantsFor(item),nameNorm=geNorm(item.name);
-  const generic=/^(table|tables|chaise|chaises|fauteuil|fauteuils|canape|canapes|matelas|lits?|armoires?)$/.test(nameNorm);
-  if(variants.length&&generic)variants.forEach(v=>addButton(item,v,v));
-  else addButton(item,item.name,'');
- });
- if(!matches.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Décrivez cet objet dans « Autres objets ».';box.appendChild(p)}
+ if(!box.children.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Décrivez cet objet dans « Autres objets ».';box.appendChild(p)}
  box.hidden=false;
 }
 $('geItemSearch').addEventListener('input',geSearchItems);
