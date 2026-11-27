@@ -1522,6 +1522,7 @@ let geCurrentItem=null;
 function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function geVariantsFor(item){
  const n=geNorm(item.name);
+ if(/tableaux|mixage|cuisson/.test(n)||/fauteuil.*direction/.test(n))return Array.isArray(item.variants)?item.variants:[];
  const rules=[
   [/frigo|refrigerateur|réfrigérateur/,['Petit réfrigérateur','Réfrigérateur moyen','Grand réfrigérateur','Réfrigérateur deux battants','Congélateur coffre','Congélateur vertical']],
   [/fauteuil/,['Fauteuil 1 place','Fauteuil 2 places','Fauteuil 3 places']],
