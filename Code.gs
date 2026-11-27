@@ -1355,8 +1355,10 @@ function computeQuote_(inp, tarifs, settings) {
   if (!(floors >= 0 && floors <= 100 && Math.floor(floors) === floors)) return { ok: false, error: "nombre d'étages invalide" };
   var rawKmManual = inp.kmManuel == null || inp.kmManuel === "" ? null : Number(inp.kmManuel);
   var rawVolumeManual = inp.volumeManuel == null || inp.volumeManuel === "" ? null : Number(inp.volumeManuel);
+  var rawPackManual = inp.emballageManuel == null || inp.emballageManuel === "" ? null : Number(inp.emballageManuel);
   if (rawKmManual !== null && (!isFinite(rawKmManual) || rawKmManual < 0 || rawKmManual > 100000000)) return { ok: false, error: "montant kilométrique manuel invalide" };
   if (rawVolumeManual !== null && (!isFinite(rawVolumeManual) || rawVolumeManual < 0 || rawVolumeManual > 100000000)) return { ok: false, error: "supplément volume manuel invalide" };
+  if (rawPackManual !== null && (!isFinite(rawPackManual) || rawPackManual < 0 || rawPackManual > 100000000)) return { ok: false, error: "montant emballage manuel invalide" };
   var dist = (inp.distanceKm === null || inp.distanceKm === undefined || inp.distanceKm === "") ? null : Number(inp.distanceKm);
   if (dist !== null && (!isFinite(dist) || dist < 0 || dist > 10000)) return { ok: false, error: "distance invalide" };
   var vol = roundUpCbm_(cbm), specifique = vol > TARIF_CBM_SPECIFIQUE_AU_DELA;
@@ -1403,12 +1405,22 @@ function computeQuote_(inp, tarifs, settings) {
     km.note = "Montant kilométrique saisi et validé par l'administration.";
   }
   lines.push(km);
-  lines.push({ code: "emballage", label: "Emballage et protection", montant: null, statut: "a_chiffrer_separement", note: "Aucun prix automatique : à évaluer séparément." });
+  var packRequested = !!inp.emballage && norm_(inp.emballage).indexOf("deja emballe") < 0;
+  var packComplete = !packRequested;
+  if (packRequested && rawPackManual !== null && rawPackManual > 0) {
+    lines.push({ code: "emballage", label: "Emballage et protection (montant manuel validé)", montant: Math.round(rawPackManual), statut: "calcule_manuel" });
+    packComplete = true;
+  } else if (packRequested) {
+    lines.push({ code: "emballage", label: "Emballage et protection (à chiffrer)", montant: null, statut: "a_chiffrer_separement", note: "Aucun prix automatique : montant manuel requis." });
+  } else {
+    lines.push({ code: "emballage", label: "Emballage et protection", montant: 0, statut: "non_requis" });
+  }
   if (specifique && (rawVolumeManual === null || rawVolumeManual <= 0)) warn.push("Volume arrondi supérieur à " + TARIF_CBM_SPECIFIQUE_AU_DELA + " CBM : supplément manuel requis.");
+  if (!packComplete) warn.push("Emballage ou protection demandé : montant manuel requis.");
   var total = 0; lines.forEach(function (l) { if (typeof l.montant === "number") total += l.montant; });
   var volumeComplete = !specifique || (rawVolumeManual !== null && rawVolumeManual > 0);
   var kmComplete = km.statut === "calcule" || km.statut === "calcule_manuel";
-  var complete = volumeComplete && kmComplete;
+  var complete = volumeComplete && kmComplete && packComplete;
   if (!complete) warn.push("Total partiel : la cotation n'est pas complète.");
   return { ok: true, volume: { saisi: cbm, arrondi: vol }, zone: zone, categorie: inp.categorie || "", facturation: facturation, distanceKm: dist,
     lines: lines, totalPartiel: total, complete: complete, specifique: specifique, tarif: snapshot, avertissements: warn };
@@ -2102,7 +2114,7 @@ function handleAdminV3_(p, auth) {
     case "adminQuote": {
       var cat = clean_(p.categorie, 40);
       if (!VEHICLE_CATEGORIES[cat]) return { ok: false, error: "catégorie de véhicule invalide" };
-      var inp = { cbm: p.cbm, helpers: p.helpers, floors: p.floors, distanceKm: p.distanceKm, kmManuel: p.kmManuel, volumeManuel: p.volumeManuel, zone: clean_(p.zone, 12), categorie: cat, facturation: clean_(p.facturation, 20) || getSetting_("TRAJET_FACTURATION") };
+      var inp = { cbm: p.cbm, helpers: p.helpers, floors: p.floors, distanceKm: p.distanceKm, kmManuel: p.kmManuel, volumeManuel: p.volumeManuel, emballageManuel: p.emballageManuel, zone: clean_(p.zone, 12), categorie: cat, facturation: clean_(p.facturation, 20) || getSetting_("TRAJET_FACTURATION") };
       var code = clean_(p.code, 40);
       if (code) {
         var f = findRowByCode_(getOrdersSheet_(), code);
@@ -2110,6 +2122,7 @@ function handleAdminV3_(p, auth) {
         if (!inp.zone) inp.zone = String(f.row[36] || "");
         if (inp.distanceKm === undefined || inp.distanceKm === "") inp.distanceKm = f.row[27] === "" ? null : f.row[27];
         if (inp.cbm === undefined || inp.cbm === "") inp.cbm = f.row[10];
+        inp.emballage = String(f.row[29] || "");
       }
       var q = computeQuote_(inp, getTarifs_(), getSettingsMap_());
       if (!q.ok) return q;
