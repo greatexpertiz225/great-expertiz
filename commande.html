@@ -1386,7 +1386,7 @@ function renderReceiptRoute(d){
 }
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
-function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation=finalWrite?'splashWrite 1.5s steps(14,end) .1s forwards':'splashWrite 2.8s steps(14,end) .15s infinite'}}
+function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation=finalWrite?'splashWrite 1.5s steps(14,end) .1s forwards':'splashWrite 1.5s steps(14,end) .1s forwards'}}
 function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
 
 /* ---------- Envoi de la demande client sans code OTP (réponse GE_ORDER_RESULT) ---------- */
