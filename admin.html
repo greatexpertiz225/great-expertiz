@@ -324,6 +324,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
             <div><label for="quoteFloors">Nombre d’étages à facturer</label><input id="quoteFloors" type="number" min="0" max="100" step="1" value="0"></div>
             <div><label for="quoteKmManual">Montant kilométrique manuel (FCFA)</label><input id="quoteKmManual" type="number" min="0" max="100000000" step="1" placeholder="À renseigner si le trajet est sur devis"></div>
             <div><label for="quoteVolumeManual">Supplément volume manuel (FCFA)</label><input id="quoteVolumeManual" type="number" min="0" max="100000000" step="1" placeholder="Obligatoire au-delà de 10 CBM"></div>
+            <div><label for="quotePackagingManual">Emballage / protection manuel (FCFA)</label><input id="quotePackagingManual" type="number" min="0" max="100000000" step="1" placeholder="Si le client demande une protection"></div>
           </div>
           <div class="order-actions" style="margin-top:14px;">
             <button type="button" class="status-save" id="quoteCalcBtn">Calculer l’estimation</button>
@@ -659,7 +660,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
       distanceKm:document.getElementById('quoteDistance').value, cbm:document.getElementById('quoteCbm').value,
       helpers:document.getElementById('quoteHelpers').value, floors:document.getElementById('quoteFloors').value,
       kmManuel:document.getElementById('quoteKmManual').value, volumeManuel:document.getElementById('quoteVolumeManual').value,
-      facturation:'aller_simple', save:save?'true':'false'
+      emballageManuel:document.getElementById('quotePackagingManual').value, facturation:'aller_simple', save:save?'true':'false'
     };
   }
   function renderQuoteResult(q, id){
