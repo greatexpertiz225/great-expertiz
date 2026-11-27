@@ -787,6 +787,13 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .receipt-alert strong{font-size:13px}
 .receipt-alert span{font-weight:700;line-height:1.35}
 
+.ge-variant-rows{display:grid;gap:7px}
+.ge-variant-line{display:grid;grid-template-columns:minmax(0,1fr) 70px auto;gap:7px;align-items:center}
+.ge-variant-line select,.ge-variant-line input{min-width:0;min-height:42px;padding:8px}
+.ge-variant-line button{min-height:42px;padding:7px 12px}
+.ge-add-variant{width:100%;padding:8px;margin-top:7px}
+.ge-variant-total{display:block;color:#64748b;text-align:right;margin-top:5px;font-weight:700}
+
 </style>
 <script src="config.js"></script>
 </head>
@@ -1334,8 +1341,8 @@ function stepOk(n){
   if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
  if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet du catalogue ou décrivez un objet absent de la liste.','geItemSearch');
-  if(gePrecisionMode){const missing=(window.geSelectedItems||[]).find(x=>(x.variants||[]).length&&!x.variant);if(missing){const selects=[...$('gePrecisionList').querySelectorAll('select')];const target=selects.find(x=>x.dataset.itemName===missing.name);return stepMsg('Choisissez le type exact pour : '+missing.name+'.','gePrecisionList')}}
-  const detailCheck=[(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':'')).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
+  if(gePrecisionMode){const missing=(window.geSelectedItems||[]).find(x=>(x.variants||[]).length&&(!Array.isArray(x.details)||!x.details.length||x.details.some(d=>!d.variant||!Number.isInteger(Number(d.qty))||Number(d.qty)<1)||x.details.reduce((sum,d)=>sum+(Number(d.qty)||0),0)!==Number(x.qty)));if(missing){const card=[...$('gePrecisionList').children].find(c=>c.firstChild&&c.firstChild.textContent.startsWith(missing.name));const target=card&&card.querySelector('select');if(target){target.focus();target.scrollIntoView({behavior:'smooth',block:'center'})}const sum=(missing.details||[]).reduce((n,d)=>n+(Number(d.qty)||0),0);return stepMsg('Précisez tous les types de « '+missing.name+' » et répartissez exactement les '+missing.qty+' unité(s) (quantités saisies : '+sum+').', 'gePrecisionList')}}
+  const detailCheck=[(window.geSelectedItems||[]).flatMap(x=>{const ds=(x.details&&x.details.length)?x.details.filter(d=>d.variant&&Number(d.qty)>0):[{variant:x.variant||'',qty:x.qty}];return ds.map(d=>x.family+' / '+x.group+' : '+x.name+(d.variant?' ('+d.variant+')':'')+' × '+d.qty+(x.preset?' [contenu : '+x.preset+']':''))}).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
  if(n===4){const h=Number($('helpers').value||0);if(!Number.isInteger(h)||h<0||h>50)return stepMsg('Indiquez un nombre entier de manutentionnaires entre 0 et 50.','helpers')}
@@ -1381,7 +1388,7 @@ function getPayload(){
  const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
  const fullPlaces=which=>allStopLabels(which);
  const helpers=$('helpers')?String($('helpers').value||'0'):'0';
- const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':''));
+ const itemLines=(window.geSelectedItems||[]).flatMap(x=>{const details=(x.details&&x.details.length)?x.details.filter(d=>d.variant&&Number(d.qty)>0):[{variant:x.variant||'',qty:x.qty}];return details.map(d=>x.family+' / '+x.group+' : '+x.name+(d.variant?' ('+d.variant+')':'')+' × '+d.qty+(x.preset?' [contenu : '+x.preset+']':''))});
  const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
  const helperTask=$('helperTask')?$('helperTask').value:'';
  const notes=['Manutentionnaires souhaités : '+helpers,helperTask?'Intervention manutention : '+helperTask:'',$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',$('notes').value.trim()].filter(Boolean).join(' | ');
@@ -1539,7 +1546,7 @@ function geRenderSelectedItems(){
   const row=document.createElement('div');row.className='ge-selected-row';
   const label=document.createElement('span');label.textContent=item.name;
   const qty=document.createElement('input');qty.type='number';qty.min='1';qty.max='999';qty.step='1';qty.inputMode='numeric';qty.value=String(item.qty||1);qty.setAttribute('aria-label','Quantité pour '+item.name);qty.className='ge-line-qty';
-  qty.addEventListener('change',()=>{const v=Number(qty.value);if(!Number.isInteger(v)||v<1||v>999){qty.value=String(item.qty||1);return}item.qty=v});
+  qty.addEventListener('change',()=>{const v=Number(qty.value);if(!Number.isInteger(v)||v<1||v>999){qty.value=String(item.qty||1);return}item.qty=v;item.details=[];geRenderPrecision()});
   const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Retirer';del.addEventListener('click',()=>{window.geSelectedItems.splice(index,1);geRenderSelectedItems();geRenderPrecision()});
   row.append(label,qty,del);box.appendChild(row);
  });
@@ -1556,14 +1563,33 @@ function geRenderPrecision(){
  const box=$('gePrecisionList');if(!box)return;box.innerHTML='';
  const needs=window.geSelectedItems.filter(x=>(x.variants||[]).length);
  if(!needs.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucune précision supplémentaire obligatoire pour les objets sélectionnés.';box.appendChild(p);return}
- needs.forEach((item)=>{
+ needs.forEach((item,itemIndex)=>{
+  if(!Array.isArray(item.details)||!item.details.length)item.details=[{variant:'',qty:Number(item.qty)||1}];
   const card=document.createElement('div');card.className='ge-precision-row';
-  const title=document.createElement('strong');title.textContent=item.name+' · quantité : '+item.qty;
-  const select=document.createElement('select');select.setAttribute('aria-label','Type exact pour '+item.name);select.dataset.itemName=item.name;select.required=true;
-  const blank=document.createElement('option');blank.value='';blank.textContent='Choisir le type exact…';select.appendChild(blank);
-  item.variants.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
-  select.value=item.variant||'';select.addEventListener('change',()=>{item.variant=select.value});
-  card.append(title,select);box.appendChild(card);
+  const title=document.createElement('strong');title.textContent=item.name+' · quantité totale : '+item.qty;
+  const rows=document.createElement('div');rows.className='ge-variant-rows';
+  const renderRows=()=>{
+   rows.innerHTML='';
+   item.details.forEach((detail,detailIndex)=>{
+    const line=document.createElement('div');line.className='ge-variant-line';
+    const select=document.createElement('select');select.setAttribute('aria-label','Type exact pour '+item.name+' '+(detailIndex+1));select.required=true;
+    const blank=document.createElement('option');blank.value='';blank.textContent='Choisir le type…';select.appendChild(blank);
+    item.variants.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
+    select.value=detail.variant||'';select.addEventListener('change',()=>{detail.variant=select.value});
+    const qty=document.createElement('input');qty.type='number';qty.min='0';qty.max='999';qty.step='1';qty.inputMode='numeric';qty.value=String(detail.qty??0);qty.setAttribute('aria-label','Quantité de '+item.name+' type '+(detail.variant||'à préciser'));
+    qty.addEventListener('change',()=>{const v=Number(qty.value);if(!Number.isInteger(v)||v<0||v>999){qty.value=String(detail.qty??0);return}detail.qty=v});
+    line.append(select,qty);
+    if(item.details.length>1){const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='×';del.setAttribute('aria-label','Retirer cette ligne de type');del.addEventListener('click',()=>{item.details.splice(detailIndex,1);renderRows()});line.appendChild(del)}
+    rows.appendChild(line);
+   });
+  };
+  renderRows();
+  const add=document.createElement('button');add.type='button';add.className='secondary ge-add-variant';add.textContent='+ Ajouter un autre type';
+  add.addEventListener('click',()=>{item.details.push({variant:'',qty:0});renderRows()});
+  const total=document.createElement('small');total.className='ge-variant-total';
+  const updateTotal=()=>{const sum=item.details.reduce((n,d)=>n+(Number(d.qty)||0),0);total.textContent='Quantités réparties : '+sum+' / '+item.qty};
+  rows.addEventListener('change',updateTotal);updateTotal();
+  card.append(title,rows,add,total);box.appendChild(card);
  });
 }
 function geShowPrecision(on){
