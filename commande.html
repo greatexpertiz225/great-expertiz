@@ -1122,13 +1122,15 @@ async function fetchRoute(coords){
   const r=await fetchT('https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(j),8500);
   if(r.ok){const t=(await r.json()).trip;if(t&&t.legs&&t.legs.length){const line=t.legs.reduce((all,leg,i)=>{const part=dec6(leg.shape);return all.concat(i?part.slice(1):part)},[]);const v=ok({distance:t.summary.length*1000,duration:t.summary.time,geometry:{type:'LineString',coordinates:line}});if(v)return v}}
  }catch(x){}
- if(ROUTING_API_KEY){
+ // Ce repli historique ne sait tracer que le trajet simple : ne jamais l'utiliser
+ // pour éviter de contourner silencieusement les arrêts intermédiaires.
+ if(ROUTING_API_KEY && coords.length===2){
   try{const r=await fetchT('https://api.openrouteservice.org/v2/directions/driving-car?api_key='+encodeURIComponent(ROUTING_API_KEY)+'&start='+s[1]+','+s[0]+'&end='+e[1]+','+e[0],8500);if(r.ok){const f=(await r.json()).features[0];const v=ok({distance:f.properties.summary.distance,duration:f.properties.summary.duration,geometry:f.geometry});if(v)return v}}catch(x){}
  }
  return null;
 }
 
-/* Affiche le trajet dès que les deux lieux sont connus (ligne directe si le calcul routier est indisponible) */
+/* Affiche un itinéraire routier lorsque le moteur le calcule ; aucun tracé de remplacement n'est inventé. */
 let geRouteRequest=0;
 function extraStopValues(id){return Array.from($(id).querySelectorAll('input[data-stop-address]')).map(x=>x.value.trim()).filter(Boolean)}
 function allStopLabels(which){
