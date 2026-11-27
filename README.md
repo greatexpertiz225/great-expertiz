@@ -8,7 +8,9 @@
 - Configuration du serveur : `config.js`
 - Photographies : `images/`
 
-Le formulaire client suit le parcours simplifié convenu : pas de code OTP, pas de catalogue d’articles, pas de choix de véhicule ni de prix calculé par le client. Le client indique son trajet, son type de transport, ses coordonnées, une description libre et éventuellement son poids total. GREAT EXPERTIZ étudie ensuite la demande et prépare le devis depuis l’administration.
+Le formulaire client suit le parcours simplifié convenu : pas de code OTP, pas de catalogue d’articles, pas de choix de véhicule ni de prix calculé par le client. Le client indique son trajet (avec plusieurs lieux d’enlèvement et de livraison possibles), son type de transport, ses coordonnées, une description libre et éventuellement son poids total. GREAT EXPERTIZ étudie ensuite la demande et prépare le devis depuis l’administration.
+
+Le module **Cotations & devis** permet à l'équipe autorisée de calculer ou d'enregistrer une cotation, de compléter manuellement les postes « sur devis » (kilométrage hors Grand Abidjan, volumes supérieurs à 10 CBM, emballage/protection), de suivre le statut du devis et de préparer un message WhatsApp. Le serveur refuse le statut « envoyée » tant que la cotation est incomplète.
 
 ## Configuration TEST indispensable
 
@@ -29,4 +31,6 @@ Le formulaire client suit le parcours simplifié convenu : pas de code OTP, pas 
 - Le formulaire et le backend ne sont pas déclarés opérationnels avant un test réel sur la copie de test.
 
 ## Vérifications
-Les scripts JavaScript des pages ont été contrôlés syntaxiquement. Cela ne remplace pas les essais réels dans un navigateur Android, le déploiement Apps Script, les autorisations Google, ni les tests de lecture/écriture dans la copie de test.
+Les scripts JavaScript des pages et le fichier Apps Script ont été contrôlés syntaxiquement. Des contrôles statiques vérifient notamment les champs de formulaire, les arrêts intermédiaires, les actions de cotation et les garde-fous du mode test. Des scénarios isolés de calcul tarifaire ont également été exécutés.
+
+Ces contrôles ne remplacent pas les essais réels dans un navigateur Android, le déploiement Apps Script, les autorisations Google, ni les tests de lecture/écriture dans la copie de test. Tant que la copie de test n'est pas reliée et testée, le site ne doit pas être considéré comme opérationnel.
