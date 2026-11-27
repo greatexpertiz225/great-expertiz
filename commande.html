@@ -1524,6 +1524,7 @@ fillCommunes();
 
 /* ---------- Articles client : choix direct du type + quantité ---------- */
 window.geSelectedItems=[];
+let gePrecisionMode=false;
 function geNorm(s){return String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
 function geVariantsFor(item){
  const n=geNorm(item.name);
@@ -1575,20 +1576,21 @@ function geSearchItems(){
  const catalog=window.GE_CLIENT_CATALOG||[];
  const matches=catalog.filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q));
  const addButton=(item,label,variant='')=>{
+  const key=geNorm(label);if(box.dataset.keys&&box.dataset.keys.split('|').includes(key))return;
+  box.dataset.keys=(box.dataset.keys?box.dataset.keys+'|':'')+key;
   const b=document.createElement('button');b.type='button';b.className='ge-result-choice';b.textContent=label;
   b.addEventListener('click',()=>geChooseItem(item,variant));box.appendChild(b);
  };
- const seen=new Set();
+ box.dataset.keys='';
+ const representative=matches[0];
+ if(q.includes('table')&&representative){
+  ['Table ronde','Table carrée','Table rectangulaire','Table à manger','Table d’angle','Table basse','Table de bureau','Table pliante'].forEach(v=>addButton({name:'Table',family:representative.family,group:representative.group},v,v));
+ }
  matches.forEach(item=>{
-  const variants=geVariantsFor(item);
-  const nameNorm=geNorm(item.name);
-  const isGeneric=/^(table|tables|chaise|chaises|fauteuil|fauteuils|canape|canapes|matelas|lits?|armoires?)$/.test(nameNorm);
-  if(variants.length&&(isGeneric||!nameNorm.includes(q)||nameNorm===q)){
-   variants.forEach(v=>{const key=geNorm(v);if(!seen.has(key)){seen.add(key);addButton(item,v,v)}});
-  }else{
-   const key=geNorm(item.name);
-   if(!seen.has(key)){seen.add(key);addButton(item,item.name,'')}
-  }
+  const variants=geVariantsFor(item),nameNorm=geNorm(item.name);
+  const generic=/^(table|tables|chaise|chaises|fauteuil|fauteuils|canape|canapes|matelas|lits?|armoires?)$/.test(nameNorm);
+  if(variants.length&&generic)variants.forEach(v=>addButton(item,v,v));
+  else addButton(item,item.name,'');
  });
  if(!matches.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Décrivez cet objet dans « Autres objets ».';box.appendChild(p)}
  box.hidden=false;
