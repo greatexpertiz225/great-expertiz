@@ -1591,7 +1591,7 @@ function validateOrderInput_(p) {
   if (!ph.ok) return bad(ph.error);
   var email = clean_(p.email || p.contact, 120);
   if (email && !isValidEmail_(email)) return bad("Adresse e-mail invalide.");
-  var enl = clean_(p.enlevement, 250), liv = clean_(p.livraison, 250);
+  var enl = clean_(p.enlevement, 1200), liv = clean_(p.livraison, 1200);
   if (enl.length < 3) return bad("Indiquez le lieu de départ.");
   if (liv.length < 3) return bad("Indiquez le lieu d'arrivée.");
   var date = clean_(p.dateSouhaitee, 12);
