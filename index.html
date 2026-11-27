@@ -148,8 +148,8 @@ footer img{height:54px;width:auto;display:block;margin-bottom:12px}
 .sp-word{font:800 clamp(30px,8vw,52px)/1 "Segoe UI",Arial,sans-serif;letter-spacing:3px;display:flex;justify-content:center;gap:.4em;flex-wrap:wrap}
 .sp-g{color:#8fa814;display:inline-flex}.sp-e{color:#0b6a99;display:inline-flex}
 .sp-word b{opacity:0;transform:translateY(10px);animation:spIn .45s ease forwards}
-.sp-line{display:block;height:4px;width:0;max-width:260px;margin:14px auto 10px;border-radius:4px;background:#27a9e1;animation:spLine .9s .9s ease forwards}
-.sp-tag{font-size:12px;letter-spacing:3px;font-weight:700;color:#5b6e80;opacity:0;animation:spIn .5s 1.4s ease forwards}
+.sp-line{display:block;height:4px;width:0;max-width:260px;margin:14px auto 10px;border-radius:4px;background:#27a9e1;animation:spLine .6s .5s ease forwards}
+.sp-tag{font-size:12px;letter-spacing:3px;font-weight:700;color:#5b6e80;opacity:0;animation:spIn .4s .75s ease forwards}
 @keyframes spIn{to{opacity:1;transform:none}}@keyframes spLine{to{width:70%}}@keyframes spPop{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
 </style>
 <script src="config.js"></script>
@@ -172,7 +172,7 @@ try{if(sessionStorage.getItem('geSplash')||(window.matchMedia&&matchMedia('(pref
 document.addEventListener('DOMContentLoaded',function(){var lg=document.querySelector('header img'),sl=document.getElementById('spLogo');if(lg&&sl)sl.src=lg.src});
 function letters(el,t,d0){for(var i=0;i<t.length;i++){var x=document.createElement('b');x.textContent=t.charAt(i);x.style.animationDelay=(d0+i*70)+'ms';el.appendChild(x)}}
 letters(s.querySelector('.sp-g'),'GREAT',250);letters(s.querySelector('.sp-e'),'EXPERTIZ',700);
-s.className='on';setTimeout(hide,2300);window.addEventListener('load',function(){setTimeout(hide,2000)});})();</script>
+s.className='on';setTimeout(hide,1550);window.addEventListener('load',function(){setTimeout(hide,1200)});})();</script>
 
 <div class="road" aria-hidden="true"><i class="truck" id="truck">🚚</i></div>
 <header class="nav" id="nav"><div class="wrap">
