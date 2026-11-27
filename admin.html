@@ -679,7 +679,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
       var p=document.createElement('p');p.textContent='Cotation enregistrée : '+id;box.appendChild(p);
       var orderCode=document.getElementById('quoteOrder').value,order=allOrders.find(function(o){return o.code===orderCode;});
       if(q.complete&&order&&order.telephone){
-        var digits=String(order.telephone).replace(/\\D/g,'');
+        var digits=String(order.telephone).replace(/\D/g,'');
         if(digits.length===10&&digits.charAt(0)==='0')digits='225'+digits.substring(1);
         else if(digits.length===9)digits='225'+digits;
         if(digits.length>=11){
