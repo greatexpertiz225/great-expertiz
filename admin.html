@@ -672,7 +672,8 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
     (q.lines||[]).forEach(function(line){
       var tr=document.createElement('tr'),td1=document.createElement('td'),td2=document.createElement('td'),td3=document.createElement('td');
       td1.textContent=line.label||line.code||'—';td2.textContent=typeof line.montant==='number'?Number(line.montant).toLocaleString('fr-FR')+' FCFA':'À chiffrer';
-      td3.textContent=line.statut==='calcule'?'Calculé':(line.note||line.statut||'À vérifier');
+      var stateLabels={calcule:'Calculé',calcule_manuel:'Montant manuel validé',non_requis:'Non requis',sur_devis:'Sur devis',distance_manquante:'Distance manquante',categorie_sans_tarif:'Aucun tarif actif',a_chiffrer_separement:'À chiffrer séparément'};
+      td3.textContent=stateLabels[line.statut]||line.note||line.statut||'À vérifier';
       tr.appendChild(td1);tr.appendChild(td2);tr.appendChild(td3);tbody.appendChild(tr);
     });
     table.appendChild(tbody);box.appendChild(table);
