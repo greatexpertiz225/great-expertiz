@@ -1282,7 +1282,7 @@ function showStatus(message,type){
 }
 function getPayload(){
  const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
- const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',!$('geRegAckWrap').hidden&&$('geRegAck').checked?'Déclaration réglementaire confirmée par le client':''].filter(Boolean).join(' | ');
+ const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',''].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:place('pickup'),livraison:place('dropoff'),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
@@ -1325,28 +1325,7 @@ function callServer(data){
  });
 }
 function setBusy(on){busy=on;['submitBtn'].forEach(id=>{const b=$(id);if(b)b.disabled=on});if(on)showGESplash();else hideGESplash(0)}
-function tick(){
- const left=Math.max(0,Math.round((otpDeadline-Date.now())/1000)),m=Math.floor(left/60),s=String(left%60).padStart(2,'0');
- $('otpTimer').textContent=left>0?'Le code est valable encore '+m+':'+s+'.':'Ce code a expiré : demandez un nouvel envoi.';
- const wait=Math.max(0,Math.ceil((resendAt-Date.now())/1000));$('resendBtn').disabled=busy||wait>0;$('resendBtn').textContent=wait>0?'Renvoyer le code ('+wait+' s)':'Renvoyer le code';
- if(left<=0&&wait<=0&&timerHandle){clearInterval(timerHandle);timerHandle=null}
-}
-function showOtpPanel(d){
- $('otpIntro').hidden=true;$('otpPanel').hidden=false;$('otpCode').value='';$('otpMsg').textContent='';$('otpMsg').className='';
- $('otpHint').textContent='Le code a été transmis à WhatsApp pour le numéro '+(d.phoneMasked||'indiqué')+'. S’il n’arrive pas dans quelques instants, demandez un nouvel envoi.';
- otpDeadline=Date.now()+(d.expiresInSec||600)*1000;resendAt=Date.now()+30000;if(timerHandle)clearInterval(timerHandle);timerHandle=setInterval(tick,1000);tick();
- try{$('otpCode').focus()}catch(e){}
-}
-function backToIntro(){$('otpPanel').hidden=true;$('otpIntro').hidden=false;if(timerHandle){clearInterval(timerHandle);timerHandle=null}}
-async function requestCodeFlow(){
- if(busy)return;
- if(!formOk())return;
- $('status').style.display='none';setBusy(true);
- const d=await callServer(Object.assign({action:'submitOrder'},getPayload()));
- setBusy(false);
- if(d.ok){finishSubmit(d);return}
- showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
-}
+let busy=false,timerHandle=null;
 function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;if(window.QRCode){new QRCode(el,{text:url,width:140,height:140,correctLevel:QRCode.CorrectLevel.M})}else{const img=new Image();img.alt='QR code de suivi';img.width=140;img.height=140;img.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(url);el.appendChild(img)}}
 function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
