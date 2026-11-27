@@ -492,6 +492,7 @@ body.sheetfull .leaflet-control-container{display:none!important}
 #finalQr canvas,#finalQr img{width:140px!important;height:140px!important;max-width:100%}
 #geItemResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;max-height:210px;overflow:auto;padding:7px;background:#f7fafc;border:1px solid var(--line);border-radius:12px}
 #geItemResults[hidden]{display:none}
+#helpersCountWrap[hidden]{display:none!important}
 #geItemResults .ge-result-choice{min-height:42px;padding:8px 9px;border:1px solid #d5e4ee;border-radius:10px;background:#fff;color:var(--navy);font-size:13px;text-align:left;line-height:1.25}
 #geItemResults .ge-result-choice:active{background:#e6f5fc;border-color:var(--blue)}
 .ge-selected-row{display:grid;grid-template-columns:minmax(0,1fr) 76px auto;align-items:center;gap:7px;padding:8px;margin:6px 0;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:13px}
@@ -873,14 +874,13 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </div>
 <div class="step" id="step3" data-title="Votre besoin">
 <h3 id="step3Title">Que souhaitez-vous transporter ?</h3>
-<p class="hint" id="step3Intro">Ajoutez vos objets et ajustez la quantité à côté de chaque ligne. Les articles absents du catalogue peuvent être décrits dans « Autres objets ».</p>
+<p class="hint" id="step3Intro">Décrivez simplement les objets ou marchandises. Les précisions seront recueillies par notre équipe lors du contact.</p>
 <div class="field">
  <label for="need">Décrivez les objets ou marchandises à transporter *</label>
  <textarea id="need" rows="4" maxlength="3000" required placeholder="Ex. : 1 réfrigérateur, 2 tables, des chaises, des cartons et un canapé…"></textarea>
  <div class="hint">Écrivez simplement ce que vous souhaitez transporter. GREAT EXPERTIZ vous contactera ensuite pour recueillir les précisions nécessaires.</div>
  <div class="hint" id="needCount">0 / 3000</div>
 </div>
-<div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
 </div>
 <div class="step" id="step4" data-title="Accès et manutention">
@@ -1353,7 +1353,7 @@ function stepOk(n){
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
  if(n===3){if($('need').value.trim().length<5)return stepMsg('Décrivez les objets ou marchandises à transporter.','need');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
-  const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
+}
  if(n===4){if(!$('pickupFloor').value)return stepMsg('Indiquez l’étage au lieu d’enlèvement.','pickupFloor');if(!$('pickupLift').value)return stepMsg('Indiquez si un ascenseur est disponible au lieu d’enlèvement.','pickupLift');if(!$('deliveryFloor').value)return stepMsg('Indiquez l’étage au lieu de livraison.','deliveryFloor');if(!$('deliveryLift').value)return stepMsg('Indiquez si un ascenseur est disponible au lieu de livraison.','deliveryLift');if(!$('helpersNeeded').value)return stepMsg('Indiquez si vous avez besoin de manutentionnaires.','helpersNeeded');if($('helpersNeeded').value==='Oui'){const h=Number($('helpers').value);if(!Number.isInteger(h)||h<1||h>50)return stepMsg('Indiquez un nombre de manutentionnaires entre 1 et 50.','helpers')}}
  return stepMsg('');
 }
@@ -1400,14 +1400,14 @@ function getPayload(){
  const detailText=$('need').value.trim().slice(0,3000);
  const helperTask='';
  const accessText='Enlèvement : '+$('pickupFloor').value+' ; ascenseur : '+$('pickupLift').value+' | Livraison : '+$('deliveryFloor').value+' ; ascenseur : '+$('deliveryLift').value;
- const notes=['Manutentionnaires souhaités : '+($('helpersNeeded').value==='Oui'?'Oui, '+helpers:'Non'),accessText,$('access').value.trim()?'Autre précision accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',$('notes')?$('notes').value.trim():''].filter(Boolean).join(' | ');
+ const notes=['Manutentionnaires souhaités : '+($('helpersNeeded').value==='Oui'?'Oui, '+helpers:'Non'),accessText,$('access').value.trim()?'Autre précision accès : '+$('access').value.trim():'',$('notes')?$('notes').value.trim():''].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:fullPlaces('pickup').join(' ; '),livraison:fullPlaces('delivery').join(' ; '),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
   dateSouhaitee:$('date').value,detail:detailText,cbm:'',emballage:'',notes:notes,
   distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
   gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
-  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,interventionManutention:helperTask,etageEnlevement:$('pickupFloor').value,ascenseurEnlevement:$('pickupLift').value,etageLivraison:$('deliveryFloor').value,ascenseurLivraison:$('deliveryLift').value,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
+  poidsKg:'',manutentionnaires:helpers,interventionManutention:helperTask,etageEnlevement:$('pickupFloor').value,ascenseurEnlevement:$('pickupLift').value,etageLivraison:$('deliveryFloor').value,ascenseurLivraison:$('deliveryLift').value,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
  try{const t=localStorage.getItem('geClientToken');if(t)p.clientToken=t}catch(e){}
  return p;
 }
@@ -1488,22 +1488,23 @@ function geDrawQr(){
 }
 async function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
- const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets ou marchandises',p.detail],['Étage enlèvement',p.etageEnlevement+' · Ascenseur : '+p.ascenseurEnlevement],['Étage livraison',p.etageLivraison+' · Ascenseur : '+p.ascenseurLivraison],['Manutentionnaires',p.manutentionnaires==='0'?'Non':'Oui · '+p.manutentionnaires+' personne(s)'],['Poids',weightText()||'Non indiqué']];
+ const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets ou marchandises',p.detail],['Étage enlèvement',p.etageEnlevement+' · Ascenseur : '+p.ascenseurEnlevement],['Étage livraison',p.etageLivraison+' · Ascenseur : '+p.ascenseurLivraison],['Manutentionnaires',p.manutentionnaires==='0'?'Non':'Oui · '+p.manutentionnaires+' personne(s)'],];
  $('receiptText').textContent=requestCode;$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
  renderReceiptRoute(p);
  const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
  $('trackLink').href='./index.html?code='+encodeURIComponent(requestCode)+'#suivi';
  $('receipt').style.display='block';$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
  const qrReady=await geDrawQr();
+ busy=false;const submitButton=$('submitBtn');if(submitButton)submitButton.disabled=false;
  hideGESplash(0);
  if(!qrReady){const msg=$('confirmMsg');msg.textContent+=' Le code QR n’a pas pu être généré sur cet appareil ; utilisez le lien de suivi ci-dessous.';}
 }
 $('orderForm').addEventListener('submit',e=>e.preventDefault());
 $('submitBtn').addEventListener('click',requestCodeFlow);
 $('need').addEventListener('input',()=>{$('needCount').textContent=$('need').value.length+' / 3000'});
-$('weightUnknown').addEventListener('change',()=>{$('weight').disabled=$('weightUnknown').checked;if($('weightUnknown').checked)$('weight').value=''});
+
 $('helpersNeeded').addEventListener('change',()=>{$('helpersCountWrap').hidden=$('helpersNeeded').value!=='Oui';if($('helpersNeeded').value!=='Oui')$('helpers').value=''});
-['name','phone','recipientPhone','email','need','weight','access','notes','date','service','pickupFloor','pickupLift','deliveryFloor','deliveryLift','helpersNeeded','helpers'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{});});
+['name','phone','recipientPhone','email','need','access','notes','date','service','pickupFloor','pickupLift','deliveryFloor','deliveryLift','helpersNeeded','helpers'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{});});
 
 /* ---------- Suggestions de communes et villes ---------- */
 const ABIDJAN='Abobo|Adjamé|Anyama|Attécoubé|Bingerville|Cocody|Koumassi|Marcory|Plateau|Port-Bouët|Songon|Treichville|Yopougon|Abidjan';
