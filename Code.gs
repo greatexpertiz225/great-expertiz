@@ -2147,6 +2147,8 @@ function handleAdminV3_(p, auth) {
       }
       if (!found) return { ok: false, error: "cotation introuvable" };
       var oldStatus = String(qsh.getRange(found, 16).getValue() || "brouillon");
+      var isComplete = String(qsh.getRange(found, 15).getValue()) === "true";
+      if (next === "envoyée" && !isComplete) return { ok: false, error: "cotation incomplète : complétez tous les postes avant de l'envoyer" };
       qsh.getRange(found, 16).setValue(next);
       logEvent_("INFO", "cotation.statut", String(qsh.getRange(found, 2).getValue() || ""), qid + " : " + oldStatus + " -> " + next);
       return { ok: true, id: qid, status: next };
