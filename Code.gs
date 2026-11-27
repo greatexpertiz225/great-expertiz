@@ -654,7 +654,9 @@ function handleDirectOrder_(p) {
     var v = validateOrderInput_(p);
     if (!v.ok) return fail("DONNEES_INVALIDES", v.message);
     var data = v.data;
-    data.poidsKg = clean_(p.poidsKg, 12);
+    var rawWeight = clean_(p.poidsKg, 12);
+    if (rawWeight) { var weightNumber = Number(rawWeight.replace(",", ".")); if (!isFinite(weightNumber) || weightNumber <= 0 || weightNumber > 220000) return fail("POIDS_INVALIDE", "Le poids total doit être un nombre positif en kilogrammes."); }
+    data.poidsKg = rawWeight;
     data.temperature = clean_(p.temperature, 80);
     data.notes = clean_([data.notes, data.poidsKg ? "Poids total déclaré : " + data.poidsKg + " kg" : "Poids non communiqué",
       data.temperature ? "Température : " + data.temperature : ""].filter(Boolean).join(" | "), 2000);
@@ -1919,9 +1921,9 @@ function notifyNewOrder_(code, d, canal) {
   var rows = [["Prestation", d.prestation], ["Client", d.nom], ["Téléphone client", d.telE164], ["E-mail", d.email || "—"],
     ["Destinataire", [d.destNom, d.destTel].filter(Boolean).join(" · ") || "—"], ["Besoin décrit", d.detail], ["Départ", d.enlevement], ["Arrivée", d.livraison],
     ["Date souhaitée", d.dateSouhaitee || "—"], ["Distance", d.distanceKm ? d.distanceKm + " km" : "—"], ["Durée estimée", d.dureeMin ? d.dureeMin + " min" : "—"], ["Poids déclaré", d.poidsKg ? d.poidsKg + " kg" : "Non communiqué"], ["Température", d.temperature || "—"],
-    ["Zone", d.zone === "intra" ? "Grand Abidjan" : (d.zone === "extra" ? "Hors Grand Abidjan (sur devis)" : "À vérifier")], ["Emballage", d.emballage || "—"], ["Vérifié par", canal || "—"]];
+    ["Zone", d.zone === "intra" ? "Grand Abidjan" : (d.zone === "extra" ? "Hors Grand Abidjan (sur devis)" : "À vérifier")], ["Emballage", d.emballage || "—"], ["Canal de réception", canal || "—"]];
   var html = "<div style='font-family:Arial,sans-serif;max-width:480px;border:2px solid #0E3A54;padding:24px;'>"
-    + "<h2 style='color:#0B9DE0;margin:0 0 4px;'>GREAT EXPERTIZ</h2><p style='color:#5B7285;margin:0 0 18px;'>Nouvelle demande validée par code</p>"
+    + "<h2 style='color:#0B9DE0;margin:0 0 4px;'>GREAT EXPERTIZ</h2><p style='color:#5B7285;margin:0 0 18px;'>Nouvelle demande reçue — à étudier et à coter</p>"
     + "<p style='font-size:20px;font-weight:bold;color:#0E3A54;margin:0 0 16px;'>" + esc_(code) + "</p><table style='width:100%;border-collapse:collapse;font-size:14px;'>"
     + rows.map(function (r) { return "<tr><td style='color:#5B7285;padding:6px 0;vertical-align:top;'>" + r[0] + "</td><td style='text-align:right;font-weight:bold;'>" + esc_(r[1]) + "</td></tr>"; }).join("")
     + "</table></div>";
