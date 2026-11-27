@@ -1385,7 +1385,7 @@ function renderRecap(){
  const d=getPayload(),box=$('recap');box.innerHTML='';
  box.appendChild(recapBlock('🧭 Itinéraire',1,[['Enlèvement',d.enlevement],['Livraison',d.livraison],['Distance',fmtKm()]]));
  box.appendChild(recapBlock('👤 Informations',2,[['Client',d.nom+' · '+d.telephone],['Prestation',d.prestation],['Date souhaitée',d.dateSouhaitee],['Destinataire',[d.nomDestinataire,d.telephoneDestinataire].filter(Boolean).join(' · ')],['E-mail',d.email]]));
- box.appendChild(recapBlock('📦 Votre besoin',3,[['Description',d.detail],['Température',d.temperature],['Poids',weightText()]]));
+ box.appendChild(recapBlock('📦 Votre besoin',3,[['Description',d.detail],['Température',d.temperature]]));
  box.appendChild(recapBlock('🧰 Accès et manutention',4,[['Enlèvement',$('pickupFloor').value+' · Ascenseur : '+$('pickupLift').value],['Livraison',$('deliveryFloor').value+' · Ascenseur : '+$('deliveryLift').value],['Manutentionnaires',$('helpersNeeded').value==='Oui'?$('helpers').value+' personne(s)':'Non'],['Autre précision',$('access').value.trim()]]));
 }
 function showStatus(message,type){
