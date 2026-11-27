@@ -1529,6 +1529,7 @@ function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f
 function geVariantsFor(item){
  if(Array.isArray(item.variants)&&item.variants.length)return item.variants;
  const n=geNorm(item.name);
+ if(/^tables? (carrees|rondes|rectangulaires|pliantes|basses|d'etude|de reunion)$/.test(n))return [];
  const rules=[
   [/frigo|refrigerateur/,['Petit','Standard','Américain']],
   [/fauteuil/,['1 place','2 places','3 places']],
@@ -1583,11 +1584,11 @@ function geSearchItems(){
   b.addEventListener('click',()=>geChooseItem(item,variant));box.appendChild(b);
  };
  if(q.includes('table')){
-  matches.filter(item=>/^tables?\\b/.test(geNorm(item.name))).forEach(item=>{
+  matches.filter(item=>/^tables?\b/.test(geNorm(item.name))).forEach(item=>{
    const variants=geVariantsFor(item);
    if(variants.length){
     variants.forEach(v=>{
-     const label=item.name==='Tables à manger'?'Table '+geNorm(v):item.name.replace(/^Tables?\\s*/i,'Table ');
+     const label=item.name==='Tables à manger'?'Table '+v.toLowerCase():item.name.replace(/^Tables?\s*/i,'Table ');
      addButton(item,label,v);
     });
    }else addButton(item,item.name.replace(/^Tables?\\s*/i,'Table '),'');
