@@ -764,6 +764,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .ge-client-items{border:1px solid #d7e6ef;border-radius:12px;padding:12px;margin:12px 0;background:#fbfdff}
 .ge-client-items h4{margin:0 0 5px;color:#075985}
 .ge-item-results{display:grid;gap:6px;margin:6px 0}
+#geItemResults[hidden],#geItemDetail[hidden],#geItemVariantWrap[hidden]{display:none!important}
 .ge-item-results button{width:100%;text-align:left;background:#fff;border:1px solid #cbdce6;color:#173247;padding:9px;border-radius:8px;min-height:40px}
 .ge-item-results button small{display:block;color:#607487;font-weight:400}
 .ge-selected-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #e2eaf0;font-size:13px}
@@ -1358,7 +1359,7 @@ function getPayload(){
  const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
  const fullPlaces=which=>allStopLabels(which);
  const helpers=$('helpers')?String($('helpers').value||'0'):'0';
- const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty);
+ const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':''));
  const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
  const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'','Manutentionnaires souhaités : '+helpers].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
@@ -1510,7 +1511,7 @@ function geSearchItems(){
  const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';
  if(q.length<2){box.hidden=true;return}
  const items=(window.GE_CLIENT_CATALOG||[]).filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q)).slice(0,12);
- items.forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;const sm=document.createElement('small');sm.textContent=item.family+' · '+item.group;b.appendChild(sm);b.addEventListener('click',()=>{geChooseItem(item);box.hidden=true;$('geItemSearch').value=item.name});box.appendChild(b)});
+ items.forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;const sm=document.createElement('small');sm.textContent=item.family+' · '+item.group+(item.preset?' · Contenu : '+item.preset:'');b.appendChild(sm);b.addEventListener('click',()=>{geChooseItem(item);box.hidden=true;$('geItemSearch').value=item.name});box.appendChild(b)});
  if(!items.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Utilisez « Autres précisions » pour décrire cet objet.';box.appendChild(p)}
  box.hidden=false;
 }
@@ -1522,7 +1523,7 @@ $('geAddItem').addEventListener('click',()=>{
  const qty=Math.max(1,Math.min(999,parseInt($('geItemQty').value,10)||1));
  const found=window.geSelectedItems.find(x=>x.name===geCurrentItem.name&&x.variant===variant&&x.family===geCurrentItem.family);
  if(found)found.qty=Math.min(999,found.qty+qty);
- else if(window.geSelectedItems.length<40)window.geSelectedItems.push({name:geCurrentItem.name,variant:variant,qty:qty,family:geCurrentItem.family,group:geCurrentItem.group});
+ else if(window.geSelectedItems.length<40)window.geSelectedItems.push({name:geCurrentItem.name,variant:variant,qty:qty,family:geCurrentItem.family,group:geCurrentItem.group,preset:geCurrentItem.preset||''});
  $('geItemDetail').hidden=true;$('geItemSearch').value='';$('geItemResults').hidden=true;geCurrentItem=null;geRenderSelectedItems();
 });
 geRenderSelectedItems();
