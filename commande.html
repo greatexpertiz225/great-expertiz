@@ -1591,7 +1591,10 @@ function geSearchItems(){
      const label=item.name==='Tables à manger'?'Table '+v.toLowerCase():item.name.replace(/^Tables?\s*/i,'Table ');
      addButton(item,label,v);
     });
-   }else addButton(item,item.name.replace(/^Tables?\\s*/i,'Table '),'');
+   }else {
+    const pretty={'tables carrees':'Table carrée','tables rondes':'Table ronde','tables rectangulaires':'Table rectangulaire','tables pliantes':'Table pliante','tables basses':'Table basse','tables d\'etude':'Table d’étude','tables de reunion':'Table de réunion'};
+    addButton(item,pretty[geNorm(item.name)]||item.name,'');
+   }
   });
  }else{
   matches.forEach(item=>{
