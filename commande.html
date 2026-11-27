@@ -1031,6 +1031,7 @@ function clearPoint(which){
  routeDurationMinutes=null;
  routeSteps=[];
  if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ routeStopMarkers.forEach(m=>{if(map)map.removeLayer(m)});routeStopMarkers=[];
  $('distanceLabel').textContent='Distance : non calculée';
  $('routeLabel').textContent='Sélectionnez les deux lieux pour calculer l’itinéraire.';
  if($('routeDistance'))$('routeDistance').textContent='À confirmer';
