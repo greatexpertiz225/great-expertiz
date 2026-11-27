@@ -1525,7 +1525,7 @@ fillCommunes();
 /* ---------- Articles client : choix direct du type + quantité ---------- */
 window.geSelectedItems=[];
 let gePrecisionMode=false;
-function geNorm(s){return String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
+function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function geVariantsFor(item){
  const n=geNorm(item.name);
  const rules=[
@@ -1535,7 +1535,7 @@ function geVariantsFor(item){
   [/chaise/,['Chaise classique','Chaise haute','Chaise de bar','Chaise pliante','Chaise de bureau','Chaise en plastique','Chaise de cérémonie']],
   [/table/,['Table ronde','Table carrée','Table rectangulaire','Table à manger','Table d’angle','Table basse','Table de bureau','Table pliante']],
   [/matelas/,['Matelas 1 place','Matelas 2 places','Matelas Queen size','Matelas King size']],
-  [/\\blit\\b|lits/,['Lit 1 place','Lit 2 places','Lit Queen size','Lit King size','Lit superposé']],
+  [/\blit\b|lits/,['Lit 1 place','Lit 2 places','Lit Queen size','Lit King size','Lit superposé']],
   [/armoire|dressing/,['Petite armoire','Armoire 2 portes','Armoire 3 portes','Armoire 4 portes','Dressing']],
   [/ventilateur/,['Ventilateur sur pied','Ventilateur de plafond','Ventilateur mural','Petit ventilateur']],
   [/bureau/,['Petit bureau','Bureau droit','Bureau d’angle','Bureau professionnel']],
