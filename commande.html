@@ -843,7 +843,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="step" id="step4" data-title="Accès et emballage">
 <h3>Accès et emballage</h3>
 <div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
-<div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? *</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
+<div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? (facultatif)</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
 <div class="notice">Cartons, film étirable, papier bulle, ruban adhésif et housses ne sont ni fournis ni inclus dans le transport. Une prestation d’emballage ou de protection fait l’objet d’une cotation séparée.</div>
 </div>
 <div class="step" id="step5" data-title="Vérification">
@@ -1285,7 +1285,7 @@ function stepOk(n){
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
  if(n===3){if($('need').value.trim().length<5)return stepMsg('Décrivez simplement ce que vous souhaitez transporter.','need');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
-  const w=$('weight').value.trim();if(w&&!(parseFloat(w.replace(',','.'))>=0))return stepMsg('Poids invalide : indiquez un nombre de kilogrammes, ou cochez « Je ne sais pas ».','weight')}
+  const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
  if(n===4){ /* les informations d’accès et d’emballage sont facultatives */ }
  return stepMsg('');
 }
