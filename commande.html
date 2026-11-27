@@ -1120,7 +1120,7 @@ async function fetchRoute(coords){
  try{
   const j=JSON.stringify({locations:coords.map(c=>({lat:c[0],lon:c[1]})),costing:'auto'});
   const r=await fetchT('https://valhalla1.openstreetmap.de/route?json='+encodeURIComponent(j),8500);
-  if(r.ok){const t=(await r.json()).trip;if(t&&t.legs&&t.legs[0]){const v=ok({distance:t.summary.length*1000,duration:t.summary.time,geometry:{type:'LineString',coordinates:dec6(t.legs[0].shape)}});if(v)return v}}
+  if(r.ok){const t=(await r.json()).trip;if(t&&t.legs&&t.legs.length){const line=t.legs.reduce((all,leg,i)=>{const part=dec6(leg.shape);return all.concat(i?part.slice(1):part)},[]);const v=ok({distance:t.summary.length*1000,duration:t.summary.time,geometry:{type:'LineString',coordinates:line}});if(v)return v}}
  }catch(x){}
  if(ROUTING_API_KEY){
   try{const r=await fetchT('https://api.openrouteservice.org/v2/directions/driving-car?api_key='+encodeURIComponent(ROUTING_API_KEY)+'&start='+s[1]+','+s[0]+'&end='+e[1]+','+e[0],8500);if(r.ok){const f=(await r.json()).features[0];const v=ok({distance:f.properties.summary.distance,duration:f.properties.summary.duration,geometry:f.geometry});if(v)return v}}catch(x){}
