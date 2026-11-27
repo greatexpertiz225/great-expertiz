@@ -484,7 +484,7 @@ body.sheetfull .leaflet-control-container{display:none!important}
 #geSplash{position:fixed;inset:0;z-index:5000;background:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .45s ease,visibility .45s ease}
 #geSplash img{width:min(190px,42vw);max-height:110px;object-fit:contain}
 .splashName{font-size:clamp(25px,6vw,38px);font-weight:900;letter-spacing:1px;color:var(--blue-d);overflow:hidden;white-space:nowrap}
-.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 1.5s steps(14,end) .1s forwards}
+.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 1.2s steps(14,end) .1s forwards}
 .splashTag{font-size:11px;letter-spacing:2px;font-weight:700;color:#607487}
 @keyframes splashWrite{to{clip-path:inset(0 0 0 0)}}
 #geSplash.show{display:flex;opacity:1;visibility:visible;pointer-events:auto}
@@ -985,7 +985,7 @@ function initMap(){
   maxZoom:19,attribution:'© OpenStreetMap'
  }).addTo(map);
  const bootStarted=Date.now();
- const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,1300-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
+ const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,1250-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
  tiles.once('load',hideBootSplash);
  /* Animation courte : l’interface apparaît dès que la carte est prête, sans attente artificielle. */
  window.setTimeout(hideBootSplash,3200);
