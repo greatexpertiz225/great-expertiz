@@ -1379,7 +1379,7 @@ function showStep(n){
 })();
 function recapBlock(title,stepN,rows){const b=el('div','rblk'),h=el('div','rbh');h.appendChild(el('b','',title));const m=el('button','rmod','Modifier');m.type='button';m.setAttribute('aria-label','Modifier : '+title);m.addEventListener('click',()=>showStep(stepN));h.appendChild(m);b.appendChild(h);rows.forEach(r=>{if(r[1])b.appendChild(el('div','rrow',r[0]+' : '+r[1]))});return b}
 function fmtKm(){return distanceKm===null?'à confirmer par GREAT EXPERTIZ':distanceKm.toFixed(1).replace('.',',')+' km'}
-function weightText(){if($('weightUnknown').checked)return 'inconnu (à déterminer par GREAT EXPERTIZ)';const w=$('weight').value.trim();return w?w.replace(',','.')+' kg (estimation du client)':''}
+function weightText(){const unknown=$('weightUnknown'),field=$('weight');if(!unknown||!field)return '';if(unknown.checked)return 'inconnu (à déterminer par GREAT EXPERTIZ)';const w=field.value.trim();return w?w.replace(',','.')+' kg (estimation du client)':''}
 function packText(){const o=$('packaging');return o&&o.value?o.options[o.selectedIndex].text:''}
 function renderRecap(){
  const d=getPayload(),box=$('recap');box.innerHTML='';
@@ -1560,8 +1560,6 @@ function fillCommunes(){
 fillCommunes();
 
 /* ---------- Saisie libre des objets : précisions recueillies par GREAT EXPERTIZ au contact ---------- */
-window.geSelectedItems=[];
-
 /* Mode intégré : commande.html?embed=1 (affichée dans un cadre sur une autre page) */
 if(/[?&]embed=1/.test(window.location.search))document.body.classList.add('embed');
 
