@@ -867,9 +867,8 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="step" id="step4" data-title="Accès et manutention">
 <h3>Accès, manutention et emballage</h3>
 <div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
-<div class="field"><label for="helpers">Nombre de manutentionnaires souhaité</label><select id="helpers">
-<option value="0">Aucun</option><option value="1">1 manutentionnaire</option><option value="2">2 manutentionnaires</option><option value="3">3 manutentionnaires</option><option value="4">4 manutentionnaires</option><option value="5">5 manutentionnaires</option><option value="6">6 manutentionnaires</option><option value="7">7 manutentionnaires</option><option value="8">8 manutentionnaires</option><option value="9">9 manutentionnaires</option><option value="10">10 manutentionnaires</option>
-</select><div class="hint">Indiquez le nombre de personnes dont vous pensez avoir besoin. GREAT EXPERTIZ confirmera l’organisation et le coût dans le devis.</div></div>
+<div class="field"><label for="helpers">Nombre de manutentionnaires souhaité</label><input id="helpers" type="number" min="0" max="50" step="1" inputmode="numeric" value="0" placeholder="Ex. 2"><div class="hint">Indiquez 0 si vous n’avez pas besoin de manutentionnaires. GREAT EXPERTIZ confirmera l’organisation et le coût dans le devis.</div></div>
+<div class="field"><label for="helperTask">Intervention souhaitée (facultatif)</label><select id="helperTask"><option value="">À préciser</option><option>Chargement</option><option>Déchargement</option><option>Chargement et déchargement</option></select></div>
 <div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? (facultatif)</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
 <div class="notice">Cartons, film étirable, papier bulle, ruban adhésif et housses ne sont ni fournis ni inclus dans le transport. Une prestation d’emballage ou de protection fait l’objet d’une cotation séparée.</div>
 </div>
@@ -1316,7 +1315,7 @@ function stepOk(n){
  if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet dans la liste ou décrivez ce que vous souhaitez transporter.','geItemSearch');const detailCheck=[(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':'')).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
- if(n===4){ /* les informations d’accès et d’emballage sont facultatives */ }
+ if(n===4){const h=Number($('helpers').value||0);if(!Number.isInteger(h)||h<0||h>50)return stepMsg('Indiquez un nombre entier de manutentionnaires entre 0 et 50.','helpers')}
  return stepMsg('');
 }
 function formOk(){for(let n=1;n<=4;n++){if(!stepOk(n)){showStep(n);stepOk(n);return false}}return true}
@@ -1348,7 +1347,7 @@ function renderRecap(){
  box.appendChild(recapBlock('🧭 Itinéraire',1,[['Enlèvement',d.enlevement],['Livraison',d.livraison],['Distance',fmtKm()]]));
  box.appendChild(recapBlock('👤 Informations',2,[['Client',d.nom+' · '+d.telephone],['Prestation',d.prestation],['Date souhaitée',d.dateSouhaitee],['Destinataire',[d.nomDestinataire,d.telephoneDestinataire].filter(Boolean).join(' · ')],['E-mail',d.email]]));
  box.appendChild(recapBlock('📦 Votre besoin',3,[['Description',d.detail],['Température',d.temperature],['Poids',weightText()]]));
- box.appendChild(recapBlock('🧰 Accès et manutention',4,[['Étage / accès',$('access').value.trim()],['Manutentionnaires souhaités',($('helpers').value||'0')+' personne(s)'],['Emballage',packText()],['Notes',$('notes').value.trim()]]));
+ box.appendChild(recapBlock('🧰 Accès et manutention',4,[['Étage / accès',$('access').value.trim()],['Manutentionnaires souhaités',($('helpers').value||'0')+' personne(s)'],['Intervention manutention',$('helperTask').value],['Emballage',packText()],['Notes',$('notes').value.trim()]]));
 }
 function showStatus(message,type){
  $('status').className=type;
@@ -1361,14 +1360,15 @@ function getPayload(){
  const helpers=$('helpers')?String($('helpers').value||'0'):'0';
  const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':''));
  const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
- const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'','Manutentionnaires souhaités : '+helpers].filter(Boolean).join(' | ');
+ const helperTask=$('helperTask')?$('helperTask').value:'';
+ const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'','Manutentionnaires souhaités : '+helpers,helperTask?'Intervention manutention : '+helperTask:''].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:fullPlaces('pickup').join(' ; '),livraison:fullPlaces('delivery').join(' ; '),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
   dateSouhaitee:$('date').value,detail:detailText,cbm:'',emballage:$('packaging').value,notes:notes,
   distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
   gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
-  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
+  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,interventionManutention:helperTask,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
  try{const t=localStorage.getItem('geClientToken');if(t)p.clientToken=t}catch(e){}
  return p;
 }
@@ -1419,7 +1419,7 @@ function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const ur
 function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
  showGESplash(true);
- const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets et précisions',p.detail],['Manutentionnaires souhaités',p.manutentionnaires+' personne(s)'],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
+ const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets et précisions',p.detail],['Manutentionnaires souhaités',p.manutentionnaires+' personne(s)'],['Intervention manutention',p.interventionManutention||'À préciser'],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
  $('receiptText').textContent=requestCode;geDrawQr();$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
  renderReceiptRoute(p);
  const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
