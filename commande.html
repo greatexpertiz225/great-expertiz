@@ -874,38 +874,42 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="step" id="step3" data-title="Votre besoin">
 <h3 id="step3Title">Que souhaitez-vous transporter ?</h3>
 <p class="hint" id="step3Intro">Ajoutez vos objets et ajustez la quantité à côté de chaque ligne. Les articles absents du catalogue peuvent être décrits dans « Autres objets ».</p>
-<div id="geSelectionPanel">
-<section class="ge-client-items" aria-labelledby="geItemsTitle">
- <h4 id="geItemsTitle">Ajouter les objets à transporter</h4>
- <p class="hint">Recherchez chaque objet, choisissez son type si nécessaire et indiquez la quantité. Le volume sera évalué et vérifié par GREAT EXPERTIZ dans l’administration.</p>
- <div class="field"><label for="geItemSearch">Rechercher dans la liste des objets</label><input id="geItemSearch" type="search" autocomplete="off" placeholder="Ex. table, chaise, fauteuil, réfrigérateur…"></div>
- <div id="geItemResults" class="ge-item-results" hidden></div>
- <div id="geItemDetail" class="ge-detail" hidden>
-  <strong id="geItemSelectedName"></strong>
-  <div class="field" id="geItemVariantWrap" hidden><label for="geItemVariant">Type / modèle *</label><select id="geItemVariant"><option value="">Choisir le type exact…</option></select></div>
-  <div class="field"><label for="geItemQty">Quantité *</label><input id="geItemQty" type="number" min="1" max="999" step="1" inputmode="numeric" value="1"></div>
-  <button type="button" class="secondary" id="geAddItem">Ajouter à ma liste</button>
- </div>
- <div id="geSelectedItems" class="ge-cart" aria-live="polite"><p class="hint">Aucun objet ajouté pour le moment.</p></div>
-</section>
-<div class="field"><label for="need">Autres objets absents du catalogue / précisions (facultatif)</label><textarea id="need" rows="2" maxlength="3000" placeholder="Décrivez ici les objets que vous n’avez pas trouvés dans la liste. GREAT EXPERTIZ les évaluera dans l’administration."></textarea><div class="hint" id="needCount">0 / 3000</div>
-</div>
-</div>
-<div id="gePrecisionPanel" hidden>
-<div class="notice">Pour chaque objet qui nécessite une précision, choisissez le type exact. Vous ne pourrez pas continuer tant que ces choix ne sont pas renseignés.</div>
-<div id="gePrecisionList" class="ge-precision-list"></div>
-<button type="button" class="secondary" id="geEditSelection">← Modifier ma liste d’objets</button>
+<div class="field">
+ <label for="need">Décrivez les objets ou marchandises à transporter *</label>
+ <textarea id="need" rows="4" maxlength="3000" required placeholder="Ex. : 1 réfrigérateur, 2 tables, des chaises, des cartons et un canapé…"></textarea>
+ <div class="hint">Écrivez simplement ce que vous souhaitez transporter. GREAT EXPERTIZ vous contactera ensuite pour recueillir les précisions nécessaires.</div>
+ <div class="hint" id="needCount">0 / 3000</div>
 </div>
 <div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
 </div>
 <div class="step" id="step4" data-title="Accès et manutention">
-<h3>Accès, manutention et emballage</h3>
-<div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
-<div class="field"><label for="helpers">Nombre de manutentionnaires souhaité</label><input id="helpers" type="number" min="0" max="50" step="1" inputmode="numeric" value="0" placeholder="Ex. 2"><div class="hint">Indiquez 0 si vous n’avez pas besoin de manutentionnaires. GREAT EXPERTIZ confirmera l’organisation et le coût dans le devis.</div></div>
-<div class="field"><label for="helperTask">Intervention souhaitée (facultatif)</label><select id="helperTask"><option value="">À préciser</option><option>Chargement</option><option>Déchargement</option><option>Chargement et déchargement</option></select></div>
-<div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? (facultatif)</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
-<div class="notice">Cartons, film étirable, papier bulle, ruban adhésif et housses ne sont ni fournis ni inclus dans le transport. Une prestation d’emballage ou de protection fait l’objet d’une cotation séparée.</div>
+<h3>Étages et manutention</h3>
+<div class="field">
+ <label for="pickupFloor">Étage au lieu d’enlèvement</label>
+ <select id="pickupFloor">
+  <option value="">Choisir…</option><option value="RDC">Rez-de-chaussée (RDC)</option><option value="1er étage">1er étage</option><option value="2e étage">2e étage</option><option value="3e étage">3e étage</option><option value="4e étage">4e étage</option><option value="5e étage">5e étage</option><option value="6e étage ou plus">6e étage ou plus</option>
+ </select>
+ <label for="pickupLift">Ascenseur au lieu d’enlèvement ?</label>
+ <select id="pickupLift"><option value="">Choisir…</option><option value="Oui">Oui</option><option value="Non">Non</option></select>
+</div>
+<div class="field">
+ <label for="deliveryFloor">Étage au lieu de livraison</label>
+ <select id="deliveryFloor">
+  <option value="">Choisir…</option><option value="RDC">Rez-de-chaussée (RDC)</option><option value="1er étage">1er étage</option><option value="2e étage">2e étage</option><option value="3e étage">3e étage</option><option value="4e étage">4e étage</option><option value="5e étage">5e étage</option><option value="6e étage ou plus">6e étage ou plus</option>
+ </select>
+ <label for="deliveryLift">Ascenseur au lieu de livraison ?</label>
+ <select id="deliveryLift"><option value="">Choisir…</option><option value="Oui">Oui</option><option value="Non">Non</option></select>
+</div>
+<div class="field">
+ <label for="helpersNeeded">Avez-vous besoin de manutentionnaires ?</label>
+ <select id="helpersNeeded"><option value="">Choisir…</option><option value="Non">Non</option><option value="Oui">Oui</option></select>
+</div>
+<div class="field" id="helpersCountWrap" hidden>
+ <label for="helpers">Combien de manutentionnaires souhaitez-vous ?</label>
+ <input id="helpers" type="number" min="1" max="50" step="1" inputmode="numeric" placeholder="Ex. 2">
+</div>
+<div class="field"><label for="access">Autre précision sur l’accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. escalier étroit, accès difficile…"></div>
 </div>
 <div class="step" id="step5" data-title="Vérification">
 <h3>Vérifiez votre demande</h3>
@@ -970,7 +974,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="./qrcode.min.js"></script>
-<script src="./catalogue-client.js"></script>
+
 <button type="button" id="helpFloat" aria-label="Besoin d’aide, ouvrir WhatsApp"><span>●</span> Besoin d’aide <span class="grip">⠿</span></button>
 <script>
 (() => {
@@ -1347,12 +1351,10 @@ function stepOk(n){
   const p=normPhone($('phone').value);if(!p.ok)return stepMsg(p.msg,'phone');
   if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
- if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet du catalogue ou décrivez un objet absent de la liste.','geItemSearch');
-  
-  const detailCheck=[(window.geSelectedItems||[]).flatMap(x=>{const ds=[{variant:x.variant||'',qty:x.qty}];return ds.map(d=>x.family+' / '+x.group+' : '+x.name+(d.variant?' ('+d.variant+')':'')+' × '+d.qty+(x.preset?' [contenu : '+x.preset+']':''))}).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
+ if(n===3){if($('need').value.trim().length<5)return stepMsg('Décrivez les objets ou marchandises à transporter.','need');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
- if(n===4){const h=Number($('helpers').value||0);if(!Number.isInteger(h)||h<0||h>50)return stepMsg('Indiquez un nombre entier de manutentionnaires entre 0 et 50.','helpers')}
+ if(n===4){if(!$('pickupFloor').value)return stepMsg('Indiquez l’étage au lieu d’enlèvement.','pickupFloor');if(!$('pickupLift').value)return stepMsg('Indiquez si un ascenseur est disponible au lieu d’enlèvement.','pickupLift');if(!$('deliveryFloor').value)return stepMsg('Indiquez l’étage au lieu de livraison.','deliveryFloor');if(!$('deliveryLift').value)return stepMsg('Indiquez si un ascenseur est disponible au lieu de livraison.','deliveryLift');if(!$('helpersNeeded').value)return stepMsg('Indiquez si vous avez besoin de manutentionnaires.','helpersNeeded');if($('helpersNeeded').value==='Oui'){const h=Number($('helpers').value);if(!Number.isInteger(h)||h<1||h>50)return stepMsg('Indiquez un nombre de manutentionnaires entre 1 et 50.','helpers')}}
  return stepMsg('');
 }
 function formOk(){for(let n=1;n<=4;n++){if(!stepOk(n)){showStep(n);stepOk(n);return false}}return true}
@@ -1378,13 +1380,13 @@ function showStep(n){
 function recapBlock(title,stepN,rows){const b=el('div','rblk'),h=el('div','rbh');h.appendChild(el('b','',title));const m=el('button','rmod','Modifier');m.type='button';m.setAttribute('aria-label','Modifier : '+title);m.addEventListener('click',()=>showStep(stepN));h.appendChild(m);b.appendChild(h);rows.forEach(r=>{if(r[1])b.appendChild(el('div','rrow',r[0]+' : '+r[1]))});return b}
 function fmtKm(){return distanceKm===null?'à confirmer par GREAT EXPERTIZ':distanceKm.toFixed(1).replace('.',',')+' km'}
 function weightText(){if($('weightUnknown').checked)return 'inconnu (à déterminer par GREAT EXPERTIZ)';const w=$('weight').value.trim();return w?w.replace(',','.')+' kg (estimation du client)':''}
-function packText(){const o=$('packaging');return o.value?o.options[o.selectedIndex].text:''}
+function packText(){const o=$('packaging');return o&&o.value?o.options[o.selectedIndex].text:''}
 function renderRecap(){
  const d=getPayload(),box=$('recap');box.innerHTML='';
  box.appendChild(recapBlock('🧭 Itinéraire',1,[['Enlèvement',d.enlevement],['Livraison',d.livraison],['Distance',fmtKm()]]));
  box.appendChild(recapBlock('👤 Informations',2,[['Client',d.nom+' · '+d.telephone],['Prestation',d.prestation],['Date souhaitée',d.dateSouhaitee],['Destinataire',[d.nomDestinataire,d.telephoneDestinataire].filter(Boolean).join(' · ')],['E-mail',d.email]]));
  box.appendChild(recapBlock('📦 Votre besoin',3,[['Description',d.detail],['Température',d.temperature],['Poids',weightText()]]));
- box.appendChild(recapBlock('🧰 Accès et manutention',4,[['Étage / accès',$('access').value.trim()],['Manutentionnaires souhaités',($('helpers').value||'0')+' personne(s)'],['Intervention manutention',$('helperTask').value],['Emballage',packText()],['Notes',$('notes').value.trim()]]));
+ box.appendChild(recapBlock('🧰 Accès et manutention',4,[['Enlèvement',$('pickupFloor').value+' · Ascenseur : '+$('pickupLift').value],['Livraison',$('deliveryFloor').value+' · Ascenseur : '+$('deliveryLift').value],['Manutentionnaires',$('helpersNeeded').value==='Oui'?$('helpers').value+' personne(s)':'Non'],['Autre précision',$('access').value.trim()]]));
 }
 function showStatus(message,type){
  $('status').className=type;
@@ -1394,18 +1396,18 @@ function showStatus(message,type){
 function getPayload(){
  const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
  const fullPlaces=which=>allStopLabels(which);
- const helpers=$('helpers')?String($('helpers').value||'0'):'0';
- const itemLines=(window.geSelectedItems||[]).flatMap(x=>{const details=[{variant:x.variant||'',qty:x.qty}];return details.map(d=>x.family+' / '+x.group+' : '+x.name+(d.variant?' ('+d.variant+')':'')+' × '+d.qty+(x.preset?' [contenu : '+x.preset+']':''))});
- const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
- const helperTask=$('helperTask')?$('helperTask').value:'';
- const notes=['Manutentionnaires souhaités : '+helpers,helperTask?'Intervention manutention : '+helperTask:'',$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',$('notes').value.trim()].filter(Boolean).join(' | ');
+ const helpers=$('helpersNeeded').value==='Oui'?String($('helpers').value||'0'):'0';
+ const detailText=$('need').value.trim().slice(0,3000);
+ const helperTask='';
+ const accessText='Enlèvement : '+$('pickupFloor').value+' ; ascenseur : '+$('pickupLift').value+' | Livraison : '+$('deliveryFloor').value+' ; ascenseur : '+$('deliveryLift').value;
+ const notes=['Manutentionnaires souhaités : '+($('helpersNeeded').value==='Oui'?'Oui, '+helpers:'Non'),accessText,$('access').value.trim()?'Autre précision accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',$('notes')?$('notes').value.trim():''].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:fullPlaces('pickup').join(' ; '),livraison:fullPlaces('delivery').join(' ; '),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
-  dateSouhaitee:$('date').value,detail:detailText,cbm:'',emballage:$('packaging').value,notes:notes,
+  dateSouhaitee:$('date').value,detail:detailText,cbm:'',emballage:'',notes:notes,
   distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
   gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
-  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,interventionManutention:helperTask,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
+  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,interventionManutention:helperTask,etageEnlevement:$('pickupFloor').value,ascenseurEnlevement:$('pickupLift').value,etageLivraison:$('deliveryFloor').value,ascenseurLivraison:$('deliveryLift').value,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
  try{const t=localStorage.getItem('geClientToken');if(t)p.clientToken=t}catch(e){}
  return p;
 }
@@ -1436,7 +1438,7 @@ function callServer(data){
   const f=document.createElement('form');f.method='POST';f.action=SCRIPT_URL;f.target='geOrderFrame';f.style.display='none';
   Object.keys(data).forEach(k=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=data[k];f.appendChild(i)});
   const onMsg=e=>{const d=e.data;if(!d||typeof d!=='object'||(d.type!=='GE_ORDER_RESULT'&&d.type!=='GE_OTP_RESULT')||d.rid!==id)return;finish(d)};
-  const t=setTimeout(()=>finish({ok:false,error:'TIMEOUT',message:'Le serveur n’a pas répondu. Vérifiez votre connexion puis réessayez : aucun doublon ne sera créé.'}),45000);
+  const t=setTimeout(()=>finish({ok:false,error:'TIMEOUT',message:'Le délai de réponse du serveur est dépassé. Votre demande a peut-être été enregistrée : ne la renvoyez pas tout de suite. Vérifiez d’abord auprès de GREAT EXPERTIZ.'}),30000);
   function finish(d){if(done)return;done=true;clearTimeout(t);window.removeEventListener('message',onMsg);f.remove();resolve(d)}
   window.addEventListener('message',onMsg);document.body.appendChild(f);f.submit();
  });
@@ -1452,22 +1454,56 @@ async function requestCodeFlow(){
  setBusy(false);
  showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
 }
-function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;try{if(typeof QRCode==='function'){new QRCode(el,{text:url,width:160,height:160,correctLevel:QRCode.CorrectLevel.M});if(el.querySelector('canvas,img,svg,table'))return}}catch(err){}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Ouvrir le suivi de cette demande';a.style.cssText='display:inline-block;padding:10px;color:#075985;font-weight:700';el.appendChild(a)}
-function finishSubmit(d){
+function geDrawQr(){
+ const el=$('finalQr');if(!el)return Promise.resolve(false);
+ el.innerHTML='';
+ const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;
+ return new Promise(resolve=>{
+  let settled=false,started=Date.now();
+  const finish=ok=>{if(settled)return;settled=true;resolve(ok)};
+  const fallback=()=>{
+   if(settled)return;
+   el.innerHTML='';
+   const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Ouvrir le suivi de cette demande';
+   a.style.cssText='display:inline-block;padding:10px;color:#075985;font-weight:700;line-height:1.4';
+   el.appendChild(a);finish(false);
+  };
+  try{
+   if(typeof QRCode!=='function'||!QRCode.CorrectLevel){fallback();return}
+   new QRCode(el,{text:url,width:160,height:160,correctLevel:QRCode.CorrectLevel.M});
+  }catch(err){fallback();return}
+  const check=()=>{
+   if(settled)return;
+   const canvas=el.querySelector('canvas');
+   const img=el.querySelector('img');
+   const table=el.querySelector('table');
+   if(canvas&&canvas.width>0&&canvas.height>0){finish(true);return}
+   if(img&&img.complete&&img.naturalWidth>0){finish(true);return}
+   if(table&&table.querySelector('td')){finish(true);return}
+   if(Date.now()-started>1800){fallback();return}
+   requestAnimationFrame(check);
+  };
+  requestAnimationFrame(check);
+ });
+}
+async function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
- const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets et précisions',p.detail],['Manutentionnaires souhaités',p.manutentionnaires+' personne(s)'],['Intervention manutention',p.interventionManutention||'À préciser'],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
+ const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets ou marchandises',p.detail],['Étage enlèvement',p.etageEnlevement+' · Ascenseur : '+p.ascenseurEnlevement],['Étage livraison',p.etageLivraison+' · Ascenseur : '+p.ascenseurLivraison],['Manutentionnaires',p.manutentionnaires==='0'?'Non':'Oui · '+p.manutentionnaires+' personne(s)'],['Poids',weightText()||'Non indiqué']];
  $('receiptText').textContent=requestCode;$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
  renderReceiptRoute(p);
  const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
  $('trackLink').href='./index.html?code='+encodeURIComponent(requestCode)+'#suivi';
- $('receipt').style.display='block';requestAnimationFrame(()=>geDrawQr());$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
- requestAnimationFrame(()=>{if($('finalQr').querySelector('canvas,img,svg,table'))hideGESplash(120);else hideGESplash(250)});
+ $('receipt').style.display='block';$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
+ const qrReady=await geDrawQr();
+ hideGESplash(0);
+ if(!qrReady){const msg=$('confirmMsg');msg.textContent+=' Le code QR n’a pas pu être généré sur cet appareil ; utilisez le lien de suivi ci-dessous.';}
 }
 $('orderForm').addEventListener('submit',e=>e.preventDefault());
 $('submitBtn').addEventListener('click',requestCodeFlow);
 $('need').addEventListener('input',()=>{$('needCount').textContent=$('need').value.length+' / 3000'});
 $('weightUnknown').addEventListener('change',()=>{$('weight').disabled=$('weightUnknown').checked;if($('weightUnknown').checked)$('weight').value=''});
-['name','phone','recipientPhone','email','need','weight','packaging','access','notes','date','service'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{});});
+$('helpersNeeded').addEventListener('change',()=>{$('helpersCountWrap').hidden=$('helpersNeeded').value!=='Oui';if($('helpersNeeded').value!=='Oui')$('helpers').value=''});
+['name','phone','recipientPhone','email','need','weight','access','notes','date','service','pickupFloor','pickupLift','deliveryFloor','deliveryLift','helpersNeeded','helpers'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{});});
 
 /* ---------- Suggestions de communes et villes ---------- */
 const ABIDJAN='Abobo|Adjamé|Anyama|Attécoubé|Bingerville|Cocody|Koumassi|Marcory|Plateau|Port-Bouët|Songon|Treichville|Yopougon|Abidjan';
@@ -1522,96 +1558,8 @@ function fillCommunes(){
 }
 fillCommunes();
 
-/* ---------- Articles client : choix direct du type + quantité ---------- */
+/* ---------- Saisie libre des objets : précisions recueillies par GREAT EXPERTIZ au contact ---------- */
 window.geSelectedItems=[];
-let gePrecisionMode=false;
-function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
-function geVariantsFor(item){
- if(Array.isArray(item.variants)&&item.variants.length)return item.variants;
- const n=geNorm(item.name);
- if(/table de cuisson|tables? de mixage|tableaux/.test(n))return [];
- if(/^tables? (carrees|rondes|rectangulaires|pliantes|basses|d'etude|de reunion)$/.test(n))return [];
- const rules=[
-  [/frigo|refrigerateur/,['Petit','Standard','Américain']],
-  [/fauteuil/,['1 place','2 places','3 places']],
-  [/canape|salon/,['1 place','2 places','3 places','Angle']],
-  [/chaise/,['Classique','Haute','De bar','Pliante','De bureau','En plastique','De cérémonie']],
-  [/table/,['Carrée','Rectangulaire','Ronde','Pliante']],
-  [/matelas/,['1 place','2 places','Queen/King']],
-  [/\\blit\\b|lits/,['1 place','2 places','Queen','King']],
-  [/armoire|dressing/,['2 portes','3 portes','4 portes']],
-  [/ventilateur/,['Sur pied','De plafond','Mural']],
-  [/bureau/,['Petit','Standard','Professionnel']],
-  [/television|televiseur|ecran/,['Petit','Moyen','Grand']]
- ];
- const found=rules.find(([re])=>re.test(n));
- return found?found[1]:[];
-}
-function geRenderSelectedItems(){
- const box=$('geSelectedItems');if(!box)return;box.innerHTML='';
- if(!window.geSelectedItems.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun objet ajouté pour le moment.';box.appendChild(p);return}
- window.geSelectedItems.forEach((item,index)=>{
-  const row=document.createElement('div');row.className='ge-selected-row';
-  const label=document.createElement('span');label.textContent=item.name+(item.variant?' — '+item.variant:'');
-  const qty=document.createElement('input');qty.type='number';qty.min='1';qty.max='999';qty.step='1';qty.inputMode='numeric';qty.value=String(item.qty||1);qty.setAttribute('aria-label','Quantité pour '+label.textContent);qty.className='ge-line-qty';
-  qty.addEventListener('change',()=>{const v=Number(qty.value);if(!Number.isInteger(v)||v<1||v>999){qty.value=String(item.qty||1);return}item.qty=v});
-  const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Retirer';del.addEventListener('click',()=>{window.geSelectedItems.splice(index,1);geRenderSelectedItems()});
-  row.append(label,qty,del);box.appendChild(row);
- });
-}
-function geChooseItem(item,variant=''){
- if(window.geSelectedItems.length>=40){const hint=$('geAddHint');if(hint)hint.textContent='Maximum de 40 lignes atteint.';return}
- window.geSelectedItems.push({name:item.name,variant:variant||'',qty:1,family:item.family||'',group:item.group||'',preset:item.preset||''});
- geRenderSelectedItems();
- const hint=$('geAddHint');if(hint)hint.textContent=(item.name+(variant?' — '+variant:''))+' ajouté. Vous pouvez en ajouter un autre.';
-}
-function geShowPrecision(on){
- gePrecisionMode=false;
- $('geSelectionPanel').hidden=false;
- $('gePrecisionPanel').hidden=true;
- $('step3Title').textContent='Que souhaitez-vous transporter ?';
- $('step3Intro').textContent='Tapez le nom de votre objet. Choisissez son type dans les propositions, puis indiquez sa quantité. Répétez pour chaque type différent.';
- $('nextBtn').textContent='Continuer →';
-}
-function geSearchItems(){
- const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';box.dataset.keys='';
- if(q.length<2){box.hidden=true;return}
- const catalog=window.GE_CLIENT_CATALOG||[];
- const matches=catalog.filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q));
- const addButton=(item,label,variant='')=>{
-  const key=geNorm(label);if(box.dataset.keys.split('|').includes(key))return;
-  box.dataset.keys+=(box.dataset.keys?'|':'')+key;
-  const b=document.createElement('button');b.type='button';b.className='ge-result-choice';b.textContent=label;
-  b.addEventListener('click',()=>geChooseItem(item,variant));box.appendChild(b);
- };
- if(q.includes('table')){
-  matches.filter(item=>/^tables?\b/.test(geNorm(item.name))).forEach(item=>{
-   const variants=geVariantsFor(item);
-   if(variants.length){
-    variants.forEach(v=>{
-     const label=item.name==='Tables à manger'?'Table '+v.toLowerCase():item.name.replace(/^Tables?\s*/i,'Table ');
-     addButton(item,label,v);
-    });
-   }else {
-    const pretty={'tables carrees':'Table carrée','tables rondes':'Table ronde','tables rectangulaires':'Table rectangulaire','tables pliantes':'Table pliante','tables basses':'Table basse','tables d\'etude':'Table d’étude','tables de reunion':'Table de réunion'};
-    addButton(item,pretty[geNorm(item.name)]||item.name,'');
-   }
-  });
- }else{
-  matches.forEach(item=>{
-   const variants=geVariantsFor(item);
-   if(variants.length)variants.forEach(v=>addButton(item,item.name+' · '+v,v));
-   else addButton(item,item.name,'');
-  });
- }
- if(!box.children.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Décrivez cet objet dans « Autres objets ».';box.appendChild(p)}
- box.hidden=false;
-}
-$('geItemSearch').addEventListener('input',geSearchItems);
-$('geAddItem').addEventListener('click',()=>{});
-geRenderSelectedItems();
-$('geEditSelection').addEventListener('click',()=>{$('stepMsg').textContent=''});
-geShowPrecision(false);
 
 /* Mode intégré : commande.html?embed=1 (affichée dans un cadre sur une autre page) */
 if(/[?&]embed=1/.test(window.location.search))document.body.classList.add('embed');
@@ -1701,7 +1649,7 @@ $('expandBtn').addEventListener('click',()=>{
  },120);
 });
 $('formBody').addEventListener('focusin',expand);$('formBody').addEventListener('click',expand);
-$('prevBtn').addEventListener('click',()=>{if(mview){leaveMapView(true);return}if(step===3&&gePrecisionMode){geShowPrecision(false);return}if(step>1)showStep(step-1)});
+$('prevBtn').addEventListener('click',()=>{if(mview){leaveMapView(true);return}if(step>1)showStep(step-1)});
 $('nextBtn').addEventListener('click',async()=>{
  if(mview){leaveMapView(false);showStep(2);return}
  if(step===1){if(!stepOk(1))return;await goMap();return}
