@@ -1137,14 +1137,19 @@ function allStopLabels(which){
 async function resolveRouteCoordinates(){
  const token=++stopGeocodeToken;
  const addresses=[].concat(extraStopValues('pickupStops'),extraStopValues('deliveryStops'));
- const resolved=await Promise.all(addresses.map(address=>geocode(address)));
- if(token!==stopGeocodeToken)throw new Error('Calcul remplacé');
+ const resolved=[];
+ for(let i=0;i<addresses.length;i++){
+  if(i)await new Promise(resolve=>setTimeout(resolve,1100));
+  resolved.push(await geocode(addresses[i]));
+  if(token!==stopGeocodeToken)throw new Error('Calcul remplacé');
+ }
  return [startCoords].concat(resolved).concat([endCoords]);
 }
 async function calculateRoute(){
  if(!startCoords||!endCoords)return;
  const routeRequest=++geRouteRequest,s0=startCoords,e0=endCoords;
  if(map&&routeLayer){map.removeLayer(routeLayer);routeLayer=null}
+ routeStopMarkers.forEach(m=>{if(map)map.removeLayer(m)});routeStopMarkers=[];
  distanceKm=null;routeDurationMinutes=null;routeSteps=[];
  $('distanceLabel').textContent='Calcul en cours…';
  $('routeLabel').textContent='Calcul de l’itinéraire routier…';
@@ -1251,7 +1256,6 @@ function addExtraStop(containerId,placeholder,label){
  const remove=document.createElement('button');remove.type='button';remove.textContent='Retirer';remove.setAttribute('aria-label','Retirer cet arrêt');
  remove.addEventListener('click',()=>{entry.remove();if(startCoords&&endCoords)calculateRoute()});
  input.addEventListener('change',()=>{if(startCoords&&endCoords)calculateRoute()});
- input.addEventListener('blur',()=>{if(input.value.trim()&&startCoords&&endCoords)calculateRoute()});
  entry.appendChild(field);entry.appendChild(remove);box.appendChild(entry);input.focus();
 }
 $('addPickupStop').addEventListener('click',()=>{if($('pickupStops').querySelectorAll('.stop-entry').length>=5){$('routeStatus').textContent='Maximum : 6 lieux d’enlèvement au total.';return}addExtraStop('pickupStops','Ex. Cocody, Riviera 3, rue…','Autre lieu d’enlèvement')});
@@ -1337,7 +1341,8 @@ function getPayload(){
 function routeDirectionsUrl(d){
  const origin=(startCoords?startCoords.join(','):d.enlevement)||'';
  const destination=(endCoords?endCoords.join(','):d.livraison)||'';
- return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(destination)+'&travelmode=driving';
+ const via=[].concat(extraStopValues('pickupStops'),extraStopValues('deliveryStops'));
+ return 'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(origin)+'&destination='+encodeURIComponent(destination)+(via.length?'&waypoints='+encodeURIComponent(via.join('|')):'')+'&travelmode=driving';
 }
 function renderReceiptRoute(d){
  const box=$('receiptRoute');
