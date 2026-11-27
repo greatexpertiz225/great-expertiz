@@ -74,7 +74,7 @@ function showOwnerKey() {
   return k ? "ok" : "aucune clé";
 }
 
-var SHEET_ID = "REMPLACER_PAR_L_ID_DE_LA_COPIE_DE_TEST";   // ← identifiant de la COPIE de test du classeur (jamais la production)
+var SHEET_ID = "1KdJDNHDj8jvvgb3Gk8rhBohcHf0eipOvRRFA8UpRlPk";   // ← identifiant de la COPIE de test du classeur (jamais la production)
 var ORDERS_SHEET_NAME = "Commandes";    // si l'onglet porte un autre nom, le 1er onglet est utilisé
 var NOTIFY_EMAIL = "greatexpertiz225@gmail.com";
 var TZ = "Africa/Abidjan";                 // fuseau de la Côte d'Ivoire (GMT, sans heure d'été)
