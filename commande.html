@@ -821,7 +821,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="hint" id="serviceRouteHint" aria-live="polite">Choisissez votre type de transport pour continuer.</div>
 </div>
 <div class="field"><label for="name">Nom / entreprise *</label><input id="name" required autocomplete="name" placeholder="Votre nom ou société"></div>
-<div class="field"><label for="phone">Téléphone *</label><input id="phone" required type="tel" autocomplete="tel" placeholder="Ex. 07 48 11 03 35" autocomplete="tel"><div class="hint">Un code de confirmation sera envoyé par WhatsApp à ce numéro.</div></div>
+<div class="field"><label for="phone">Téléphone *</label><input id="phone" required type="tel" autocomplete="tel" placeholder="Ex. 07 48 11 03 35" autocomplete="tel"><div class="hint">Ce numéro permettra à GREAT EXPERTIZ de vous recontacter au sujet de votre demande.</div></div>
 <div class="recipient-block"><strong>Personne qui reçoit la livraison</strong><div class="recipient-grid"><div class="field"><label for="recipientName">Nom du destinataire</label><input id="recipientName" autocomplete="name" placeholder="Nom du réceptionnaire"></div><div class="field"><label for="recipientPhone">Téléphone du destinataire</label><input id="recipientPhone" type="tel" autocomplete="tel" placeholder="+225…"></div></div></div>
 <div class="date-compact"><label for="date">Date souhaitée de la prestation</label><input id="date" type="date" aria-label="Date souhaitée de la prestation"></div>
 
@@ -832,11 +832,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </div>
 <div class="step" id="step3" data-title="Votre besoin">
 <h3>Que souhaitez-vous transporter ?</h3>
-<p class="hint">Choisissez les marchandises dans le catalogue. Pour les articles qui existent en plusieurs types ou dimensions, une fiche s’ouvre afin de préciser le modèle et la quantité.</p>
-<div class="field"><label for="geSearch">Rechercher un article</label><input id="geSearch" type="search" placeholder="Ex. canapé, réfrigérateur, assiettes…" autocomplete="off"></div><div id="geSearchResults" class="ge-results" hidden></div>
-<div id="geFamilies" class="ge-families"></div><div id="geItems" class="ge-items" hidden></div>
-<div id="geDetail" class="ge-detail" hidden><h4 id="geDetailTitle"></h4><div class="field" id="geVariantWrap"><label for="geVariant">Quel type / format ?</label><select id="geVariant"></select></div><div class="field"><label for="geQty">Quantité</label><input id="geQty" type="number" min="1" max="999" step="1" value="1" inputmode="numeric"></div><div class="ge-detail-actions"><button type="button" class="secondary" id="geCancel">Annuler</button><button type="button" class="primary" id="geAdd">Ajouter au panier</button></div></div>
-<h4>Votre sélection</h4><div id="geCart" class="ge-cart"></div><p id="geCartEmpty" class="hint">Aucun article sélectionné.</p><div class="ge-total"><span>Volume indicatif total</span><strong id="geTotal">0 m³</strong></div><div id="geRules" class="notice" hidden>Votre sélection comprend des articles fragiles, lourds ou soumis à vérification. GREAT EXPERTIZ confirmera les conditions de transport.</div><label id="geRegAckWrap" class="hint" hidden><input id="geRegAck" type="checkbox"> Je déclare les marchandises réglementées sélectionnées ; leur acceptation reste soumise à validation.</label>
+<p class="hint">Décrivez simplement les marchandises, le matériel ou les effets à transporter. Le catalogue détaillé est réservé à GREAT EXPERTIZ.</p>
 <div class="field"><label for="need">Autres précisions (facultatif)</label><textarea id="need" rows="3" maxlength="3000" placeholder="Décrivez ici un article absent du catalogue ou ajoutez des précisions."></textarea><div class="hint" id="needCount">0 / 3000</div></div>
 <div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
@@ -852,18 +848,9 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div id="recap"></div>
 <input type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
 <div id="otpIntro">
-<p>Pour confirmer, GREAT EXPERTIZ vous envoie un code à 6 chiffres par WhatsApp au numéro indiqué.</p>
+<p>Votre demande sera transmise à GREAT EXPERTIZ pour étude et préparation d’un devis.</p>
 <div id="status" role="status" aria-live="polite"></div>
 <button class="primary submit" id="submitBtn" type="button">Envoyer ma demande</button>
-</div>
-<div id="otpPanel" hidden>
-<h3>Entrez votre code</h3>
-<p class="hint" id="otpHint"></p>
-<div class="field"><label for="otpCode">Code à 6 chiffres</label><input id="otpCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="······" style="letter-spacing:.35em;font-size:22px;text-align:center"></div>
-<div class="hint" id="otpTimer"></div>
-<div id="otpMsg" role="status" aria-live="polite"></div>
-<button class="primary submit" id="verifyBtn" type="button">Valider le code</button>
-<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="secondary" id="resendBtn" type="button">Renvoyer le code</button><button class="secondary" id="editBtn" type="button">Modifier ma demande</button></div>
 </div>
 </div>
 <div class="step" id="step6" data-title="Confirmation">
@@ -937,86 +924,6 @@ let requestCode=null,awaitingResponse=false,submitTimer=null,tileErrors=0;
 const money = n => Math.round(n).toLocaleString('fr-FR')+' FCFA';
 const fmtCoords = c => c ? c[0].toFixed(6)+', '+c[1].toFixed(6) : '';
 const mapsLink = c => c ? 'https://www.google.com/maps?q='+c[0].toFixed(6)+','+c[1].toFixed(6) : '';
-const GE_CATALOG=[
-['Vaisselle, couverts et cuisine',[
- ['Couverts et ustensiles',['Fourchettes (lot de 12)|0.002','Couteaux (lot de 12)|0.003','Cuillères (lot de 12)|0.002','Petites cuillères (lot de 12)|0.001','Louches, spatules et pinces (lot)|0.006','Ustensiles de cuisine divers (carton)|0.04','Ménagère complète (coffret)|0.012']],
- ['Assiettes et plats',['Assiettes plates (lot de 6)|0.012|F','Assiettes creuses (lot de 6)|0.014|F','Assiettes à dessert (lot de 6)|0.008|F','Plats de service|0.012|F','Plateaux|0.02']],
- ['Bols, saladiers et tasses',['Bols (lot de 6)|0.012|F','Saladiers|0.012|F','Soupières|0.02|F','Tasses (lot de 6)|0.01|F','Mugs (lot de 6)|0.012|F']],
- ['Verres, carafes et bouteilles',['Verres à eau (lot de 6)|0.008|F','Verres à vin (lot de 6)|0.012|F','Flûtes (lot de 6)|0.012|F','Carafes et pichets|0.008|F','Bouteilles vides (caisse de 12)|0.03|F']],
- ['Marmites, casseroles et poêles',['Marmites|v|Petite=0.03;Moyenne=0.06;Grande=0.12','Casseroles (lot de 3)|0.03','Poêles (lot de 3)|0.03','Couvercles (lot)|0.02','Cocottes et faitouts|0.05']],
- ['Accessoires de cuisine',['Passoires et râpes (lot)|0.02','Planches à découper (lot)|0.02','Boîtes alimentaires (carton)|0.05']],
- ['Services et batteries complètes',['Service complet de table (12 personnes)|0.08|F','Batterie de cuisine complète|0.12','Vaisselle en carton|v|Verre=0.06;Porcelaine=0.06;Céramique=0.06;Inox=0.05;Plastique=0.07|F']]]],
-['Linge et textile',[
- ['Literie',['Draps (lot)|v|Simple=0.01;Double=0.015;Queen size=0.018;King size=0.02','Housses de matelas|v|1 place=0.02;2 places=0.03;Queen/King=0.04','Taies d’oreiller (lot de 4)|0.005','Couettes|v|Simple=0.04;Double=0.06;King=0.08','Couvertures|0.03','Plaids|0.02','Oreillers (lot de 2)|0.06','Coussins (lot de 4)|0.08','Traversins|0.04']],
- ['Linge de bain et de table',['Serviettes de toilette (lot)|0.01','Draps de bain (lot)|0.015','Gants de toilette (lot)|0.003','Nappes et chemins de table (lot)|0.01','Serviettes de table (lot de 12)|0.004']],
- ['Rideaux et stores',['Rideaux (paire)|0.03','Voilages (paire)|0.015','Stores|0.03','Tringles (lot)|0.01']],
- ['Vêtements, chaussures et sacs',['Vêtements (carton)|0.1','Chaussures (carton)|0.08','Sacs (carton)|0.12','Uniformes (carton)|0.08']],
- ['Tapis et textiles',['Tapis|v|Petit=0.1;Moyen=0.2;Grand=0.4','Moquette (rouleau)|0.3','Tissus (rouleau)|0.1','Linge professionnel (balle)|0.2']]]],
-['Événementiel et réception',[
- ['Chaises',['Chaises en plastique|0.06','Chaises pliantes|0.05','Chaises de cérémonie|0.12','Housses de chaise (lot de 50)|0.1']],
- ['Tables, tréteaux et bancs',['Tables rondes|0.35','Tables rectangulaires|0.3','Tables pliantes|0.2','Mange-debout|0.35','Tréteaux (paire)|0.1','Plateaux de table|0.25','Bancs|0.2','Tabourets|0.08']],
- ['Bâches, tentes et chapiteaux',['Bâches|0.08','Tentes|v|3 × 3 m=0.4;3 × 6 m=0.7;6 × 12 m=2.5','Chapiteaux|v|Petit=3;Moyen=6;Grand=12|L','Tonnelles|0.25','Structures démontables|0.8']],
- ['Décoration',['Nappes événementielles (lot)|0.03','Housses de table (lot)|0.03','Arches|0.5','Fleurs artificielles (carton)|0.2|F','Décorations (carton)|0.15|F','Tapis de cérémonie (rouleau)|0.3']],
- ['Podiums, barrières et supports',['Podiums|0.8','Estrades (module)|0.4','Barrières (lot de 5)|0.3','Portants|0.15','Supports et pieds (lot)|0.1']],
- ['Sonorisation et éclairage',['Enceintes|v|Petite=0.05;Moyenne=0.15;Grande=0.4|F','Micros (valise)|0.02|F','Éclairages et projecteurs (flight case)|0.2|F','Tables de mixage|0.05|F']],
- ['Matériel par type d’événement',['Matériel de mariage (carton)|0.15|F','Matériel de conférence (caisse)|0.2|F','Matériel de concert (flight case)|0.4|F','Matériel de réception (caisse)|0.2']]]],
-['Mobilier et déménagement',[
- ['Salon',['Canapés|v|2 places=1.5;3 places=2;Angle=3','Fauteuils|0.8','Poufs|0.3','Tables basses|0.4']],
- ['Chambre',['Lits (cadre)|v|1 place=0.8;2 places=1.5;Queen=1.7;King=2','Sommiers|v|1 place=0.7;2 places=1.2','Matelas|v|1 place=0.4;2 places=0.8;Queen/King=1','Têtes de lit|0.4']],
- ['Rangements',['Armoires|v|2 portes=1.5;3 portes=2.5;4 portes=3.2','Commodes|0.6','Buffets|1','Vaisseliers|1.5|F','Vitrines|1.2|F']],
- ['Bureau et séjour',['Étagères|0.5','Bureaux|1','Tables de réunion|1.5','Meubles TV|0.6','Bibliothèques|0.9']],
- ['Meubles démontés',['Meubles démontés (lot)|0.5','Portes|0.3','Panneaux (lot)|0.3','Plans de travail|0.3']],
- ['Électroménager',['Réfrigérateurs|v|Petit=0.5;Standard=0.9;Américain=1.6','Congélateurs|v|Coffre=1;Armoire=0.9','Lave-linge|0.6','Sèche-linge|0.6','Cuisinières|0.6','Fours|0.2','Micro-ondes|0.08','Climatiseurs|v|Split intérieur=0.12;Split extérieur=0.15;Fenêtre=0.15']],
- ['Objets fragiles et décoratifs',['Miroirs|v|Petit=0.03;Moyen=0.08;Grand=0.15|F','Tableaux|v|Petit=0.02;Moyen=0.06;Grand=0.12|F','Lustres|0.15|F','Objets fragiles (carton)|0.06|F','Coffres-forts|v|Petit=0.1;Moyen=0.3;Grand=0.8|L']]]],
-['Bureautique, informatique et électronique',[
- ['Ordinateurs et impression',['Ordinateurs de bureau|0.08|F','Ordinateurs portables|0.012|F','Écrans|0.06|F','Imprimantes|0.1|F','Scanners|0.05|F','Photocopieurs|v|De bureau=0.6;Grand format=1|F']],
- ['Image et son',['Téléviseurs|v|32 pouces=0.12;43 pouces=0.2;55 pouces=0.3;65 pouces et plus=0.45|F','Vidéoprojecteurs|0.03|F','Consoles|0.02|F','Équipements audio|0.08|F']],
- ['Téléphonie et réseau',['Téléphones (carton)|0.01|F','Routeurs et équipements réseau (lot)|0.02|F','Serveurs|0.15|F','Baies informatiques|0.8|F']],
- ['Mobilier de bureau',['Bureaux de direction|1.5','Fauteuils de direction|0.4','Chaises de bureau|0.3','Armoires d’archives|1','Caissons et classeurs|0.3']],
- ['Dossiers et fournitures',['Cartons de dossiers|0.04','Classeurs (carton)|0.04','Livres (carton)|0.03','Fournitures de bureau (carton)|0.05']],
- ['Énergie et accessoires',['Onduleurs|0.05|R','Batteries|0.02|R','Câbles et accessoires (carton)|0.03']]]],
-['Commerce, marchandises et grossistes',[
- ['Alimentaire emballé et boissons',['Cartons de produits alimentaires emballés|0.05','Cartons de boissons|0.04','Packs d’eau (pack de 6)|0.01','Sacs de denrées (sac)|0.05']],
- ['Mode et accessoires',['Cartons de vêtements|0.1','Cartons de chaussures|0.08','Sacs et accessoires (carton)|0.1']],
- ['Beauté et parfumerie',['Cosmétiques et produits de beauté (carton)|0.04|F','Parfumerie (carton)|0.04|F R']],
- ['Maison',['Articles ménagers (carton)|0.08','Ustensiles et petits équipements (carton)|0.06']],
- ['Jouets, scolaire et papeterie',['Jouets (carton)|0.1','Fournitures scolaires (carton)|0.04','Papeterie (carton)|0.04']],
- ['Entretien et emballages commerciaux',['Produits d’entretien autorisés (carton)|0.04|R','Emballages commerciaux (balle)|0.2']],
- ['E-commerce et commandes',['Colis e-commerce|v|Petit=0.005;Moyen=0.02;Grand=0.06','Commandes clients (lot)|0.1','Lots de marchandises|0.3']],
- ['Sacs, ballots, caisses et palettes',['Sacs|0.05','Ballots|0.15','Caisses|0.12','Palettes de marchandises|v|Demi-palette=0.6;Palette standard=1.2;Palette haute=1.8']]]],
-['Matériaux, bricolage et équipements professionnels',[
- ['Outils',['Caisses à outils|0.03','Outils (carton)|0.05','Établis|0.5','Échelles|v|Petite=0.1;Moyenne=0.2;Grande=0.35']],
- ['Tuyaux, câbles et profilés',['Tuyaux (lot)|0.1','Câbles (rouleau)|0.15','Gaines (rouleau)|0.1','Rouleaux divers|0.1','Profilés (lot)|0.1']],
- ['Carrelage et sanitaires',['Carrelage (carton)|0.02|L','Sanitaires|0.3|F','Lavabos|0.15|F','Robinetterie (carton)|0.03']],
- ['Menuiserie',['Portes|0.3','Fenêtres|0.2|F','Panneaux|0.2','Plaques|0.15','Menuiserie (lot)|0.3']],
- ['Matériaux de chantier',['Matériaux de chantier (palette)|1|L','Sacs de matériaux (sac)|0.04|L']],
- ['Peintures',['Peintures et produits assimilés (carton)|0.03|R']],
- ['Atelier et machines',['Équipements d’atelier|0.5','Compresseurs|v|Petit=0.1;Moyen=0.3;Grand=0.8|L','Machines|v|Petite=0.3;Moyenne=1;Grande=4|L']],
- ['Agricole et jardinage professionnel',['Matériel agricole|1','Matériel de jardinage (carton)|0.2','Équipements professionnels (caisse)|0.5']]]],
-['Autres catégories',[
- ['Bagages',['Valises cabine|0.04','Valises moyennes|0.08','Grandes valises|0.12','Malles|0.2','Sacs de voyage|0.07']],
- ['Articles pour bébés',['Poussettes|0.2','Lits bébé|0.25','Chaises hautes|0.15','Parcs|0.2']],
- ['Sport',['Haltères (lot)|0.03|L','Tapis de sport|0.05','Appareils de fitness|v|Petit=0.3;Moyen=0.8;Grand=1.5|L','Équipements sportifs (carton)|0.1']],
- ['Loisirs',['Instruments de musique|v|Guitare=0.1;Clavier=0.15;Batterie=0.8;Piano droit=1.5|F','Jeux (carton)|0.05','Matériel de camping (carton)|0.1']],
- ['Jardin',['Pots et jardinières|0.1','Mobilier extérieur (lot)|0.5','Décorations de jardin (carton)|0.1']],
- ['Santé',['Mobilier médical|v|Petit=0.3;Moyen=0.8;Grand=1.5','Équipements médicaux autorisés|0.5|F']],
- ['Automobile',['Pneus|0.15','Pièces détachées (carton)|0.05','Accessoires auto (carton)|0.04']],
- ['Imprimerie, PLV et stands',['Présentoirs|0.2','Kakémonos|0.05','Enseignes|0.4|F','Stands (caisse)|1','PLV (carton)|0.1','Imprimés (carton)|0.04']],
- ['Engins roulants',['Vélo|0.6','Moto|2','Scooter|1.5','Tricycle motorisé|5','Transpalette|0.6','Chariot élévateur|6|L','Voiture|12|L']]]]];
-
-const geParseItem=s=>{const p=s.split('|');let variants=[];if(p[1]==='v'){variants=p[2].split(';').map(x=>{const q=x.split('=');return{label:q[0],cbm:Number(q[1])}})}else variants=[{label:'',cbm:Number(p[1])}];return{name:p[0],variants,flags:p[1]==='v'?(p[3]||''):(p[2]||'')}};
-const geFamilies=GE_CATALOG.map((f,fi)=>({name:f[0],index:fi,subs:f[1].map((s,si)=>({name:s[0],index:si,items:s[1].map((raw,ii)=>({...geParseItem(raw),family:fi,sub:si,key:fi+'-'+si+'-'+ii}))}))}));
-const geAllItems=geFamilies.flatMap(f=>f.subs.flatMap(s=>s.items));
-const geCart={};let geCurrentItem=null;
-const geFmt=n=>Number(n||0).toLocaleString('fr-FR',{maximumFractionDigits:3});
-function geRenderFamilies(){const box=$('geFamilies');box.innerHTML='';geFamilies.forEach(f=>{const b=document.createElement('button');b.type='button';b.className='ge-family';b.textContent=f.name;b.addEventListener('click',()=>geRenderItems(f.index));box.appendChild(b)})}
-function geRenderItems(fi,query=''){const box=$('geItems');box.innerHTML='';const fam=geFamilies[fi];if(!fam)return;const back=document.createElement('button');back.type='button';back.className='secondary';back.textContent='← Familles';back.addEventListener('click',()=>{$('geItems').hidden=true;$('geFamilies').hidden=false});box.appendChild(back);const h=document.createElement('h4');h.textContent=fam.name;box.appendChild(h);fam.subs.forEach(sub=>{const sh=document.createElement('h5');sh.textContent=sub.name;box.appendChild(sh);sub.items.filter(it=>!query||it.name.toLocaleLowerCase('fr').includes(query)).forEach(it=>{const b=document.createElement('button');b.type='button';b.className='ge-item';b.textContent=it.name+(it.variants.length>1?' · choisir le type':'');b.addEventListener('click',()=>geOpenDetail(it));box.appendChild(b)})});$('geFamilies').hidden=true;$('geItems').hidden=false}
-function geOpenDetail(it){geCurrentItem=it;$('geDetailTitle').textContent=it.name;$('geVariantWrap').hidden=it.variants.length===1;$('geVariant').innerHTML='';it.variants.forEach((v,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=(v.label||'Standard')+' — '+geFmt(v.cbm)+' m³';$('geVariant').appendChild(o)});$('geQty').value='1';$('geDetail').hidden=false;$('geDetail').scrollIntoView({behavior:'smooth',block:'center'})}
-function geAddCurrent(){if(!geCurrentItem)return;const qty=Math.max(1,Math.min(999,parseInt($('geQty').value,10)||1));const variant=geCurrentItem.variants[parseInt($('geVariant').value||'0',10)]||geCurrentItem.variants[0];const key=geCurrentItem.key+'-'+(variant.label||'std');if(!geCart[key])geCart[key]={name:geCurrentItem.name+(variant.label?' ('+variant.label+')':''),qty:0,cbm:variant.cbm,flags:geCurrentItem.flags};geCart[key].qty=Math.min(999,geCart[key].qty+qty);$('geDetail').hidden=true;geCurrentItem=null;geRenderCart()}
-function geRenderCart(){const box=$('geCart');box.innerHTML='';let total=0,flags='';Object.keys(geCart).forEach(k=>{const x=geCart[k];total+=x.qty*x.cbm;flags+=x.flags;const row=document.createElement('div');row.className='ge-cart-row';const name=document.createElement('span');name.textContent=x.qty+' × '+x.name+' — '+geFmt(x.qty*x.cbm)+' m³';const rm=document.createElement('button');rm.type='button';rm.textContent='Retirer';rm.className='secondary';rm.addEventListener('click',()=>{delete geCart[k];geRenderCart()});row.append(name,rm);box.appendChild(row)});$('geTotal').textContent=geFmt(total)+' m³';$('geCartEmpty').hidden=Object.keys(geCart).length>0;$('geRules').hidden=!/[FRL]/.test(flags);$('geRegAckWrap').hidden=!flags.includes('R');$('geRegAck').checked=false}
-function geInit(){geRenderFamilies();$('geSearch').addEventListener('input',()=>{const q=$('geSearch').value.trim().toLocaleLowerCase('fr');const box=$('geSearchResults');box.innerHTML='';if(q.length<2){box.hidden=true;return}geAllItems.filter(it=>it.name.toLocaleLowerCase('fr').includes(q)).slice(0,30).forEach(it=>{const b=document.createElement('button');b.type='button';b.className='ge-item';b.textContent=it.name+(it.variants.length>1?' · choisir le type':'');b.addEventListener('click',()=>geOpenDetail(it));box.appendChild(b)});box.hidden=false});$('geAdd').addEventListener('click',geAddCurrent);$('geCancel').addEventListener('click',()=>{$('geDetail').hidden=true;geCurrentItem=null});$('geFamilies').hidden=false;}
-
-
 /* ---------- Carte : toujours affichée ---------- */
 function fixMapSize(){ if(map){ map.invalidateSize(); } }
 const wide=()=>window.innerWidth>820;
@@ -1331,10 +1238,10 @@ function stepOk(n){
   const p=normPhone($('phone').value);if(!p.ok)return stepMsg(p.msg,'phone');
   if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
- if(n===3){if(!Object.keys(geCart).length&&$('need').value.trim().length<5)return stepMsg('Ajoutez au moins un article du catalogue ou décrivez ce que vous transportez.','geSearch');if(!$('geRegAckWrap').hidden&&!$('geRegAck').checked)return stepMsg('Confirmez la déclaration des marchandises réglementées.','geRegAck');
+ if(n===3){if($('need').value.trim().length<5)return stepMsg('Décrivez simplement ce que vous souhaitez transporter.','need');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(parseFloat(w.replace(',','.'))>=0))return stepMsg('Poids invalide : indiquez un nombre de kilogrammes, ou cochez « Je ne sais pas ».','weight')}
- if(n===4){if(!$('packaging').value)return stepMsg('Indiquez si vos marchandises sont déjà emballées.','packaging')}
+ if(n===4){ /* les informations d’accès et d’emballage sont facultatives */ }
  return stepMsg('');
 }
 function formOk(){for(let n=1;n<=4;n++){if(!stepOk(n)){showStep(n);stepOk(n);return false}}return true}
@@ -1379,7 +1286,7 @@ function getPayload(){
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:place('pickup'),livraison:place('dropoff'),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
-  dateSouhaitee:$('date').value,detail:[Object.keys(geCart).map(k=>geCart[k].qty+' × '+geCart[k].name).join(' ; '),$('need').value.trim(), 'Volume catalogue indicatif : '+$('geTotal').textContent].filter(Boolean).join(' | '),cbm:Object.keys(geCart).reduce((t,k)=>t+geCart[k].qty*geCart[k].cbm,0).toFixed(6),emballage:$('packaging').value,notes:notes,
+  dateSouhaitee:$('date').value,detail:$('need').value.trim(),cbm:'',emballage:$('packaging').value,notes:notes,
   distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
   gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
   poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
@@ -1403,7 +1310,7 @@ function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)re
 function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
 
 /* ---------- Dialogue avec le serveur : demande de code, renvoi, vérification (réponse par message GE_OTP_RESULT) ---------- */
-let pendingId='',otpDeadline=0,busy=false,timerHandle=null,resendAt=0;
+let busy=false;
 const rid=()=>'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);
 function callServer(data){
  return new Promise(resolve=>{
@@ -1411,13 +1318,13 @@ function callServer(data){
   const id=rid();data.rid=id;let done=false;
   const f=document.createElement('form');f.method='POST';f.action=SCRIPT_URL;f.target='geOrderFrame';f.style.display='none';
   Object.keys(data).forEach(k=>{const i=document.createElement('input');i.type='hidden';i.name=k;i.value=data[k];f.appendChild(i)});
-  const onMsg=e=>{const d=e.data;if(!d||typeof d!=='object'||d.type!=='GE_OTP_RESULT'||d.rid!==id)return;finish(d)};
+  const onMsg=e=>{const d=e.data;if(!d||typeof d!=='object'||(d.type!=='GE_ORDER_RESULT'&&d.type!=='GE_OTP_RESULT')||d.rid!==id)return;finish(d)};
   const t=setTimeout(()=>finish({ok:false,error:'TIMEOUT',message:'Le serveur n’a pas répondu. Vérifiez votre connexion puis réessayez : aucun doublon ne sera créé.'}),45000);
   function finish(d){if(done)return;done=true;clearTimeout(t);window.removeEventListener('message',onMsg);f.remove();resolve(d)}
   window.addEventListener('message',onMsg);document.body.appendChild(f);f.submit();
  });
 }
-function setBusy(on){busy=on;['submitBtn','verifyBtn','resendBtn','editBtn'].forEach(id=>{const b=$(id);if(b)b.disabled=on});if(on)showGESplash();else hideGESplash(0)}
+function setBusy(on){busy=on;['submitBtn'].forEach(id=>{const b=$(id);if(b)b.disabled=on});if(on)showGESplash();else hideGESplash(0)}
 function tick(){
  const left=Math.max(0,Math.round((otpDeadline-Date.now())/1000)),m=Math.floor(left/60),s=String(left%60).padStart(2,'0');
  $('otpTimer').textContent=left>0?'Le code est valable encore '+m+':'+s+'.':'Ce code a expiré : demandez un nouvel envoi.';
@@ -1432,31 +1339,13 @@ function showOtpPanel(d){
 }
 function backToIntro(){$('otpPanel').hidden=true;$('otpIntro').hidden=false;if(timerHandle){clearInterval(timerHandle);timerHandle=null}}
 async function requestCodeFlow(){
- if(busy)return;if(!formOk())return;
+ if(busy)return;
+ if(!formOk())return;
  $('status').style.display='none';setBusy(true);
- const d=await callServer(pendingId?{action:'resendOtp',pendingId}:Object.assign({action:'requestOtp'},getPayload()));
+ const d=await callServer(Object.assign({action:'submitOrder'},getPayload()));
  setBusy(false);
- if(d.pendingId)pendingId=d.pendingId;
- if(d.ok){showOtpPanel(d);return}
- if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE')pendingId='';
- showStatus((d.message||'L’envoi du code n’a pas pu être confirmé.')+(pendingId?' Vous pouvez réessayer.':''),'err');
- if(pendingId)$('submitBtn').textContent='Réessayer l’envoi du code';
-}
-async function resendFlow(){
- if(busy||!pendingId)return;setBusy(true);const d=await callServer({action:'resendOtp',pendingId});setBusy(false);
- if(d.ok){showOtpPanel(d);$('otpMsg').textContent='Un nouveau code vient d’être transmis.';return}
- $('otpMsg').className='err';$('otpMsg').textContent=d.message||'Le nouvel envoi n’a pas pu être confirmé.';
- if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE'){pendingId='';backToIntro();showStatus(d.message,'err')}
- tick();
-}
-async function verifyFlow(){
- if(busy)return;const code=$('otpCode').value.replace(/\s/g,'');
- if(!/^\d{6}$/.test(code)){$('otpMsg').className='err';$('otpMsg').textContent='Saisissez les 6 chiffres reçus.';return}
- setBusy(true);const d=await callServer({action:'verifyOtp',pendingId,code});
- if(d.ok){busy=false;finishSubmit(d);return}
- setBusy(false);$('otpMsg').className='err';$('otpMsg').textContent=d.message||'Le code n’a pas pu être vérifié.';
- if(d.error==='DEMANDE_EXPIREE'||d.error==='DEMANDE_INTROUVABLE'||d.error==='DEMANDE_CLOSE'){pendingId='';backToIntro();showStatus(d.message,'err')}
- tick();
+ if(d.ok){finishSubmit(d);return}
+ showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
 }
 function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;if(window.QRCode){new QRCode(el,{text:url,width:140,height:140,correctLevel:QRCode.CorrectLevel.M})}else{const img=new Image();img.alt='QR code de suivi';img.width=140;img.height=140;img.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(url);el.appendChild(img)}}
 function finishSubmit(d){
@@ -1471,14 +1360,10 @@ function finishSubmit(d){
  requestAnimationFrame(()=>requestAnimationFrame(()=>hideGESplash(3050)));
 }
 $('orderForm').addEventListener('submit',e=>e.preventDefault());
-$('submitBtn').addEventListener('click',requestCodeFlow);$('verifyBtn').addEventListener('click',verifyFlow);$('resendBtn').addEventListener('click',resendFlow);
-$('editBtn').addEventListener('click',()=>{pendingId='';$('submitBtn').textContent='Envoyer ma demande';backToIntro();showStep(4)});
-$('otpCode').addEventListener('input',()=>{$('otpCode').value=$('otpCode').value.replace(/\D/g,'').slice(0,6)});
-$('otpCode').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();verifyFlow()}});
+$('submitBtn').addEventListener('click',requestCodeFlow);
 $('need').addEventListener('input',()=>{$('needCount').textContent=$('need').value.length+' / 3000'});
-geInit();
 $('weightUnknown').addEventListener('change',()=>{$('weight').disabled=$('weightUnknown').checked;if($('weightUnknown').checked)$('weight').value=''});
-['name','phone','recipientPhone','email','need','weight','packaging','access','notes','date','service'].forEach(id=>$(id).addEventListener('input',()=>{if(pendingId&&$('otpPanel').hidden===false){/* une modification invalide le code en cours : retour à la vérification */}}));
+['name','phone','recipientPhone','email','need','weight','packaging','access','notes','date','service'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',()=>{});});
 
 /* ---------- Suggestions de communes et villes ---------- */
 const ABIDJAN='Abobo|Adjamé|Anyama|Attécoubé|Bingerville|Cocody|Koumassi|Marcory|Plateau|Port-Bouët|Songon|Treichville|Yopougon|Abidjan';
