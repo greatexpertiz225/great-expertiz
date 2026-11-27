@@ -312,9 +312,9 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
 
       <div class="view" id="view-cotations">
         <p class="section-title">Préparer une cotation interne</p>
-        <p style="color:var(--grey);margin:-6px 0 16px;font-size:.86rem;">Le client ne voit aucun prix automatique. Cette estimation sert à préparer et valider le devis GREAT EXPERTIZ.</p>
+        <p style="color:var(--grey);margin:-6px 0 16px;font-size:.86rem;">Le client ne voit aucun prix automatique. Cette estimation sert à préparer et valider le devis GREAT EXPERTIZ. N’indiquez « envoyée » qu’après l’envoi réel du devis.</p>
         <div class="content-card" style="padding:16px;margin-bottom:18px;">
-          <div class="grid2">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
             <div><label for="quoteOrder">Commande liée</label><select id="quoteOrder"><option value="">Nouvelle cotation sans commande</option></select></div>
             <div><label for="quoteZone">Zone</label><select id="quoteZone"><option value="indetermine">À déterminer / sur devis</option><option value="intra">Grand Abidjan</option><option value="extra">Hors Grand Abidjan</option></select></div>
             <div><label for="quoteCategory">Catégorie de véhicule</label><select id="quoteCategory"><option value="">Choisir…</option><option value="tricycle_cargo">Tricycle cargo</option><option value="utilitaire">Utilitaire / camionnette</option><option value="camion_6_roues">Camion 6 roues</option><option value="camion_10_roues">Camion 10 roues</option><option value="semi_remorque">Semi-remorque</option><option value="poids_lourd">Poids lourd</option></select></div>
@@ -675,7 +675,19 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
     var total=document.createElement('p');total.style.fontWeight='800';total.style.fontSize='1.1rem';
     total.textContent=(q.complete?'Total calculé : ':'Total partiel : ')+Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA';box.appendChild(total);
     (q.avertissements||[]).forEach(function(w){var p=document.createElement('p');p.className='hint';p.textContent='⚠ '+w;box.appendChild(p)});
-    if(id){var p=document.createElement('p');p.textContent='Cotation enregistrée : '+id;box.appendChild(p);}
+    if(id){
+      var p=document.createElement('p');p.textContent='Cotation enregistrée : '+id;box.appendChild(p);
+      var orderCode=document.getElementById('quoteOrder').value,order=allOrders.find(function(o){return o.code===orderCode;});
+      if(q.complete&&order&&order.telephone){
+        var digits=String(order.telephone).replace(/\\D/g,'');
+        if(digits.length===10&&digits.charAt(0)==='0')digits='225'+digits.substring(1);
+        else if(digits.length===9)digits='225'+digits;
+        if(digits.length>=11){
+          var msg='Bonjour '+(order.nom||'')+', suite à votre demande auprès de GREAT EXPERTIZ, voici notre proposition de devis : '+Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA. Référence : '+order.code+'. Merci de nous confirmer votre accord.';
+          var link=document.createElement('a');link.href='https://wa.me/'+digits+'?text='+encodeURIComponent(msg);link.target='_blank';link.rel='noopener';link.className='contact-btn';link.textContent='Préparer l’envoi WhatsApp';link.style.display='inline-block';link.style.marginTop='8px';box.appendChild(link);
+        }
+      }else if(!q.complete){var note=document.createElement('p');note.className='hint';note.textContent='Cotation incomplète : complétez le kilométrage ou les éléments « sur devis » avant de transmettre un montant au client.';box.appendChild(note);}
+    }
   }
   function calculateQuote(save){
     var payload=quotePayload(save),btn=document.getElementById(save?'quoteSaveBtn':'quoteCalcBtn');
