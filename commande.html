@@ -1245,13 +1245,17 @@ async function calculateRoute(){
   $('distanceLabel').textContent='Itinéraire non calculé';
   $('routeLabel').textContent='L’itinéraire routier ne peut pas être calculé pour le moment.';
   if(document.body.classList.contains('route-stage')){$('routeDistance').textContent='À confirmer';$('routeDuration').textContent='À confirmer';}
-  if(map&&startCoords&&endCoords){
-   routeLayer=L.polyline([startCoords,endCoords],{color:'#087eae',weight:6,dashArray:'9 8',opacity:.95}).addTo(map);
-   if(startMarker)startMarker.setZIndexOffset(1000);if(endMarker)endMarker.setZIndexOffset(1000);
-   if(document.body.classList.contains('route-stage'))fitRouteMap();else map.fitBounds(routeLayer.getBounds().pad(.18),{animate:false});
-   $('routeStatus').textContent='Tracé indicatif affiché en pointillés. Le calcul de la route routière est momentanément indisponible ; distance et durée à confirmer.';
-   if(document.body.classList.contains('route-stage'))$('routeDuration').textContent='À confirmer';
-  }else $('routeStatus').textContent='La carte est prête, mais le tracé ne peut pas être affiché sans les deux positions GPS.';
+  /* Ne jamais dessiner une ligne droite ou en pointillés à la place d'un itinéraire routier.
+     Si les moteurs de calcul sont indisponibles, conserver les deux repères sans faux tracé. */
+  if(startMarker)startMarker.setZIndexOffset(1000);
+  if(endMarker)endMarker.setZIndexOffset(1000);
+  if(document.body.classList.contains('route-stage'))fitRouteMap();
+  else if(map&&startCoords&&endCoords)map.fitBounds(L.latLngBounds(startCoords,endCoords).pad(.18),{animate:false});
+  $('routeStatus').textContent='Le calcul de l’itinéraire routier est momentanément indisponible. Les points de départ et d’arrivée sont conservés ; aucune distance ni durée n’est estimée.';
+  if(document.body.classList.contains('route-stage')){
+   $('routeDistance').textContent='À confirmer';
+   $('routeDuration').textContent='À confirmer';
+  }
  }
  
 }
