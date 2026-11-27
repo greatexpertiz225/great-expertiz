@@ -484,7 +484,7 @@ body.sheetfull .leaflet-control-container{display:none!important}
 #geSplash{position:fixed;inset:0;z-index:5000;background:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .45s ease,visibility .45s ease}
 #geSplash img{width:min(190px,42vw);max-height:110px;object-fit:contain}
 .splashName{font-size:clamp(25px,6vw,38px);font-weight:900;letter-spacing:1px;color:var(--blue-d);overflow:hidden;white-space:nowrap}
-.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 2.8s steps(14,end) .2s forwards}
+.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 1.5s steps(14,end) .1s forwards}
 .splashTag{font-size:11px;letter-spacing:2px;font-weight:700;color:#607487}
 @keyframes splashWrite{to{clip-path:inset(0 0 0 0)}}
 #geSplash.show{display:flex;opacity:1;visibility:visible;pointer-events:auto}
@@ -760,7 +760,17 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 #protectionValidate{width:100%;padding:13px;font-size:15px}
 .protection-done{margin:0;border:1px solid #bfe0cf}
 .protection-done::before{content:"✓ ";font-weight:800}
-\n/* Catalogue marchandises : fiches de variantes et panier */
+\n/* Sélection détaillée des objets : aucun calcul CBM côté client */
+.ge-client-items{border:1px solid #d7e6ef;border-radius:12px;padding:12px;margin:12px 0;background:#fbfdff}
+.ge-client-items h4{margin:0 0 5px;color:#075985}
+.ge-item-results{display:grid;gap:6px;margin:6px 0}
+.ge-item-results button{width:100%;text-align:left;background:#fff;border:1px solid #cbdce6;color:#173247;padding:9px;border-radius:8px;min-height:40px}
+.ge-item-results button small{display:block;color:#607487;font-weight:400}
+.ge-selected-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #e2eaf0;font-size:13px}
+.ge-selected-row span{min-width:0;overflow-wrap:anywhere}
+.ge-selected-row button{min-height:32px;padding:5px 9px;flex:none}
+.ge-cart .hint{margin:7px 0}
+/* Catalogue marchandises : fiches de variantes et panier */
 .ge-families{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.ge-family,.ge-item{background:#fff;border:1px solid #d4e1e9;border-radius:10px;padding:11px;text-align:left;color:#173247;font-weight:700;min-height:44px}.ge-items,.ge-results{display:grid;gap:7px;margin:10px 0}.ge-items h4,.ge-items h5{margin:8px 0 2px;color:#075985}.ge-detail{border:1px solid #8fc9e5;background:#f1f9fd;border-radius:12px;padding:12px;margin:12px 0}.ge-detail-actions{display:flex;gap:8px}.ge-detail-actions button{flex:1}.ge-cart{display:grid;gap:7px}.ge-cart-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e2eaf0;padding:7px 0;font-size:13px}.ge-cart-row button{padding:6px 9px;min-height:34px}.ge-total{display:flex;justify-content:space-between;align-items:center;background:#eef7fb;padding:12px;border-radius:10px;margin:10px 0}.ge-total strong{color:#075985}.ge-family:active,.ge-item:active{background:#eaf6fc}
 
 </style>
@@ -837,12 +847,28 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <h3>Que souhaitez-vous transporter ?</h3>
 <p class="hint">Décrivez simplement les marchandises, le matériel ou les effets à transporter. Le catalogue détaillé est réservé à GREAT EXPERTIZ.</p>
 <div class="field"><label for="need">Autres précisions (facultatif)</label><textarea id="need" rows="3" maxlength="3000" placeholder="Décrivez ici un article absent du catalogue ou ajoutez des précisions."></textarea><div class="hint" id="needCount">0 / 3000</div></div>
+<section class="ge-client-items" aria-labelledby="geItemsTitle">
+ <h4 id="geItemsTitle">Ajouter les objets à transporter</h4>
+ <p class="hint">Recherchez chaque objet, choisissez son type si nécessaire et indiquez la quantité. Le volume sera évalué et vérifié par GREAT EXPERTIZ dans l’administration.</p>
+ <div class="field"><label for="geItemSearch">Rechercher dans la liste des objets</label><input id="geItemSearch" type="search" autocomplete="off" placeholder="Ex. table, chaise, fauteuil, réfrigérateur…"></div>
+ <div id="geItemResults" class="ge-item-results" hidden></div>
+ <div id="geItemDetail" class="ge-detail" hidden>
+  <strong id="geItemSelectedName"></strong>
+  <div class="field" id="geItemVariantWrap" hidden><label for="geItemVariant">Type / modèle *</label><select id="geItemVariant"><option value="">Choisir le type exact…</option></select></div>
+  <div class="field"><label for="geItemQty">Quantité *</label><input id="geItemQty" type="number" min="1" max="999" step="1" inputmode="numeric" value="1"></div>
+  <button type="button" class="secondary" id="geAddItem">Ajouter à ma liste</button>
+ </div>
+ <div id="geSelectedItems" class="ge-cart" aria-live="polite"><p class="hint">Aucun objet ajouté pour le moment.</p></div>
+</section>
 <div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
 </div>
 <div class="step" id="step4" data-title="Accès et emballage">
 <h3>Accès et emballage</h3>
 <div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
+<div class="field"><label for="helpers">Nombre de manutentionnaires souhaité</label><select id="helpers">
+<option value="0">Aucun</option><option value="1">1 manutentionnaire</option><option value="2">2 manutentionnaires</option><option value="3">3 manutentionnaires</option><option value="4">4 manutentionnaires</option><option value="5">5 manutentionnaires</option><option value="6">6 manutentionnaires</option><option value="7">7 manutentionnaires</option><option value="8">8 manutentionnaires</option><option value="9">9 manutentionnaires</option><option value="10">10 manutentionnaires</option>
+</select><div class="hint">Indiquez le nombre de personnes dont vous pensez avoir besoin. GREAT EXPERTIZ confirmera l’organisation et le coût dans le devis.</div></div>
 <div class="field"><label for="packaging">Vos marchandises sont-elles emballées ? (facultatif)</label><select id="packaging"><option value="">Choisir…</option><option value="deja_emballe">J’ai déjà emballé mes marchandises</option><option value="protection_supplementaire">Je souhaite une protection supplémentaire</option><option value="besoin_conseils">J’ai besoin de conseils</option></select></div>
 <div class="notice">Cartons, film étirable, papier bulle, ruban adhésif et housses ne sont ni fournis ni inclus dans le transport. Une prestation d’emballage ou de protection fait l’objet d’une cotation séparée.</div>
 </div>
@@ -908,7 +934,8 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <iframe name="geOrderFrame" id="geOrderFrame" title="Réponse du serveur" style="display:none"></iframe>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="./qrcode.min.js"></script>
+<script src="./catalogue-client.js"></script>
 <button type="button" id="helpFloat" aria-label="Besoin d’aide, ouvrir WhatsApp"><span>●</span> Besoin d’aide <span class="grip">⠿</span></button>
 <script>
 (() => {
@@ -958,10 +985,10 @@ function initMap(){
   maxZoom:19,attribution:'© OpenStreetMap'
  }).addTo(map);
  const bootStarted=Date.now();
- const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,3600-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
+ const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,1300-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
  tiles.once('load',hideBootSplash);
- /* Même si les tuiles sont rapides, toutes les lettres restent visibles au moins 3,6 s. */
- window.setTimeout(hideBootSplash,7000);
+ /* Animation courte : l’interface apparaît dès que la carte est prête, sans attente artificielle. */
+ window.setTimeout(hideBootSplash,3200);
  tiles.on('tileerror',()=>{ if(tileErrors===0)window.setTimeout(hideBootSplash,1200);
   tileErrors++;
   if(tileErrors===5) $('routeStatus').textContent='Certaines tuiles de la carte ne se chargent pas. Vérifiez votre connexion.';
@@ -1330,14 +1357,17 @@ function showStatus(message,type){
 function getPayload(){
  const place=w=>{const c=$(w+'Commune').value,x=$(w+'Extra').value.trim();return x?x+', '+c:c};
  const fullPlaces=which=>allStopLabels(which);
- const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',''].filter(Boolean).join(' | ');
+ const helpers=$('helpers')?String($('helpers').value||'0'):'0';
+ const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty);
+ const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
+ const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'','Manutentionnaires souhaités : '+helpers].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:fullPlaces('pickup').join(' ; '),livraison:fullPlaces('delivery').join(' ; '),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
-  dateSouhaitee:$('date').value,detail:$('need').value.trim(),cbm:'',emballage:$('packaging').value,notes:notes,
+  dateSouhaitee:$('date').value,detail:detailText,cbm:'',emballage:$('packaging').value,notes:notes,
   distanceKm:distanceKm===null?'':distanceKm.toFixed(1),dureeMin:routeDurationMinutes===null?'':String(Math.round(routeDurationMinutes)),
   gpsEnlevement:fmtCoords(startCoords),gpsLivraison:fmtCoords(endCoords),lienEnlevement:mapsLink(startCoords),lienLivraison:mapsLink(endCoords),
-  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
+  poidsKg:$('weightUnknown').checked?'':$('weight').value.trim(),manutentionnaires:helpers,temperature:$('tempField').style.display!=='none'?$('temperature').value:'',hp:$('website').value};
  try{const t=localStorage.getItem('geClientToken');if(t)p.clientToken=t}catch(e){}
  return p;
 }
@@ -1355,7 +1385,7 @@ function renderReceiptRoute(d){
 }
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
-function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation=finalWrite?'splashWrite 2.8s steps(14,end) .15s forwards':'splashWrite 2.8s steps(14,end) .15s infinite'}}
+function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation=finalWrite?'splashWrite 1.5s steps(14,end) .1s forwards':'splashWrite 2.8s steps(14,end) .15s infinite'}}
 function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
 
 /* ---------- Envoi de la demande client sans code OTP (réponse GE_ORDER_RESULT) ---------- */
@@ -1384,7 +1414,7 @@ async function requestCodeFlow(){
  if(d.ok){finishSubmit(d);return}
  showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
 }
-function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;if(window.QRCode){new QRCode(el,{text:url,width:140,height:140,correctLevel:QRCode.CorrectLevel.M})}else{const img=new Image();img.alt='QR code de suivi';img.width=140;img.height=140;img.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(url);el.appendChild(img)}}
+function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;try{if(typeof QRCode==='function'){new QRCode(el,{text:url,width:160,height:160,correctLevel:QRCode.CorrectLevel.M});if(el.querySelector('canvas,img,svg,table'))return}}catch(err){}const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Ouvrir le suivi de cette demande';a.style.cssText='display:inline-block;padding:10px;color:#075985;font-weight:700';el.appendChild(a)}
 function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
  showGESplash(true);
@@ -1454,6 +1484,48 @@ function fillCommunes(){
  });
 }
 fillCommunes();
+
+/* ---------- Articles client : type exact + quantité, sans calcul CBM ---------- */
+window.geSelectedItems=[];
+let geCurrentItem=null;
+function geNorm(s){return String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
+function geRenderSelectedItems(){
+ const box=$('geSelectedItems');if(!box)return;box.innerHTML='';
+ if(!window.geSelectedItems.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun objet ajouté pour le moment.';box.appendChild(p);return}
+ window.geSelectedItems.forEach((item,index)=>{
+  const row=document.createElement('div');row.className='ge-selected-row';
+  const label=document.createElement('span');label.textContent=item.name+(item.variant?' — '+item.variant:'')+' × '+item.qty;
+  const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Retirer';del.addEventListener('click',()=>{window.geSelectedItems.splice(index,1);geRenderSelectedItems()});
+  row.appendChild(label);row.appendChild(del);box.appendChild(row);
+ });
+}
+function geChooseItem(item){
+ geCurrentItem=item;$('geItemSelectedName').textContent=item.name;
+ const wrap=$('geItemVariantWrap'),select=$('geItemVariant');select.innerHTML='<option value="">Choisir le type exact…</option>';
+ if(item.variants&&item.variants.length){item.variants.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});wrap.hidden=false}
+ else{wrap.hidden=true}
+ $('geItemQty').value='1';$('geItemDetail').hidden=false;
+}
+function geSearchItems(){
+ const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';
+ if(q.length<2){box.hidden=true;return}
+ const items=(window.GE_CLIENT_CATALOG||[]).filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q)).slice(0,12);
+ items.forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;const sm=document.createElement('small');sm.textContent=item.family+' · '+item.group;b.appendChild(sm);b.addEventListener('click',()=>{geChooseItem(item);box.hidden=true;$('geItemSearch').value=item.name});box.appendChild(b)});
+ if(!items.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Utilisez « Autres précisions » pour décrire cet objet.';box.appendChild(p)}
+ box.hidden=false;
+}
+$('geItemSearch').addEventListener('input',geSearchItems);
+$('geAddItem').addEventListener('click',()=>{
+ if(!geCurrentItem)return;
+ const variant=$('geItemVariantWrap').hidden?'':$('geItemVariant').value;
+ if(!$('geItemVariantWrap').hidden&&!variant){$('geItemVariant').focus();return}
+ const qty=Math.max(1,Math.min(999,parseInt($('geItemQty').value,10)||1));
+ const found=window.geSelectedItems.find(x=>x.name===geCurrentItem.name&&x.variant===variant&&x.family===geCurrentItem.family);
+ if(found)found.qty=Math.min(999,found.qty+qty);
+ else if(window.geSelectedItems.length<40)window.geSelectedItems.push({name:geCurrentItem.name,variant:variant,qty:qty,family:geCurrentItem.family,group:geCurrentItem.group});
+ $('geItemDetail').hidden=true;$('geItemSearch').value='';$('geItemResults').hidden=true;geCurrentItem=null;geRenderSelectedItems();
+});
+geRenderSelectedItems();
 
 /* Mode intégré : commande.html?embed=1 (affichée dans un cadre sur une autre page) */
 if(/[?&]embed=1/.test(window.location.search))document.body.classList.add('embed');
