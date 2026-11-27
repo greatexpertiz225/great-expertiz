@@ -774,6 +774,19 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 /* Catalogue marchandises : fiches de variantes et panier */
 .ge-families{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}.ge-family,.ge-item{background:#fff;border:1px solid #d4e1e9;border-radius:10px;padding:11px;text-align:left;color:#173247;font-weight:700;min-height:44px}.ge-items,.ge-results{display:grid;gap:7px;margin:10px 0}.ge-items h4,.ge-items h5{margin:8px 0 2px;color:#075985}.ge-detail{border:1px solid #8fc9e5;background:#f1f9fd;border-radius:12px;padding:12px;margin:12px 0}.ge-detail-actions{display:flex;gap:8px}.ge-detail-actions button{flex:1}.ge-cart{display:grid;gap:7px}.ge-cart-row{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid #e2eaf0;padding:7px 0;font-size:13px}.ge-cart-row button{padding:6px 9px;min-height:34px}.ge-total{display:flex;justify-content:space-between;align-items:center;background:#eef7fb;padding:12px;border-radius:10px;margin:10px 0}.ge-total strong{color:#075985}.ge-family:active,.ge-item:active{background:#eaf6fc}
 
+.ge-line-qty{width:68px!important;min-width:68px;padding:7px 5px!important;text-align:center;font-weight:800}
+.ge-selected-row{display:grid!important;grid-template-columns:minmax(0,1fr) 68px auto;gap:8px!important;align-items:center!important}
+.ge-precision-list{display:grid;gap:10px;margin:12px 0}
+.ge-precision-row{display:grid;gap:7px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff}
+.ge-precision-row strong{color:var(--navy);font-size:14px}
+.ge-precision-row select{min-height:44px}
+#gePrecisionPanel[hidden],#geSelectionPanel[hidden]{display:none!important}
+#geEditSelection{width:100%;margin:8px 0}
+#geItemDetail{display:none!important}
+.receipt-alert{font-size:13px;padding:10px 12px;max-width:520px}
+.receipt-alert strong{font-size:13px}
+.receipt-alert span{font-weight:700;line-height:1.35}
+
 </style>
 <script src="config.js"></script>
 </head>
@@ -845,9 +858,9 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </details>
 </div>
 <div class="step" id="step3" data-title="Votre besoin">
-<h3>Que souhaitez-vous transporter ?</h3>
-<p class="hint">Ajoutez les objets depuis la liste, puis précisez leur type exact et leur quantité. GREAT EXPERTIZ vérifiera le volume dans l’administration ; aucun CBM ni prix n’est calculé par le client.</p>
-<div class="field"><label for="need">Autres précisions (facultatif)</label><textarea id="need" rows="3" maxlength="3000" placeholder="Décrivez ici un article absent du catalogue ou ajoutez des précisions."></textarea><div class="hint" id="needCount">0 / 3000</div></div>
+<h3 id="step3Title">Que souhaitez-vous transporter ?</h3>
+<p class="hint" id="step3Intro">Ajoutez vos objets et ajustez la quantité à côté de chaque ligne. Les articles absents du catalogue peuvent être décrits dans « Autres objets ».</p>
+<div id="geSelectionPanel">
 <section class="ge-client-items" aria-labelledby="geItemsTitle">
  <h4 id="geItemsTitle">Ajouter les objets à transporter</h4>
  <p class="hint">Recherchez chaque objet, choisissez son type si nécessaire et indiquez la quantité. Le volume sera évalué et vérifié par GREAT EXPERTIZ dans l’administration.</p>
@@ -861,6 +874,14 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
  </div>
  <div id="geSelectedItems" class="ge-cart" aria-live="polite"><p class="hint">Aucun objet ajouté pour le moment.</p></div>
 </section>
+<div class="field"><label for="need">Autres objets absents du catalogue / précisions (facultatif)</label><textarea id="need" rows="2" maxlength="3000" placeholder="Décrivez ici les objets que vous n’avez pas trouvés dans la liste. GREAT EXPERTIZ les évaluera dans l’administration."></textarea><div class="hint" id="needCount">0 / 3000</div>
+</div>
+</div>
+<div id="gePrecisionPanel" hidden>
+<div class="notice">Pour chaque objet qui nécessite une précision, choisissez le type exact. Vous ne pourrez pas continuer tant que ces choix ne sont pas renseignés.</div>
+<div id="gePrecisionList" class="ge-precision-list"></div>
+<button type="button" class="secondary" id="geEditSelection">← Modifier ma liste d’objets</button>
+</div>
 <div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
 </div>
@@ -888,7 +909,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="rtag">TRANSPORT. LOGISTIQUE. B2B</div>
 <h3 style="border:0;margin:14px 0 4px">Votre demande a bien été prise en compte</h3>
 <p id="confirmMsg"></p>
-<div class="receipt-alert"><strong>⚠ CONSERVEZ VOTRE NUMÉRO DE COMMANDE</strong><span>Il vous sera demandé pour le suivi de votre dossier.</span></div>
+<div class="receipt-alert"><strong>⚠ CONSERVEZ VOTRE NUMÉRO DE COMMANDE</strong><span>Conservez ce reçu précieusement. Votre numéro de commande et ce reçu vous permettront de retrouver et suivre votre dossier jusqu’à son traitement.</span></div>
 <div class="rcode" id="receiptText"></div>
 <dl class="rdl" id="rdl"></dl>
 <div id="receiptRoute" aria-label="Références du trajet"></div>
@@ -1312,7 +1333,9 @@ function stepOk(n){
   const p=normPhone($('phone').value);if(!p.ok)return stepMsg(p.msg,'phone');
   if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
- if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet dans la liste ou décrivez ce que vous souhaitez transporter.','geItemSearch');const detailCheck=[(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':'')).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
+ if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet du catalogue ou décrivez un objet absent de la liste.','geItemSearch');
+  if(gePrecisionMode){const missing=(window.geSelectedItems||[]).find(x=>(x.variants||[]).length&&!x.variant);if(missing){const selects=[...$('gePrecisionList').querySelectorAll('select')];const target=selects.find(x=>x.dataset.itemName===missing.name);return stepMsg('Choisissez le type exact pour : '+missing.name+'.','gePrecisionList')}}
+  const detailCheck=[(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':'')).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
  if(n===4){const h=Number($('helpers').value||0);if(!Number.isInteger(h)||h<0||h>50)return stepMsg('Indiquez un nombre entier de manutentionnaires entre 0 et 50.','helpers')}
@@ -1490,43 +1513,80 @@ fillCommunes();
 window.geSelectedItems=[];
 let geCurrentItem=null;
 function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function geVariantsFor(item){
+ const n=geNorm(item.name);
+ const rules=[
+  [/frigo|refrigerateur|réfrigérateur/,['Petit réfrigérateur','Réfrigérateur moyen','Grand réfrigérateur','Réfrigérateur deux battants','Congélateur coffre','Congélateur vertical']],
+  [/fauteuil/,['Fauteuil 1 place','Fauteuil 2 places','Fauteuil 3 places']],
+  [/canape|salon/,['Canapé 1 place','Canapé 2 places','Canapé 3 places','Canapé d’angle','Canapé convertible']],
+  [/chaise/,['Chaise classique','Chaise haute','Chaise de bar','Chaise pliante','Chaise de bureau','Chaise en plastique','Chaise de cérémonie']],
+  [/table/,['Table ronde','Table rectangulaire','Table carrée','Table à manger','Table de coin','Table basse','Table de travail / bureau','Table pliante']],
+  [/matelas/,['Matelas 1 place','Matelas 2 places','Matelas Queen size','Matelas King size']],
+  [/\blit\b|lits/,['Lit 1 place','Lit 2 places','Lit Queen size','Lit King size','Lit superposé']],
+  [/armoire|dressing/,['Petite armoire','Armoire 2 portes','Armoire 3 portes','Armoire 4 portes','Dressing']],
+  [/ventilateur/,['Ventilateur sur pied','Ventilateur de plafond','Ventilateur mural','Petit ventilateur']],
+  [/bureau/,['Petit bureau','Bureau droit','Bureau d’angle','Bureau professionnel']],
+  [/television|televiseur|ecran/,['Petit écran','Écran moyen','Grand écran']]
+ ];
+ const found=rules.find(([re])=>re.test(n));
+ return found?found[1]:(Array.isArray(item.variants)?item.variants:[]);
+}
+let gePrecisionMode=false;
 function geRenderSelectedItems(){
  const box=$('geSelectedItems');if(!box)return;box.innerHTML='';
  if(!window.geSelectedItems.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun objet ajouté pour le moment.';box.appendChild(p);return}
  window.geSelectedItems.forEach((item,index)=>{
   const row=document.createElement('div');row.className='ge-selected-row';
-  const label=document.createElement('span');label.textContent=item.name+(item.variant?' — '+item.variant:'')+' × '+item.qty;
-  const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Retirer';del.addEventListener('click',()=>{window.geSelectedItems.splice(index,1);geRenderSelectedItems()});
-  row.appendChild(label);row.appendChild(del);box.appendChild(row);
+  const label=document.createElement('span');label.textContent=item.name;
+  const qty=document.createElement('input');qty.type='number';qty.min='1';qty.max='999';qty.step='1';qty.inputMode='numeric';qty.value=String(item.qty||1);qty.setAttribute('aria-label','Quantité pour '+item.name);qty.className='ge-line-qty';
+  qty.addEventListener('change',()=>{const v=Number(qty.value);if(!Number.isInteger(v)||v<1||v>999){qty.value=String(item.qty||1);return}item.qty=v});
+  const del=document.createElement('button');del.type='button';del.className='secondary';del.textContent='Retirer';del.addEventListener('click',()=>{window.geSelectedItems.splice(index,1);geRenderSelectedItems();geRenderPrecision()});
+  row.append(label,qty,del);box.appendChild(row);
  });
 }
 function geChooseItem(item){
- geCurrentItem=item;$('geItemSelectedName').textContent=item.name;
- const wrap=$('geItemVariantWrap'),select=$('geItemVariant');select.innerHTML='<option value="">Choisir le type exact…</option>';
- if(item.variants&&item.variants.length){item.variants.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});wrap.hidden=false}
- else{wrap.hidden=true}
- $('geItemQty').value='1';$('geItemDetail').hidden=false;
+ const found=window.geSelectedItems.find(x=>x.name===item.name&&x.family===item.family);
+ if(found){found.qty=Math.min(999,(found.qty||1)+1)}
+ else if(window.geSelectedItems.length<40){window.geSelectedItems.push({name:item.name,variant:'',qty:1,family:item.family,group:item.group,preset:item.preset||'',variants:geVariantsFor(item)})}
+ geRenderSelectedItems();geRenderPrecision();
+ $('geItemSearch').value='';$('geItemResults').hidden=true;
+ const hint=$('geAddHint');if(hint)hint.textContent=item.name+' ajouté. Modifiez la quantité dans votre liste.';
+}
+function geRenderPrecision(){
+ const box=$('gePrecisionList');if(!box)return;box.innerHTML='';
+ const needs=window.geSelectedItems.filter(x=>(x.variants||[]).length);
+ if(!needs.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucune précision supplémentaire obligatoire pour les objets sélectionnés.';box.appendChild(p);return}
+ needs.forEach((item)=>{
+  const card=document.createElement('div');card.className='ge-precision-row';
+  const title=document.createElement('strong');title.textContent=item.name+' · quantité : '+item.qty;
+  const select=document.createElement('select');select.setAttribute('aria-label','Type exact pour '+item.name);select.dataset.itemName=item.name;select.required=true;
+  const blank=document.createElement('option');blank.value='';blank.textContent='Choisir le type exact…';select.appendChild(blank);
+  item.variants.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
+  select.value=item.variant||'';select.addEventListener('change',()=>{item.variant=select.value});
+  card.append(title,select);box.appendChild(card);
+ });
+}
+function geShowPrecision(on){
+ gePrecisionMode=!!on;
+ $('geSelectionPanel').hidden=gePrecisionMode;
+ $('gePrecisionPanel').hidden=!gePrecisionMode;
+ $('step3Title').textContent=gePrecisionMode?'Précisez les objets sélectionnés':'Que souhaitez-vous transporter ?';
+ $('step3Intro').textContent=gePrecisionMode?'Pour les objets ci-dessous, choisissez le type exact. Ces précisions sont obligatoires pour préparer le bon véhicule.':'Ajoutez vos objets et ajustez la quantité à côté de chaque ligne. Les articles absents du catalogue peuvent être décrits dans « Autres objets ».';
+ $('nextBtn').textContent=gePrecisionMode?'Continuer →':'Préciser les objets →';
 }
 function geSearchItems(){
  const q=geNorm($('geItemSearch').value.trim()),box=$('geItemResults');box.innerHTML='';
  if(q.length<2){box.hidden=true;return}
  const items=(window.GE_CLIENT_CATALOG||[]).filter(x=>geNorm(x.name+' '+x.group+' '+x.family).includes(q)).slice(0,12);
- items.forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;const sm=document.createElement('small');sm.textContent=item.family+' · '+item.group+(item.preset?' · Contenu : '+item.preset:'');b.appendChild(sm);b.addEventListener('click',()=>{geChooseItem(item);box.hidden=true;$('geItemSearch').value=item.name});box.appendChild(b)});
+ items.forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item.name;const sm=document.createElement('small');sm.textContent=item.family+' · '+item.group+(item.preset?' · Contenu : '+item.preset:'');b.appendChild(sm);b.addEventListener('click',()=>geChooseItem(item));box.appendChild(b)});
  if(!items.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun résultat. Utilisez « Autres précisions » pour décrire cet objet.';box.appendChild(p)}
  box.hidden=false;
 }
 $('geItemSearch').addEventListener('input',geSearchItems);
-$('geAddItem').addEventListener('click',()=>{
- if(!geCurrentItem)return;
- const variant=$('geItemVariantWrap').hidden?'':$('geItemVariant').value;
- if(!$('geItemVariantWrap').hidden&&!variant){$('geItemVariant').focus();return}
- const qty=Math.max(1,Math.min(999,parseInt($('geItemQty').value,10)||1));
- const found=window.geSelectedItems.find(x=>x.name===geCurrentItem.name&&x.variant===variant&&x.family===geCurrentItem.family);
- if(found)found.qty=Math.min(999,found.qty+qty);
- else if(window.geSelectedItems.length<40)window.geSelectedItems.push({name:geCurrentItem.name,variant:variant,qty:qty,family:geCurrentItem.family,group:geCurrentItem.group,preset:geCurrentItem.preset||''});
- $('geItemDetail').hidden=true;$('geItemSearch').value='';$('geItemResults').hidden=true;geCurrentItem=null;geRenderSelectedItems();
-});
+$('geAddItem').addEventListener('click',()=>{if(geCurrentItem)geChooseItem(geCurrentItem)});
 geRenderSelectedItems();
+$('geEditSelection').addEventListener('click',()=>{geShowPrecision(false);$('stepMsg').textContent=''});
+geShowPrecision(false);
 
 /* Mode intégré : commande.html?embed=1 (affichée dans un cadre sur une autre page) */
 if(/[?&]embed=1/.test(window.location.search))document.body.classList.add('embed');
@@ -1616,10 +1676,12 @@ $('expandBtn').addEventListener('click',()=>{
  },120);
 });
 $('formBody').addEventListener('focusin',expand);$('formBody').addEventListener('click',expand);
-$('prevBtn').addEventListener('click',()=>{if(mview){leaveMapView(true);return}if(step>1)showStep(step-1)});
+$('prevBtn').addEventListener('click',()=>{if(mview){leaveMapView(true);return}if(step===3&&gePrecisionMode){geShowPrecision(false);return}if(step>1)showStep(step-1)});
 $('nextBtn').addEventListener('click',async()=>{
  if(mview){leaveMapView(false);showStep(2);return}
  if(step===1){if(!stepOk(1))return;await goMap();return}
+ if(step===3&&!gePrecisionMode){if(!stepOk(3))return;const hasPrecision=(window.geSelectedItems||[]).some(x=>(x.variants||[]).length);if(hasPrecision){geRenderPrecision();geShowPrecision(true);$('stepMsg').textContent='';$('formBody').scrollTop=0;return}}
+ if(step===3&&gePrecisionMode&&!stepOk(3))return;
  if(step<5&&stepOk(step)){expandedOnce=true;setFull(true);showStep(step+1)}
 });
 /* ===== FIN MOBILE ===== */
