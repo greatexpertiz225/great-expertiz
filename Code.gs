@@ -662,7 +662,10 @@ function handleDirectOrder_(p) {
       data.temperature ? "Température : " + data.temperature : ""].filter(Boolean).join(" | "), 2000);
     var clientAuth = checkClientAuth_(p.clientToken);
     data.clientId = clientAuth && clientAuth.valid ? clientAuth.clientId : "";
-    data.zone = classifyZone_(data);
+    // Plusieurs lieux libres : leurs communes ne sont pas toutes vérifiables côté serveur.
+// Par prudence, aucune tarification kilométrique automatique n'est appliquée.
+    data.zone = (String(data.enlevement).indexOf(";") >= 0 || String(data.livraison).indexOf(";") >= 0)
+      ? "indetermine" : classifyZone_(data);
     var source = "site|direct|" + rid;
     return withLock_(function () {
       var sheet = getOrdersSheet_(), hdr = ordersHeaders_(), srcCol = hdr.indexOf("Source") + 1;
