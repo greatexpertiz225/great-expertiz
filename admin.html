@@ -811,7 +811,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
     if(o.zone)document.getElementById('quoteZone').value=o.zone;
     if(o.distanceKm)document.getElementById('quoteDistance').value=o.distanceKm;
     if(o.cbm)document.getElementById('quoteCbm').value=o.cbm;
-    var hm=String(o.notes||'').match(/Manutentionnaires souhaités\\s*:\\s*(\\d+)/i);if(hm)document.getElementById('quoteHelpers').value=hm[1];
+    var hm=String(o.notes||'').match(/Manutentionnaires souhaités\s*:\s*(\d+)/i);if(hm)document.getElementById('quoteHelpers').value=hm[1];
     geAdminLoadFromOrder(o);
   });
   function loadQuotes(){
