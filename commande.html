@@ -1326,6 +1326,15 @@ function callServer(data){
 }
 function setBusy(on){busy=on;['submitBtn'].forEach(id=>{const b=$(id);if(b)b.disabled=on});if(on)showGESplash();else hideGESplash(0)}
 let timerHandle=null;
+async function requestCodeFlow(){
+ if(busy)return;
+ if(!formOk())return;
+ $('status').style.display='none';setBusy(true);
+ const d=await callServer(Object.assign({action:'submitOrder'},getPayload()));
+ setBusy(false);
+ if(d.ok){finishSubmit(d);return}
+ showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
+}
 function geDrawQr(){const el=$('finalQr');if(!el)return;el.innerHTML='';const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;if(window.QRCode){new QRCode(el,{text:url,width:140,height:140,correctLevel:QRCode.CorrectLevel.M})}else{const img=new Image();img.alt='QR code de suivi';img.width=140;img.height=140;img.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data='+encodeURIComponent(url);el.appendChild(img)}}
 function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
