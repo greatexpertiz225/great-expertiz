@@ -1361,7 +1361,7 @@ function getPayload(){
  const itemLines=(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':''));
  const detailText=[itemLines.join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ').slice(0,3000);
  const helperTask=$('helperTask')?$('helperTask').value:'';
- const notes=[$('notes').value.trim(),$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'','Manutentionnaires souhaités : '+helpers,helperTask?'Intervention manutention : '+helperTask:''].filter(Boolean).join(' | ');
+ const notes=['Manutentionnaires souhaités : '+helpers,helperTask?'Intervention manutention : '+helperTask:'',$('access').value.trim()?'Étage / accès : '+$('access').value.trim():'',weightText()?'Poids : '+weightText():'',$('notes').value.trim()].filter(Boolean).join(' | ');
  const p={prestation:$('service').value,nom:$('name').value.trim(),telephone:$('phone').value.trim(),email:$('email').value.trim(),
   nomDestinataire:$('recipientName').value.trim(),telephoneDestinataire:$('recipientPhone').value.trim(),
   enlevement:fullPlaces('pickup').join(' ; '),livraison:fullPlaces('delivery').join(' ; '),communeEnlevement:$('pickupCommune').value,communeLivraison:$('dropoffCommune').value,
@@ -1420,11 +1420,11 @@ function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
  showGESplash(true);
  const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets et précisions',p.detail],['Manutentionnaires souhaités',p.manutentionnaires+' personne(s)'],['Intervention manutention',p.interventionManutention||'À préciser'],['Poids',weightText()||'Non indiqué'],['Emballage',packText()]];
- $('receiptText').textContent=requestCode;geDrawQr();$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
+ $('receiptText').textContent=requestCode;$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
  renderReceiptRoute(p);
  const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
  $('trackLink').href='./index.html?code='+encodeURIComponent(requestCode)+'#suivi';
- $('receipt').style.display='block';$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
+ $('receipt').style.display='block';requestAnimationFrame(()=>geDrawQr());$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
  requestAnimationFrame(()=>requestAnimationFrame(()=>hideGESplash(1600)));
 }
 $('orderForm').addEventListener('submit',e=>e.preventDefault());
