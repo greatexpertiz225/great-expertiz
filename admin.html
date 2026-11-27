@@ -724,7 +724,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
       if(!r||!r.ok){container.innerHTML='<div class="empty-state">Impossible de charger les cotations. Vérifiez le déploiement du backend.</div>';return;}
       if(!r.cotations.length){container.innerHTML='<div class="empty-state">Aucune cotation enregistrée pour le moment.</div>';return;}
       var table=document.createElement('table');table.className='members-table';
-      table.innerHTML='<thead><tr><th>Référence</th><th>Commande</th><th>Montant partiel</th><th>Complète</th><th>Statut</th><th>Action</th></tr></thead>';
+      table.innerHTML='<thead><tr><th>Référence</th><th>Commande</th><th>Montant partiel</th><th>Complète</th><th>Statut</th><th>Actions</th></tr></thead>';
       var tbody=document.createElement('tbody');
       r.cotations.forEach(function(q){
         var tr=document.createElement('tr');
@@ -733,7 +733,30 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
         var st=document.createElement('select');['brouillon','envoyée','acceptée','refusée'].forEach(function(v){var op=document.createElement('option');op.value=v;op.textContent=v;op.selected=(q.statut||'brouillon')===v;st.appendChild(op)});
         var save=document.createElement('button');save.type='button';save.className='status-save';save.textContent='Enregistrer';
         save.addEventListener('click',function(){save.disabled=true;jsonpRequest({action:'adminUpdateQuoteStatus',key:getKey(),id:q.id,status:st.value},function(x){save.disabled=false;if(x&&x.ok){q.statut=st.value;save.textContent='Enregistré ✓'}else alert('Statut non modifié : '+(x&&x.error?x.error:'erreur serveur'));});});
-        td5.appendChild(st);td6.appendChild(save);[td1,td2,td3,td4,td5,td6].forEach(function(td){tr.appendChild(td)});tbody.appendChild(tr);
+        var detailBtn=document.createElement('button');detailBtn.type='button';detailBtn.className='status-save';detailBtn.textContent='Détails';detailBtn.style.marginTop='5px';
+        detailBtn.addEventListener('click',function(){
+          var next=tr.nextElementSibling;
+          if(next&&next.getAttribute('data-quote-detail')===q.id){next.remove();detailBtn.textContent='Détails';return;}
+          if(next&&next.getAttribute('data-quote-detail'))next.remove();
+          var row=document.createElement('tr');row.setAttribute('data-quote-detail',q.id);
+          var cell=document.createElement('td');cell.colSpan=6;cell.style.whiteSpace='normal';
+          var lines=(q.detail&&Array.isArray(q.detail.lines))?q.detail.lines:[];
+          if(!lines.length){cell.textContent='Détail non disponible pour cette cotation.';}
+          else lines.forEach(function(line){var p=document.createElement('p');p.style.margin='4px 0';p.textContent=(line.label||line.code||'Poste')+' : '+(typeof line.montant==='number'?Number(line.montant).toLocaleString('fr-FR')+' FCFA':'À chiffrer')+' — '+(line.note||line.statut||'');cell.appendChild(p)});
+          row.appendChild(cell);tr.parentNode.insertBefore(row,tr.nextSibling);detailBtn.textContent='Masquer';
+        });
+        td5.appendChild(st);td6.appendChild(save);td6.appendChild(document.createElement('br'));td6.appendChild(detailBtn);
+        var linkedOrder=allOrders.find(function(o){return o.code===q.code;});
+        if(q.complete&&linkedOrder&&linkedOrder.telephone){
+          var digits=String(linkedOrder.telephone).replace(/\D/g,'');
+          if(digits.length===10&&digits.charAt(0)==='0')digits='225'+digits.substring(1);
+          else if(digits.length===9)digits='225'+digits;
+          if(digits.length>=11){
+            var wa=document.createElement('a');wa.href='https://wa.me/'+digits+'?text='+encodeURIComponent('Bonjour '+(linkedOrder.nom||'')+', voici notre proposition de devis GREAT EXPERTIZ : '+Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA. Référence : '+q.code+'. Merci de nous confirmer votre accord.');
+            wa.target='_blank';wa.rel='noopener';wa.textContent='Préparer WhatsApp';wa.style.display='inline-block';wa.style.marginTop='6px';td6.appendChild(document.createElement('br'));td6.appendChild(wa);
+          }
+        }
+        [td1,td2,td3,td4,td5,td6].forEach(function(td){tr.appendChild(td)});tbody.appendChild(tr);
       });
       table.appendChild(tbody);container.innerHTML='';container.appendChild(table);
     });
