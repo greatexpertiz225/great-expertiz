@@ -2052,7 +2052,7 @@ function runMigrationSimulation() { var r = migrationSimulation_(); Logger.log(J
 // ---------- Actions d'administration ajoutées en V3 (contrôle des droits côté serveur) ----------
 // =====================================================================
 var V3_ADMIN_ACTIONS = ["adminGetSettings", "adminSetSetting", "adminListTarifs", "adminSetTarif", "adminTarifsHistory", "adminQuote",
-  "adminListQuotes", "adminMigrationDiag", "adminMigrationSim", "adminLogs", "adminOtpStats"];
+  "adminListQuotes", "adminUpdateQuoteStatus", "adminMigrationDiag", "adminMigrationSim", "adminLogs", "adminOtpStats"];
 var V3_OWNER_ONLY = ["adminGetSettings", "adminSetSetting", "adminSetTarif", "adminTarifsHistory", "adminMigrationDiag", "adminMigrationSim", "adminLogs", "adminOtpStats"];
 
 function handleAdminV3_(p, auth) {
@@ -2094,6 +2094,21 @@ function handleAdminV3_(p, auth) {
       var qs = getAuxSheet_(QUOTES_SHEET, QUOTE_HEADERS), qr = lastRows_(qs, QUOTE_HEADERS.length, 300), want = clean_(p.code, 40);
       return { ok: true, cotations: qr.filter(function (x) { return !want || String(x.v[1]) === want; }).map(function (x) {
         return { id: x.v[0], code: x.v[1], date: x.v[2], par: x.v[3], zone: x.v[4], categorie: x.v[5], totalPartiel: x.v[13], complete: String(x.v[14]) === "true", statut: x.v[15], detail: parseJsonSafe_(x.v[12]) }; }).reverse() };
+    }
+    case "adminUpdateQuoteStatus": {
+      var qid = clean_(p.id, 60), next = clean_(p.status, 20);
+      var allowed = ["brouillon", "envoyée", "acceptée", "refusée"];
+      if (!qid || allowed.indexOf(next) < 0) return { ok: false, error: "identifiant ou statut de cotation invalide" };
+      var qsh = getAuxSheet_(QUOTES_SHEET, QUOTE_HEADERS), qlast = qsh.getLastRow(), found = 0;
+      if (qlast > 1) {
+        var qids = qsh.getRange(2, 1, qlast - 1, 1).getValues();
+        for (var qi = 0; qi < qids.length; qi++) if (String(qids[qi][0]) === qid) { found = qi + 2; break; }
+      }
+      if (!found) return { ok: false, error: "cotation introuvable" };
+      var oldStatus = String(qsh.getRange(found, 16).getValue() || "brouillon");
+      qsh.getRange(found, 16).setValue(next);
+      logEvent_("INFO", "cotation.statut", String(qsh.getRange(found, 2).getValue() || ""), qid + " : " + oldStatus + " -> " + next);
+      return { ok: true, id: qid, status: next };
     }
     case "adminMigrationDiag": return { ok: true, rapport: migrationDiagnostic_() };
     case "adminMigrationSim": return { ok: true, rapport: migrationSimulation_() };
