@@ -807,7 +807,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
   document.getElementById('quoteCalcBtn').addEventListener('click',function(){calculateQuote(false)});
   document.getElementById('quoteSaveBtn').addEventListener('click',function(){calculateQuote(true)});
   document.getElementById('quoteOrder').addEventListener('change',function(){
-    var o=allOrders.find(function(x){return x.code===document.getElementById('quoteOrder').value;});if(!o)return;
+    var o=allOrders.find(function(x){return x.code===document.getElementById('quoteOrder').value;});if(!o){geAdminLines=[];geAdminRender();return;}
     if(o.zone)document.getElementById('quoteZone').value=o.zone;
     if(o.distanceKm)document.getElementById('quoteDistance').value=o.distanceKm;
     if(o.cbm)document.getElementById('quoteCbm').value=o.cbm;
