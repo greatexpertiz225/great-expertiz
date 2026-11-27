@@ -1489,7 +1489,7 @@ fillCommunes();
 /* ---------- Articles client : type exact + quantité, sans calcul CBM ---------- */
 window.geSelectedItems=[];
 let geCurrentItem=null;
-function geNorm(s){return String(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
+function geNorm(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
 function geRenderSelectedItems(){
  const box=$('geSelectedItems');if(!box)return;box.innerHTML='';
  if(!window.geSelectedItems.length){const p=document.createElement('p');p.className='hint';p.textContent='Aucun objet ajouté pour le moment.';box.appendChild(p);return}
