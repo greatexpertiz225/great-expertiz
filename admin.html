@@ -246,6 +246,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
       <button type="button" class="nav-item active" data-view="dashboard">📊 Tableau de bord</button>
       <div class="nav-group-label">Activités</div>
       <button type="button" class="nav-item" data-view="transport">🚚 Transport &amp; Déménagement</button>
+      <button type="button" class="nav-item" data-view="cotations">🧾 Cotations &amp; devis</button>
       <button type="button" class="nav-item" data-view="location">🚐 Location de véhicules <span class="soon-tag">Bientôt</span></button>
       <button type="button" class="nav-item" data-view="chauffeurs">🧑‍✈️ Placement de chauffeurs <span class="soon-tag">Bientôt</span></button>
       <div class="nav-group-label" id="adminNavLabel" style="display:none;">Administration</div>
@@ -307,6 +308,29 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
           <button type="button" class="filter-chip" data-filter="Livrée">Livrée</button>
         </div>
         <div id="listContainer"><div class="loading">Chargement des commandes…</div></div>
+      </div>
+
+      <div class="view" id="view-cotations">
+        <p class="section-title">Préparer une cotation interne</p>
+        <p style="color:var(--grey);margin:-6px 0 16px;font-size:.86rem;">Le client ne voit aucun prix automatique. Cette estimation sert à préparer et valider le devis GREAT EXPERTIZ.</p>
+        <div class="content-card" style="padding:16px;margin-bottom:18px;">
+          <div class="grid2">
+            <div><label for="quoteOrder">Commande liée</label><select id="quoteOrder"><option value="">Nouvelle cotation sans commande</option></select></div>
+            <div><label for="quoteZone">Zone</label><select id="quoteZone"><option value="indetermine">À déterminer / sur devis</option><option value="intra">Grand Abidjan</option><option value="extra">Hors Grand Abidjan</option></select></div>
+            <div><label for="quoteCategory">Catégorie de véhicule</label><select id="quoteCategory"><option value="">Choisir…</option><option value="tricycle_cargo">Tricycle cargo</option><option value="utilitaire">Utilitaire / camionnette</option><option value="camion_6_roues">Camion 6 roues</option><option value="camion_10_roues">Camion 10 roues</option><option value="semi_remorque">Semi-remorque</option><option value="poids_lourd">Poids lourd</option></select></div>
+            <div><label for="quoteDistance">Distance routière (km)</label><input id="quoteDistance" type="number" min="0" max="10000" step="0.1" placeholder="Récupérée de la commande si disponible"></div>
+            <div><label for="quoteCbm">Volume total (CBM) *</label><input id="quoteCbm" type="number" min="0.01" max="10000" step="0.01" placeholder="Ex. 3.5" required></div>
+            <div><label for="quoteHelpers">Manutentionnaires</label><input id="quoteHelpers" type="number" min="0" max="50" step="1" value="0"></div>
+            <div><label for="quoteFloors">Nombre d’étages à facturer</label><input id="quoteFloors" type="number" min="0" max="100" step="1" value="0"></div>
+          </div>
+          <div class="order-actions" style="margin-top:14px;">
+            <button type="button" class="status-save" id="quoteCalcBtn">Calculer l’estimation</button>
+            <button type="button" class="btn-primary" id="quoteSaveBtn">Enregistrer la cotation</button>
+          </div>
+          <div id="quoteResult" aria-live="polite" style="margin-top:14px;"></div>
+        </div>
+        <p class="section-title">Historique des cotations</p>
+        <div id="quotesContainer"><div class="loading">Chargement des cotations…</div></div>
       </div>
 
       <div class="view" id="view-location">
@@ -609,7 +633,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
   Array.prototype.forEach.call(document.querySelectorAll('#bulkbar button'), function(b){ b.addEventListener('click', function(){
     doBulk(b.dataset.b, inFolder(currentTab).map(function(o){ return o.code; }).filter(function(c){ return selected[c]; })); }); });
 
-  var viewTitles = { dashboard:'Tableau de bord', transport:'Transport & Déménagement', location:'Location de véhicules', chauffeurs:'Placement de chauffeurs', candidatures:'Candidatures réseau', clients:'Clients', messages:'Messages clients', membres:'Membres & accès' };
+  var viewTitles = { dashboard:'Tableau de bord', transport:'Transport & Déménagement', cotations:'Cotations & devis', location:'Location de véhicules', chauffeurs:'Placement de chauffeurs', candidatures:'Candidatures réseau', clients:'Clients', messages:'Messages clients', membres:'Membres & accès' };
   document.querySelectorAll('.nav-item').forEach(function(item){ item.addEventListener('click', function(){
     document.querySelectorAll('.nav-item').forEach(function(i){ i.classList.remove('active'); }); item.classList.add('active');
     var v = item.dataset.view;
@@ -621,9 +645,82 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
     if(v === 'candidatures') loadCandidates();
     if(v === 'clients') loadClients();
     if(v === 'messages') loadMessages();
+    if(v === 'cotations') loadQuotes();
   }); });
   document.getElementById('menuToggle').addEventListener('click', function(){ document.getElementById('sidebar').classList.toggle('open'); });
 
+
+  function quotePayload(save){
+    return {
+      action:'adminQuote', key:getKey(), code:document.getElementById('quoteOrder').value,
+      zone:document.getElementById('quoteZone').value, categorie:document.getElementById('quoteCategory').value,
+      distanceKm:document.getElementById('quoteDistance').value, cbm:document.getElementById('quoteCbm').value,
+      helpers:document.getElementById('quoteHelpers').value, floors:document.getElementById('quoteFloors').value,
+      facturation:'aller_simple', save:save?'true':'false'
+    };
+  }
+  function renderQuoteResult(q, id){
+    var box=document.getElementById('quoteResult');box.innerHTML='';
+    if(!q||!q.ok){box.textContent='Calcul impossible : '+(q&&q.error?q.error:'réponse du serveur absente');return;}
+    var table=document.createElement('table');table.className='members-table';
+    table.innerHTML='<thead><tr><th>Poste</th><th>Montant</th><th>État</th></tr></thead>';
+    var tbody=document.createElement('tbody');
+    (q.lines||[]).forEach(function(line){
+      var tr=document.createElement('tr'),td1=document.createElement('td'),td2=document.createElement('td'),td3=document.createElement('td');
+      td1.textContent=line.label||line.code||'—';td2.textContent=typeof line.montant==='number'?Number(line.montant).toLocaleString('fr-FR')+' FCFA':'À chiffrer';
+      td3.textContent=line.statut==='calcule'?'Calculé':(line.note||line.statut||'À vérifier');
+      tr.appendChild(td1);tr.appendChild(td2);tr.appendChild(td3);tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);box.appendChild(table);
+    var total=document.createElement('p');total.style.fontWeight='800';total.style.fontSize='1.1rem';
+    total.textContent=(q.complete?'Total calculé : ':'Total partiel : ')+Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA';box.appendChild(total);
+    (q.avertissements||[]).forEach(function(w){var p=document.createElement('p');p.className='hint';p.textContent='⚠ '+w;box.appendChild(p)});
+    if(id){var p=document.createElement('p');p.textContent='Cotation enregistrée : '+id;box.appendChild(p);}
+  }
+  function calculateQuote(save){
+    var payload=quotePayload(save),btn=document.getElementById(save?'quoteSaveBtn':'quoteCalcBtn');
+    if(!payload.categorie){alert('Choisissez une catégorie de véhicule.');return;}
+    if(!payload.cbm||Number(payload.cbm)<=0){alert('Saisissez le volume total en CBM.');return;}
+    btn.disabled=true;btn.textContent='Calcul en cours…';
+    jsonpRequest(payload,function(r){
+      btn.disabled=false;btn.textContent=save?'Enregistrer la cotation':'Calculer l’estimation';
+      if(!r||!r.ok){renderQuoteResult(r&&r.quote?r.quote:r);return;}
+      renderQuoteResult(r.quote,r.cotationId||'');
+      if(save)loadQuotes();
+    });
+  }
+  document.getElementById('quoteCalcBtn').addEventListener('click',function(){calculateQuote(false)});
+  document.getElementById('quoteSaveBtn').addEventListener('click',function(){calculateQuote(true)});
+  document.getElementById('quoteOrder').addEventListener('change',function(){
+    var o=allOrders.find(function(x){return x.code===document.getElementById('quoteOrder').value;});if(!o)return;
+    if(o.zone)document.getElementById('quoteZone').value=o.zone;
+    if(o.distanceKm)document.getElementById('quoteDistance').value=o.distanceKm;
+    if(o.cbm)document.getElementById('quoteCbm').value=o.cbm;
+  });
+  function loadQuotes(){
+    var sel=document.getElementById('quoteOrder'),keep=sel.value;
+    sel.innerHTML='<option value="">Nouvelle cotation sans commande</option>';
+    allOrders.forEach(function(o){var op=document.createElement('option');op.value=o.code;op.textContent=o.code+' — '+(o.nom||'Client')+' · '+(o.prestation||'');sel.appendChild(op)});
+    if(keep)sel.value=keep;
+    var container=document.getElementById('quotesContainer');container.innerHTML='<div class="loading">Chargement des cotations…</div>';
+    jsonpRequest({action:'adminListQuotes',key:getKey()},function(r){
+      if(!r||!r.ok){container.innerHTML='<div class="empty-state">Impossible de charger les cotations. Vérifiez le déploiement du backend.</div>';return;}
+      if(!r.cotations.length){container.innerHTML='<div class="empty-state">Aucune cotation enregistrée pour le moment.</div>';return;}
+      var table=document.createElement('table');table.className='members-table';
+      table.innerHTML='<thead><tr><th>Référence</th><th>Commande</th><th>Montant partiel</th><th>Complète</th><th>Statut</th><th>Action</th></tr></thead>';
+      var tbody=document.createElement('tbody');
+      r.cotations.forEach(function(q){
+        var tr=document.createElement('tr');
+        var td1=document.createElement('td'),td2=document.createElement('td'),td3=document.createElement('td'),td4=document.createElement('td'),td5=document.createElement('td'),td6=document.createElement('td');
+        td1.textContent=q.id;td2.textContent=q.code||'Sans commande';td3.textContent=Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA';td4.textContent=q.complete?'Oui':'Non';
+        var st=document.createElement('select');['brouillon','envoyée','acceptée','refusée'].forEach(function(v){var op=document.createElement('option');op.value=v;op.textContent=v;op.selected=(q.statut||'brouillon')===v;st.appendChild(op)});
+        var save=document.createElement('button');save.type='button';save.className='status-save';save.textContent='Enregistrer';
+        save.addEventListener('click',function(){save.disabled=true;jsonpRequest({action:'adminUpdateQuoteStatus',key:getKey(),id:q.id,status:st.value},function(x){save.disabled=false;if(x&&x.ok){q.statut=st.value;save.textContent='Enregistré ✓'}else alert('Statut non modifié : '+(x&&x.error?x.error:'erreur serveur'));});});
+        td5.appendChild(st);td6.appendChild(save);[td1,td2,td3,td4,td5,td6].forEach(function(td){tr.appendChild(td)});tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);container.innerHTML='';container.appendChild(table);
+    });
+  }
 
   function loadCandidates(){
     var container = document.getElementById('candidatesContainer');
