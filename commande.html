@@ -846,7 +846,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 </div>
 <div class="step" id="step3" data-title="Votre besoin">
 <h3>Que souhaitez-vous transporter ?</h3>
-<p class="hint">Décrivez simplement les marchandises, le matériel ou les effets à transporter. Le catalogue détaillé est réservé à GREAT EXPERTIZ.</p>
+<p class="hint">Ajoutez les objets depuis la liste, puis précisez leur type exact et leur quantité. GREAT EXPERTIZ vérifiera le volume dans l’administration ; aucun CBM ni prix n’est calculé par le client.</p>
 <div class="field"><label for="need">Autres précisions (facultatif)</label><textarea id="need" rows="3" maxlength="3000" placeholder="Décrivez ici un article absent du catalogue ou ajoutez des précisions."></textarea><div class="hint" id="needCount">0 / 3000</div></div>
 <section class="ge-client-items" aria-labelledby="geItemsTitle">
  <h4 id="geItemsTitle">Ajouter les objets à transporter</h4>
@@ -864,8 +864,8 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="field"><label for="weight">Poids total approximatif en kg (facultatif)</label><input id="weight" type="number" inputmode="decimal" min="0" step="any" placeholder="Ex. 800"><label style="display:flex;gap:8px;align-items:center;margin-top:6px;font-weight:normal"><input type="checkbox" id="weightUnknown" style="width:auto"> Je ne connais pas le poids</label><div class="hint">Ne renseignez que le poids total si vous le connaissez. Le poids n’est jamais déduit du volume.</div></div>
 <div class="field" id="tempField" style="display:none"><label for="temperature">Température à respecter *</label><select id="temperature"><option value="">Choisir…</option><option>Frais (+2 à +8 °C)</option><option>Surgelé (−18 °C)</option><option>Autre : à préciser dans la description</option></select></div>
 </div>
-<div class="step" id="step4" data-title="Accès et emballage">
-<h3>Accès et emballage</h3>
+<div class="step" id="step4" data-title="Accès et manutention">
+<h3>Accès, manutention et emballage</h3>
 <div class="field"><label for="access">Étage et accès (facultatif)</label><input id="access" maxlength="200" placeholder="Ex. 3e étage, sans ascenseur"></div>
 <div class="field"><label for="helpers">Nombre de manutentionnaires souhaité</label><select id="helpers">
 <option value="0">Aucun</option><option value="1">1 manutentionnaire</option><option value="2">2 manutentionnaires</option><option value="3">3 manutentionnaires</option><option value="4">4 manutentionnaires</option><option value="5">5 manutentionnaires</option><option value="6">6 manutentionnaires</option><option value="7">7 manutentionnaires</option><option value="8">8 manutentionnaires</option><option value="9">9 manutentionnaires</option><option value="10">10 manutentionnaires</option>
@@ -1299,7 +1299,7 @@ const normS=s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLower
 /* ---------- Étapes (V3 : parcours simplifié, validation par code WhatsApp) ---------- */
 let mview=false,expandedOnce=false;
 function setFull(on){$('panel').classList.toggle('full',on);document.body.classList.toggle('sheetfull',on);$('expandBtn').setAttribute('aria-pressed',String(!!on))}
-const STEPS=['Itinéraire','Informations','Votre besoin','Accès et emballage','Vérification','Confirmation'],LAST=6;let step=1;
+const STEPS=['Itinéraire','Informations','Votre besoin','Accès et manutention','Vérification','Confirmation'],LAST=6;let step=1;
 function stepMsg(t,focusId){$('stepMsg').textContent=t||'';if(focusId){const e=$(focusId);if(e){try{if(e.focus)e.focus({preventScroll:true})}catch(x){}if(e.scrollIntoView)e.scrollIntoView({behavior:'smooth',block:'center'})}}return !t}
 function normPhone(raw){let s=String(raw||'').replace(/\D/g,'');if(s.indexOf('00225')===0)s=s.slice(5);else if(s.indexOf('225')===0&&s.length===13)s=s.slice(3);
  if(s.length===8||s.length===9)return{ok:false,msg:'Les numéros ivoiriens comportent 10 chiffres (ex. 07 48 11 03 35).'};
@@ -1313,7 +1313,7 @@ function stepOk(n){
   const p=normPhone($('phone').value);if(!p.ok)return stepMsg(p.msg,'phone');
   if($('recipientPhone').value.trim()){const r=normPhone($('recipientPhone').value);if(!r.ok)return stepMsg('Téléphone du destinataire : '+r.msg,'recipientPhone')}
   const em=$('email').value.trim();if(em&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em))return stepMsg('Adresse e-mail invalide.','email')}
- if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet dans la liste ou décrivez ce que vous souhaitez transporter.','geItemSearch');
+ if(n===3){if($('need').value.trim().length<5&&!(window.geSelectedItems&&window.geSelectedItems.length))return stepMsg('Ajoutez au moins un objet dans la liste ou décrivez ce que vous souhaitez transporter.','geItemSearch');const detailCheck=[(window.geSelectedItems||[]).map(x=>x.family+' / '+x.group+' : '+x.name+(x.variant?' ('+x.variant+')':'')+' × '+x.qty+(x.preset?' [contenu : '+x.preset+']':'')).join(' ; '),$('need').value.trim()].filter(Boolean).join(' | ');if(detailCheck.length>2950)return stepMsg('Votre liste est trop longue pour être transmise en une seule demande. Réduisez les lignes ou regroupez les articles similaires.','geSelectedItems');
   if($('tempField').style.display!=='none'&&!$('temperature').value)return stepMsg('Choisissez la température à respecter pour le transport frigorifique.','temperature');
   const w=$('weight').value.trim();if(w&&!(Number(w.replace(',','.'))>0&&isFinite(Number(w.replace(',','.')))))return stepMsg('Le poids doit être un nombre positif en kilogrammes, ou cochez « Je ne connais pas le poids ».','weight')}
  if(n===4){ /* les informations d’accès et d’emballage sont facultatives */ }
