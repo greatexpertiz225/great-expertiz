@@ -1407,7 +1407,7 @@ function computeQuote_(inp, tarifs, settings) {
   lines.push(km);
   var packRequested = !!inp.emballage && norm_(inp.emballage).indexOf("deja emballe") < 0;
   var packComplete = !packRequested;
-  if (packRequested && rawPackManual !== null && rawPackManual > 0) {
+  if (packRequested && rawPackManual !== null) {
     lines.push({ code: "emballage", label: "Emballage et protection (montant manuel validé)", montant: Math.round(rawPackManual), statut: "calcule_manuel" });
     packComplete = true;
   } else if (packRequested) {
