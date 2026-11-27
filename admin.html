@@ -685,7 +685,7 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
 
   /* Calculateur CBM interne : volumes de référence réservés à l'administration. */
   var geAdminCatalog=window.GE_ADMIN_CATALOG||[],geAdminCurrent=null,geAdminLines=[];
-  function geAdminNorm(v){return String(v||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase()}
+  function geAdminNorm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
   function geAdminVolumeCm3(){return geAdminLines.reduce(function(s,x){return s+x.cm3*x.qty},0)}
   function geAdminRender(){
     var box=document.getElementById('geAdminItemCart');box.innerHTML='';
@@ -738,13 +738,13 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
   function geAdminLoadFromOrder(order){
     geAdminLines=[];var detail=String(order.detail||''),first=detail.split(' | ')[0];
     first.split(' ; ').forEach(function(line){
-      var m=line.match(/^(.*?)\\s*\\/\\s*(.*?)\\s*:\\s*(.*?)\\s*×\\s*(\\d+)(?:\\s*\\[contenu\\s*:\\s*.*\\])?$/);
+      var m=line.match(/^(.*?)\s*\/\s*(.*?)\s*:\s*(.*?)\s*×\s*(\d+)(?:\s*\[contenu\s*:\s*.*\])?$/);
       if(!m)return;
       var family=m[1].trim(),group=m[2].trim(),body=m[3].trim(),qty=Math.max(1,parseInt(m[4],10)||1);
       var item=geAdminCatalog.find(function(x){return x.family===family&&x.group===group&&(body===x.name||body.indexOf(x.name+' (')===0)});
       if(!item)return;
       var variant=item.variants[0];
-      if(item.variants.length>1){var suffix=body.slice(item.name.length).replace(/^\\s*\\(/,'').replace(/\\)\\s*$/,'');variant=item.variants.find(function(v){return v.label===suffix});if(!variant)return}
+      if(item.variants.length>1){var suffix=body.slice(item.name.length).replace(/^\s*\(/,'').replace(/\)\s*$/,'');variant=item.variants.find(function(v){return v.label===suffix});if(!variant)return}
       geAdminLines.push({item:item,variant:variant,qty:qty,cm3:variant.cm3});
     });
     geAdminRender();
