@@ -1957,6 +1957,15 @@ function queueEmail_(to, subject, html, ref) {
   return trySendQueuedRow_(sh, sh.getLastRow());
 }
 
+// Enregistrement différé de la notification : ne retarde pas l'accusé de réception client.
+// Le déclencheur processEmailQueue() assure ensuite l'envoi et les nouvelles tentatives.
+function queueEmailDeferred_(to, subject, html, ref) {
+  var sh = getAuxSheet_(EMAIL_QUEUE_SHEET, EMAIL_HEADERS), now = new Date();
+  var id = "M-" + Utilities.getUuid().split("-")[0].toUpperCase();
+  sh.appendRow([id, now, to, subject, html, clean_(ref, 40), "EN_ATTENTE", 0, "", now, ""]);
+  return true;
+}
+
 function notifyNewOrder_(code, d, canal) {
   var rows = [["Prestation", d.prestation], ["Client", d.nom], ["Téléphone client", d.telE164], ["E-mail", d.email || "—"],
     ["Destinataire", [d.destNom, d.destTel].filter(Boolean).join(" · ") || "—"], ["Besoin décrit", d.detail], ["Départ", d.enlevement], ["Arrivée", d.livraison],
@@ -1967,7 +1976,7 @@ function notifyNewOrder_(code, d, canal) {
     + "<p style='font-size:20px;font-weight:bold;color:#0E3A54;margin:0 0 16px;'>" + esc_(code) + "</p><table style='width:100%;border-collapse:collapse;font-size:14px;'>"
     + rows.map(function (r) { return "<tr><td style='color:#5B7285;padding:6px 0;vertical-align:top;'>" + r[0] + "</td><td style='text-align:right;font-weight:bold;'>" + esc_(r[1]) + "</td></tr>"; }).join("")
     + "</table></div>";
-  return queueEmail_(NOTIFY_EMAIL, "Nouvelle commande — " + code, html, code);
+  return queueEmailDeferred_(NOTIFY_EMAIL, "Nouvelle commande — " + code, html, code);
 }
 
 // Compatibilité : l'ancienne fonction reste appelable (chemin hérité, désactivé par défaut).
