@@ -483,8 +483,11 @@ body.sheetfull .leaflet-control-container{display:none!important}
 /* ===== Correctifs ciblés : vérification, CBM libre, démarrage et reçu ===== */
 #geSplash{position:fixed;inset:0;z-index:5000;background:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity .45s ease,visibility .45s ease}
 #geSplash img{width:min(190px,42vw);max-height:110px;object-fit:contain}
-.splashName{font-size:clamp(25px,6vw,38px);font-weight:900;letter-spacing:1px;color:var(--blue-d);overflow:hidden;white-space:nowrap}
-.splashName span{display:inline-block;clip-path:inset(0 100% 0 0);animation:splashWrite 1.15s steps(14,end) .1s infinite}
+.splashName{font:800 clamp(30px,8vw,52px)/1 "Segoe UI",Arial,sans-serif;letter-spacing:3px;display:flex;justify-content:center;gap:.4em;white-space:nowrap}
+.splashName .splash-g,.splashName .splash-e{display:inline-flex}
+.splashName .splash-g{color:#8fa814}.splashName .splash-e{color:#0b6a99}
+.splashName b{opacity:0;transform:translateY(10px);animation:splashLetter .45s ease forwards}
+@keyframes splashLetter{to{opacity:1;transform:none}}
 .splashTag{font-size:11px;letter-spacing:2px;font-weight:700;color:#607487}
 @keyframes splashWrite{to{clip-path:inset(0 0 0 0)}}
 #geSplash.show{display:flex;opacity:1;visibility:visible;pointer-events:auto}
@@ -808,7 +811,7 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <body>
 <div id="geSplash" class="show" role="status" aria-label="Chargement GREAT EXPERTIZ">
  <img id="geSplashLogo" alt="Logo GREAT EXPERTIZ">
- <div class="splashName"><span>GREAT EXPERTIZ</span></div>
+ <div class="splashName"><span class="splash-g"></span><span class="splash-e"></span></div>
  <div class="splashTag">TRANSPORT. LOGISTIQUE. B2B</div>
 </div>
 <div id="map" aria-label="Carte GPS de l’itinéraire"></div>
@@ -931,8 +934,6 @@ button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 <div class="rcode" id="receiptText"></div>
 <dl class="rdl" id="rdl"></dl>
 <div id="receiptRoute" aria-label="Références du trajet"></div>
-<div id="finalQr" class="qr" aria-label="QR code de suivi de la commande"></div>
-<p class="hint">Scannez ce QR code pour retrouver le suivi de votre demande.</p>
 <p class="hint">Ce récapitulatif n’est pas un reçu définitif : GREAT EXPERTIZ étudie votre demande et vous transmet un devis.</p>
 <div class="ractions">
 <button type="button" class="primary" id="dlBtn">⬇ Télécharger mon récapitulatif</button>
@@ -1425,7 +1426,7 @@ function renderReceiptRoute(d){
 }
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 
-function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const letters=splash.querySelector('.splashName span');splash.classList.remove('hide');splash.classList.add('show');if(letters){letters.style.animation='none';letters.style.clipPath='inset(0 100% 0 0)';void letters.offsetWidth;letters.style.animation='splashWrite 1.15s steps(14,end) .1s infinite'}}
+function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const first=splash.querySelector('.splash-g'),second=splash.querySelector('.splash-e');splash.classList.remove('hide');splash.classList.add('show');function write(el,word,start){if(!el)return;el.textContent='';for(let i=0;i<word.length;i++){const ch=document.createElement('b');ch.textContent=word.charAt(i);ch.style.animationDelay=(start+i*70)+'ms';el.appendChild(ch)}}write(first,'GREAT',250);write(second,'EXPERTIZ',700)}
 function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
 
 /* ---------- Envoi de la demande client sans code OTP (réponse GE_ORDER_RESULT) ---------- */
@@ -1454,39 +1455,7 @@ async function requestCodeFlow(){
  setBusy(false);
  showStatus(d.message||"Votre demande n’a pas pu être enregistrée. Réessayez.",'err');
 }
-function geDrawQr(){
- const el=$('finalQr');if(!el)return Promise.resolve(false);
- el.innerHTML='';
- const url=new URL('./index.html?code='+encodeURIComponent(requestCode)+'#suivi',location.href).href;
- return new Promise(resolve=>{
-  let settled=false,started=Date.now();
-  const finish=ok=>{if(settled)return;settled=true;resolve(ok)};
-  const fallback=()=>{
-   if(settled)return;
-   el.innerHTML='';
-   const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener';a.textContent='Ouvrir le suivi de cette demande';
-   a.style.cssText='display:inline-block;padding:10px;color:#075985;font-weight:700;line-height:1.4';
-   el.appendChild(a);finish(false);
-  };
-  try{
-   if(typeof QRCode!=='function'||!QRCode.CorrectLevel){fallback();return}
-   new QRCode(el,{text:url,width:160,height:160,correctLevel:QRCode.CorrectLevel.M});
-  }catch(err){fallback();return}
-  const check=()=>{
-   if(settled)return;
-   const canvas=el.querySelector('canvas');
-   const img=el.querySelector('img');
-   const table=el.querySelector('table');
-   if(canvas&&canvas.width>0&&canvas.height>0){finish(true);return}
-   if(img&&img.complete&&img.naturalWidth>0){finish(true);return}
-   if(table&&table.querySelector('td')){finish(true);return}
-   if(Date.now()-started>1800){fallback();return}
-   requestAnimationFrame(check);
-  };
-  requestAnimationFrame(check);
- });
-}
-async function finishSubmit(d){
+function finishSubmit(d){
  requestCode=d.code;if(timerHandle){clearInterval(timerHandle);timerHandle=null}
  const p=getPayload(),rows=[['Date et heure',new Date().toLocaleString('fr-FR')],['Client',p.nom+' · '+p.telephone],['Prestation',p.prestation],['Date souhaitée',p.dateSouhaitee||'À convenir'],['Destinataire',[p.nomDestinataire,p.telephoneDestinataire].filter(Boolean).join(' · ')||'Client'],['Enlèvement',p.enlevement],['Livraison',p.livraison],['Objets ou marchandises',p.detail],['Étage enlèvement',p.etageEnlevement+' · Ascenseur : '+p.ascenseurEnlevement],['Étage livraison',p.etageLivraison+' · Ascenseur : '+p.ascenseurLivraison],['Manutentionnaires',p.manutentionnaires==='0'?'Non':'Oui · '+p.manutentionnaires+' personne(s)'],];
  $('receiptText').textContent=requestCode;$('confirmMsg').textContent=d.message||'Un conseiller du service client vous contactera pour la suite. Veuillez conserver votre numéro de commande, il vous sera demandé pour le suivi de votre dossier.';
@@ -1494,10 +1463,8 @@ async function finishSubmit(d){
  const dl=$('rdl');dl.innerHTML='';rows.forEach(r=>{const t=document.createElement('dt'),v=document.createElement('dd');t.textContent=r[0];v.textContent=r[1];dl.appendChild(t);dl.appendChild(v)});
  $('trackLink').href='./index.html?code='+encodeURIComponent(requestCode)+'#suivi';
  $('receipt').style.display='block';$('panel').classList.add('done');$('panelTitle').textContent='Demande enregistrée';showStep(6);expandedOnce=true;setFull(true);$('formBody').scrollTop=0;
- const qrReady=await geDrawQr();
  busy=false;const submitButton=$('submitBtn');if(submitButton)submitButton.disabled=false;
  hideGESplash(0);
- if(!qrReady){const msg=$('confirmMsg');msg.textContent+=' Le code QR n’a pas pu être généré sur cet appareil ; utilisez le lien de suivi ci-dessous.';}
 }
 $('orderForm').addEventListener('submit',e=>e.preventDefault());
 $('submitBtn').addEventListener('click',requestCodeFlow);
