@@ -2200,6 +2200,7 @@ function setupTest() {
   } else ensureExtraHeaders_(ss.getSheetByName(OFFICIAL_ORDERS_SHEET));
   getPepper_();
   logEvent_("INFO", "installation", "", "onglets vérifiés" + (created ? " ; Commandes_GE créé vide" : ""));
+  installTriggers(); // Active l'envoi différé des notifications e-mail toutes les 5 minutes.
   return checkConfiguration();
 }
 
