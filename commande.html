@@ -1025,7 +1025,7 @@ function initMap(){
   maxZoom:19,attribution:'© OpenStreetMap'
  }).addTo(map);
  const bootStarted=Date.now();
- const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,1250-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
+ const hideBootSplash=()=>{const splash=$('geSplash');if(splash&&!splash.dataset.bootHidden){splash.dataset.bootHidden='1';const wait=Math.max(0,1550-(Date.now()-bootStarted));setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},wait)}};
  tiles.once('load',hideBootSplash);
  /* Animation courte : l’interface apparaît dès que la carte est prête, sans attente artificielle. */
  window.setTimeout(hideBootSplash,3200);
@@ -1428,6 +1428,7 @@ function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&a
 
 function showGESplash(finalWrite=false){const splash=$('geSplash');if(!splash)return;const first=splash.querySelector('.splash-g'),second=splash.querySelector('.splash-e');splash.classList.remove('hide');splash.classList.add('show');function write(el,word,start){if(!el)return;el.textContent='';for(let i=0;i<word.length;i++){const ch=document.createElement('b');ch.textContent=word.charAt(i);ch.style.animationDelay=(start+i*70)+'ms';el.appendChild(ch)}}write(first,'GREAT',250);write(second,'EXPERTIZ',700)}
 function hideGESplash(delay){const splash=$('geSplash');if(!splash)return;setTimeout(()=>{splash.classList.remove('show');splash.classList.add('hide')},delay||0)}
+showGESplash(); // Anime aussi le chargement initial, au même rythme que la page d'accueil.
 
 /* ---------- Envoi de la demande client sans code OTP (réponse GE_ORDER_RESULT) ---------- */
 let busy=false;
