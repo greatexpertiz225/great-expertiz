@@ -802,12 +802,14 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
   function geGenerateFinalReceipt(order,q,cotationId){
     if(!order||!order.code||!q||!q.complete){alert('Le reçu final exige une commande liée et une cotation complète.');return;}
     if(typeof QRCode==='undefined'){alert('La bibliothèque QR est indisponible. Rechargez l’administration.');return;}
+    var w=window.open('','_blank');
+    if(!w){alert('Autorisez les fenêtres pop-up pour imprimer le reçu final.');return;}
     var host=document.createElement('div');
     new QRCode(host,{text:String(order.code),width:180,height:180,colorDark:'#12384c',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
     setTimeout(function(){
       var qr=host.querySelector('canvas'),img=host.querySelector('img');
       var qrSrc=qr?qr.toDataURL('image/png'):(img?img.src:'');
-      if(!qrSrc){alert('Le QR code du reçu final n’a pas pu être préparé.');return;}
+      if(!qrSrc){w.close();alert('Le QR code du reçu final n’a pas pu être préparé.');return;}
       var rows=[
         ['Client',order.nom],['Téléphone',order.telephone],['Prestation',order.prestation],
         ['Description',order.detail],['Enlèvement',order.enlevement],['Livraison',order.livraison],
@@ -815,8 +817,6 @@ table{border-collapse:separate!important;border-spacing:0!important}thead th{bac
         ['Référence cotation',cotationId]
       ];
       var body=rows.map(function(row){return '<tr><th>'+geEscHtml(row[0])+'</th><td>'+geEscHtml(row[1])+'</td></tr>';}).join('');
-      var w=window.open('','_blank');
-      if(!w){alert('Autorisez les fenêtres pop-up pour imprimer le reçu final.');return;}
       w.document.open();
       w.document.write('<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reçu final GREAT EXPERTIZ — '+geEscHtml(order.code)+'</title><style>body{font:14px Arial,sans-serif;color:#17384a;margin:28px auto;max-width:760px;padding:0 18px}.brand{color:#159bd2;font-size:25px;font-weight:900;letter-spacing:1px}.tag{color:#617989;letter-spacing:2px;font-size:11px}h1{font-size:22px;margin:26px 0 6px} .code{font-size:23px;font-weight:900;letter-spacing:2px;padding:12px;border:2px solid #159bd2;display:inline-block;margin:12px 0}table{width:100%;border-collapse:collapse;margin-top:16px}th,td{border-bottom:1px solid #d9e2e8;padding:10px;text-align:left;vertical-align:top}th{width:30%;color:#607789} .total{font-size:22px;font-weight:900;margin-top:20px}.qr{display:flex;align-items:center;gap:22px;margin-top:24px;border-top:1px solid #d9e2e8;padding-top:18px}.qr img{width:150px;height:150px}.note{color:#607789;font-size:12px;margin-top:22px}@media print{body{margin:0 auto}}</style></head><body><div class="brand">GREAT EXPERTIZ</div><div class="tag">TRANSPORT. LOGISTIQUE. B2B</div><h1>REÇU FINAL DE COMMANDE</h1><p>Document établi par GREAT EXPERTIZ après examen de la demande et préparation de la cotation.</p><div class="code">'+geEscHtml(order.code)+'</div><table>'+body+'</table><div class="total">Montant proposé : '+Number(q.totalPartiel||0).toLocaleString('fr-FR')+' FCFA</div><div class="qr"><img src="'+qrSrc+'" alt="QR code"><div><strong>Identifiant de votre commande</strong><p>Scannez ce QR code pour retrouver le code de votre dossier : <strong>'+geEscHtml(order.code)+'</strong>.</p><p>Conservez ce reçu et votre code de commande.</p></div></div><p class="note">GREAT EXPERTIZ — Côte d’Ivoire</p><script>window.onload=function(){setTimeout(function(){window.print()},350)};</script></body></html>');
       w.document.close();
